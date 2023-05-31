@@ -1,0 +1,28 @@
+# 0 "C:\\Users\\Usuário\\santorini\\board.cpp"
+# 1 "C:\\Users\\Usuário\\santorini//"
+# 0 "<built-in>"
+# 0 "<command-line>"
+# 1 "C:\\Users\\Usuário\\santorini\\board.cpp"
+# 1 "C:\\Users\\Usuário\\santorini\\board.h" 1
+
+
+
+struct Board {
+    int squares[25];
+    int workers[4];
+
+    Board(const int (&w)[4]);
+};
+# 2 "C:\\Users\\Usuário\\santorini\\board.cpp" 2
+
+Board::Board(const int (&w)[4]) {
+
+    for (int i = 0; i < 25; ++i) {
+        squares[i] = 0;
+    }
+
+
+    for (int i = 0; i < 4; ++i) {
+        workers[i] = w[i];
+    }
+}
