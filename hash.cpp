@@ -54,3 +54,46 @@ int genHash(){
         return genHash();
     }
 }
+
+Coord cordFromTwoInt(int x, int y){
+    Coord coord;
+    coord.x = x;
+    coord.y = y;
+    return coord;
+}
+
+Coord makeCoord(int n){
+    return cordFromTwoInt(n % 5, n / 5);
+}
+
+int breakCoord(Coord coord){
+    return 5 * coord.y + coord.x;
+}
+
+void fillSimetryTable(Coord coord, Coord * symetryTable){
+    int x = coord.x;
+    int y = coord.y;
+    Coord st[] = {cordFromTwoInt(x, y), cordFromTwoInt(y, 4-x),
+                  cordFromTwoInt(4-x, 4-y), cordFromTwoInt(4-y, x),
+                  cordFromTwoInt(4-x, y), cordFromTwoInt(4-y, 4-x),
+                  cordFromTwoInt(x, 4-y), cordFromTwoInt(y, x),
+                 };
+    for(int i=0; i < 8; i++){
+        symetryTable[i] = st[i];
+    }
+}
+
+void fillAlternativeHashes(int hash, int * alternativeHashes){
+    int w[4];
+    Coord symetryTable[4][8];
+    unhashWorkers(hash, w);
+    for(int i=0; i < 4; i++){
+        fillSimetryTable(makeCoord(w[i]), symetryTable[i]);
+    }
+    for(int i=0; i < 8; i++){
+        for(int j =0; j < 4; j++){
+            w[j] = breakCoord(symetryTable[j][i]);
+        }
+        alternativeHashes[i] = hashWorkers(w);
+    }
+}
