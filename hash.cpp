@@ -1,5 +1,7 @@
 #include <cmath>
 #include <unordered_set>
+#include <random>
+#include "hash.h"
 
 int hashWorkers(const int (&w)[4]){
     int sum = 0;
@@ -32,4 +34,23 @@ bool validateHash(int hash){
     }
     
     return true;
+}
+
+int genHash(){
+    // Create a random device
+    std::random_device rd;
+
+    // Create a random engine
+    std::mt19937 eng(rd());
+
+    // Create a uniform distribution
+    std::uniform_int_distribution<> dist(minHash, maxHash);
+
+    int hash = dist(eng);
+    if(validateHash(hash)){
+        return hash;
+    }
+    else{
+        return genHash();
+    }
 }
