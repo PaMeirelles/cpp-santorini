@@ -6,6 +6,7 @@ void unhashWorkers(int hash, int * w);
 bool validateHash(int hash);
 int genHash();
 void fillAlternativeHashes(int hash, int * alternativeHashes);
+int reduceHash(int hash);
 
 struct Coord{
     int x;

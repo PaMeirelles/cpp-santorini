@@ -1,6 +1,7 @@
 #include <cmath>
 #include <unordered_set>
 #include <random>
+#include <algorithm>
 #include "hash.h"
 
 int hashWorkers(const int (&w)[4]){
@@ -96,4 +97,31 @@ void fillAlternativeHashes(int hash, int * alternativeHashes){
         }
         alternativeHashes[i] = hashWorkers(w);
     }
+}
+
+int preReduceHash(int hash){
+    int w[4];
+    unhashWorkers(hash, w);
+    int pre[4] = {std::min(w[0], w[1]),
+                  std::max(w[0], w[1]), 
+                  std::min(w[2], w[3]),
+                  std::max(w[2], w[3])};
+    return hashWorkers(pre);
+}
+
+int reduceHash(int hash){
+    int alterativeHashes[8];
+    fillAlternativeHashes(preReduceHash(hash), alterativeHashes);
+    int wah[8][4];
+    for(int i=0; i < 8; i++){
+        unhashWorkers(alterativeHashes[i], wah[i]);
+    }
+    int min = alterativeHashes[0];  // Assume the first element as the minimum
+
+    for (int i = 1; i < 8; i++) {
+        if (alterativeHashes[i] < min) {
+            min = alterativeHashes[i];
+        }
+    }
+    return min;
 }
