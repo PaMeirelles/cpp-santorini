@@ -6,6 +6,9 @@ struct Board {
     int workers[4];
 
     Board(const int (&w)[4]);
+    Board();
+
+    void print() const;
 };
 
 #endif

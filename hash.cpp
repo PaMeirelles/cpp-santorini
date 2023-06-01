@@ -10,10 +10,8 @@ int hashWorkers(const int (&w)[4]){
 }
 
 void unhashWorkers(int hash, int * w){
-    int buffer;
     for(int i=0; i < 4; i++){
-        buffer = hash % 25;
-        w[i] = buffer;
+        w[i] = hash % 25;
         hash /= 25;
     }
 }
