@@ -3,6 +3,7 @@
 #include <random>
 #include <algorithm>
 #include "hash.h"
+#include <iostream>
 
 int hashWorkers(const int (&w)[4]){
     int sum = 0;
@@ -99,19 +100,9 @@ void fillAlternativeHashes(int hash, int * alternativeHashes){
     }
 }
 
-int preReduceHash(int hash){
-    int w[4];
-    unhashWorkers(hash, w);
-    int pre[4] = {std::min(w[0], w[1]),
-                  std::max(w[0], w[1]), 
-                  std::min(w[2], w[3]),
-                  std::max(w[2], w[3])};
-    return hashWorkers(pre);
-}
-
-int reduceHash(int hash){
+int semiReduce(int hash){
     int alterativeHashes[8];
-    fillAlternativeHashes(preReduceHash(hash), alterativeHashes);
+    fillAlternativeHashes(hash, alterativeHashes);
     int wah[8][4];
     for(int i=0; i < 8; i++){
         unhashWorkers(alterativeHashes[i], wah[i]);
@@ -121,6 +112,22 @@ int reduceHash(int hash){
     for (int i = 1; i < 8; i++) {
         if (alterativeHashes[i] < min) {
             min = alterativeHashes[i];
+        }
+    }
+    return min;
+}
+int reduceHash(int hash){
+    int w[4];
+    unhashWorkers(hash, w);
+    int alternateStarts[3][4] = {{w[0], w[1], w[3], w[2]},
+                                 {w[1], w[0], w[2], w[3]},
+                                 {w[1], w[0], w[3], w[2]}};
+    int min = semiReduce(hash);
+    int curr;
+    for(int i=0; i < 3; i++){
+        curr = semiReduce(hashWorkers(alternateStarts[i]));
+        if(curr < min){
+            min = curr;
         }
     }
     return min;
