@@ -1,5 +1,5 @@
 #include <cmath>
-
+#include <unordered_set>
 
 int hashWorkers(const int (&w)[4]){
     int sum = 0;
@@ -14,4 +14,22 @@ void unhashWorkers(int hash, int * w){
         w[i] = hash % 25;
         hash /= 25;
     }
+}
+
+bool validateHash(int hash){
+    int w[4];
+    unhashWorkers(hash, w);
+    std::unordered_set<int> uniqueElements;
+    
+    for (int i = 0; i < 4; i++) {
+        // If the element is already in the set, it is a duplicate
+        if (uniqueElements.find(w[i]) != uniqueElements.end()) {
+            return false;
+        }
+        
+        // Add the element to the set
+        uniqueElements.insert(w[i]);
+    }
+    
+    return true;
 }

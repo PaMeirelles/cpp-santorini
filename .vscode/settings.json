@@ -2,6 +2,7 @@
     "files.associations": {
         "random": "cpp",
         "limits": "cpp",
-        "ostream": "cpp"
+        "ostream": "cpp",
+        "unordered_set": "cpp"
     }
 }

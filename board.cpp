@@ -34,7 +34,6 @@ Board::Board() {
     std::random_device rd;
 
     // Create a random engine
-
     std::mt19937 eng(rd());
 
     // Create a uniform distribution
