@@ -1,3 +1,5 @@
+#include "move.h"
+
 #ifndef BOARD_H
 #define BOARD_H
 
@@ -11,6 +13,7 @@ struct Board {
     void print() const;
     int getWorkerHeight (int workerId);
     int getWorkerPos (int workerId);
+    void makeMove (Move move);
 };
 
 #endif

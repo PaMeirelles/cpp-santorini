@@ -51,3 +51,12 @@ int Board::getWorkerHeight(int workerId){
 int Board::getWorkerPos(int workerId){
     return workers[workerId];
 }
+void Board::makeMove(Move move){
+    for(int i=0; i < 4; i++){
+        if(workers[i] == move.from){
+            workers[i] = move.to;
+            break;
+        }
+    }
+    squares[move.build]++;
+}

@@ -7,14 +7,13 @@
 #include "matchManager.h"
 
 int main() {
-    std::set<int> pos = getPositionsForMatch(nh_c, nh_c, 10);
-    int w[4];
-    for (int element : pos) {
-        unhashWorkers(element, w);
-        for(int x: w){
-            std::cout << x << " ";
-        }
-        std::cout << std::endl;
-    }
-    std::cout << std::endl;
+    int workers[4] = {0, 4, 20, 24};
+    Board b = Board(workers);
+    Move m;
+    m.from = 0;
+    m.to = 1;
+    m.build = 0;
+
+    b.makeMove(m);
+    b.print();
 }
