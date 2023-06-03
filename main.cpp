@@ -4,9 +4,17 @@
 #include "hash.h"
 #include "board.h"
 #include "eval.h"
+#include "matchManager.h"
 
 int main() {
-    Board b = Board();
-    b.print();
-    std::cout << nh_c(b);
+    std::set<int> pos = getPositionsForMatch(nh_c, nh_c, 10);
+    int w[4];
+    for (int element : pos) {
+        unhashWorkers(element, w);
+        for(int x: w){
+            std::cout << x << " ";
+        }
+        std::cout << std::endl;
+    }
+    std::cout << std::endl;
 }
