@@ -9,6 +9,8 @@ struct Board {
     Board();
 
     void print() const;
+    int getWorkerHeight (int workerId);
+    int getWorkerPos (int workerId);
 };
 
 #endif

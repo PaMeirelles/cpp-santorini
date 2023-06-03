@@ -44,3 +44,10 @@ Board::Board() {
         workers[i] = w[i];
     }       
 }
+
+int Board::getWorkerHeight(int workerId){
+    return squares[workers[workerId]];
+}
+int Board::getWorkerPos(int workerId){
+    return workers[workerId];
+}

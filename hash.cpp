@@ -50,7 +50,7 @@ int genHash(){
 
     int hash = dist(eng);
     if(validateHash(hash)){
-        return hash;
+        return reduceHash(hash);
     }
     else{
         return genHash();
