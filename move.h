@@ -1,3 +1,4 @@
+#include<vector>
 #ifndef MOVE_H
 #define MOVE_H
 struct Move{
@@ -6,3 +7,4 @@ struct Move{
     int build;
 };
 #endif
+
