@@ -14,6 +14,7 @@ struct Board {
     int getWorkerHeight (int workerId);
     int getWorkerPos (int workerId);
     void makeMove (Move move);
+    void unmakeMove (Move move);
     std::vector<Move> gen_moves(int player);
     bool isFree(int square);
 

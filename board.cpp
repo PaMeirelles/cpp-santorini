@@ -62,13 +62,14 @@ void Board::makeMove(Move move) {
             if (workers[i] == move.to) {
                 throw std::runtime_error("Invalid move: 'from' and 'to' positions cannot be the same.");
             }
-
-            if (workers[i] == move.build) {
-                throw std::runtime_error("Invalid move: a worker cannot be at the 'build' position.");
-            }
             
             workers[i] = move.to;
             break;
+        }
+        else{
+            if (workers[i] == move.build) {
+                throw std::runtime_error("Invalid move: a worker cannot be at the 'build' position.");
+            }
         }
     }
 
@@ -86,6 +87,7 @@ void Board::makeMove(Move move) {
 
     squares[move.build]++;
 }
+
 std::vector<Move> Board::gen_moves(int player){
     int w[2];
     int currW;
@@ -133,4 +135,40 @@ bool Board::isFree(int square){
         return false;
     }
     return true;
+}
+
+void Board::unmakeMove(Move move) {
+    bool workerFound = false;
+
+    for (int i = 0; i < 4; i++) {
+        if (workers[i] == move.to) {
+            workerFound = true;
+            
+            if (workers[i] == move.from) {
+                throw std::runtime_error("Invalid move: 'from' and 'to' positions cannot be the same.");
+            }
+            
+            workers[i] = move.from;
+            break;
+        }
+        else{
+            if (workers[i] == move.build) {
+                throw std::runtime_error("Invalid move: a worker cannot be at the 'build' position.");
+            }
+        }
+    }
+
+    if (!workerFound) {
+        throw std::runtime_error("Worker not found at the specified position.");
+    }
+
+    if (move.from > 24 || move.to > 24 || move.build > 24) {
+        throw std::runtime_error("Invalid position specified in the move.");
+    }
+
+    if (squares[move.build] == 0) {
+        throw std::runtime_error("Minimum number of squares already built at the specified position.");
+    }
+
+    squares[move.build]--;
 }
