@@ -5,15 +5,12 @@
 #include "board.h"
 #include "eval.h"
 #include "matchManager.h"
+#include "search.h"
 
 int main() {
     int w[4] = {0, 4, 20, 24};
     Board b = Board(w);
     b.print();
-    Move m = Move(0, 1, 7);
-    b.makeMove(m);
-    b.print();
-    b.unmakeMove(m);
-    b.print();
-    return 0;
+    Move m = getBestMove(b, 2, 1, nh_c);
+    m.printMove();
 }
