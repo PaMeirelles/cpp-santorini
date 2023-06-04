@@ -10,7 +10,7 @@ int main() {
     int workers[4] = {0, 4, 20, 24};
     Board b = Board(workers);
     Move m;
-    m.from = 0;
+    m.from = 1;
     m.to = 1;
     m.build = 0;
 
