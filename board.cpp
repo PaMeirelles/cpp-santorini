@@ -1,4 +1,5 @@
 #include "board.h"
+#include "move.h"
 #include "hash.h"
 #include <iostream>
 
@@ -84,4 +85,52 @@ void Board::makeMove(Move move) {
     }
 
     squares[move.build]++;
+}
+std::vector<Move> Board::gen_moves(int player){
+    int w[2];
+    int currW;
+    std::vector<int> neighbors;
+    std::vector<int> toBuild;
+    std::vector<Move> moves;
+    if(player == 1){
+        w[0] = workers[0];
+        w[1] = workers[1];
+    }
+    else{
+        w[0] = workers[2];
+        w[1] = workers[3];
+    }
+    for(int i=0; i < 2; i++){
+        currW = w[i];
+        neighbors = getNeighbors(currW);
+        for(int nb: neighbors){
+            if(!isFree(nb)){
+                continue;
+            }
+            if(squares[nb] == 3){
+                moves.push_back(Move(currW, nb, WIN));
+            }
+            else{
+                toBuild = getNeighbors(nb);
+                for(int b: toBuild){
+                    if(!isFree(b)){
+                        continue;
+                    }
+                    moves.push_back(Move(currW, nb, b));
+                }
+            }
+        }
+    }
+    return moves;
+}
+bool Board::isFree(int square){
+    for(int i=0; i < 4; i++){
+        if(workers[i] == square){
+            return false;
+        }
+    }
+    if(squares[square] == 4){
+        return false;
+    }
+    return true;
 }

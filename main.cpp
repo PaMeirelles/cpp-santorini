@@ -7,13 +7,12 @@
 #include "matchManager.h"
 
 int main() {
-    int workers[4] = {0, 4, 20, 24};
-    Board b = Board(workers);
-    Move m;
-    m.from = 1;
-    m.to = 1;
-    m.build = 0;
+    Board b = Board();
+    std::vector<Move> moves = b.gen_moves(1);
 
-    b.makeMove(m);
     b.print();
+    for(Move move: moves){
+        move.printMove();
+    }
+    return 0;
 }
