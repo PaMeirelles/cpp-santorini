@@ -7,6 +7,7 @@
 #include "move.h"
 #include <chrono>
 #include <iomanip>
+#include <map>
 
 void printClocks(int clockA, int clockB);
 

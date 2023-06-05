@@ -84,8 +84,10 @@ void play(int time, int numMatches, std::string playerA, std::string playerB) {
     std::set<int> positionsA = getPositionsForMatch(playerA, playerB, numMatches);
     std::set<int> positionsB = getPositionsForMatch(playerB, playerA, numMatches);
 
-    int scoreA = 0; // Initialize score for player A
-    int scoreB = 0; // Initialize score for player B
+    std::map<std::string, int> scores;
+    scores[playerA] = 0;
+    scores[playerB] = 0;
+
     int matchesPlayed = 0;
 
     std::cout << "===== MATCHES START =====" << std::endl;
@@ -94,8 +96,8 @@ void play(int time, int numMatches, std::string playerA, std::string playerB) {
         int pos = *positions.begin();
         positions.erase(positions.begin());
         MatchResult lastResult = playMatch(time, pos, engine1, engine2);
-        scoreA += (lastResult.result > 0) ? 1 : 0;
-        scoreB += (lastResult.result > 0) ? 0 : 1;
+        scores[player1] += (lastResult.result > 0) ? 1 : 0;
+        scores[player2] += (lastResult.result > 0) ? 0 : 1;
         registerMatch(pos, player1, player2, time, time, lastResult);
         matchesPlayed++;
         return lastResult;
@@ -110,7 +112,7 @@ void play(int time, int numMatches, std::string playerA, std::string playerB) {
 
         // Print the score and matches played after each match
         std::cout << "Match " << matchesPlayed << " | " << playerA << " vs " << playerB << " | ";
-        std::cout << "Score: " << scoreA << " - " << scoreB << " | ";
+        std::cout << "Score: " << scores[playerA] << " - " << scores[playerB] << " | ";
         std::cout << "Matches played: " << matchesPlayed << "/" << numMatches * 2 << std::endl;
     }
 
