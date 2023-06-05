@@ -1,13 +1,5 @@
-#include "board.h"
-#include "eval.h"
-#include "hash.h"
-#include "matchManager.h"
-#include "search.h"
-#include "timeManagement.h"
-#include <fstream>
-#include <iomanip>
-#include <iostream>
+#include "match.h"
 
 int main() { 
-    play(1000 * 60, 1, "Titan", "Ruler");
+    play(1000 * 60, 12, "Titan", "Ruler");
  }
