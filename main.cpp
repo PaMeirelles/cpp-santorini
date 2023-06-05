@@ -8,4 +8,6 @@
 #include <iomanip>
 #include <iostream>
 
-int main() { std::cout << playMatch(1000 * 60, 680, "Titan", "Ruler"); }
+int main() { 
+    play(1000 * 60, 1, "Titan", "Ruler");
+ }
