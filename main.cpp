@@ -1,5 +1,5 @@
 #include "match.h"
 
 int main() { 
-    play(1000 * 60, 15, "Titan", "Ruler");
+    play(1000 * 60, 50, "Titan", "Ruler");
  }
