@@ -13,12 +13,7 @@ int positionHeight(int a, int b, int c, Board board, std::function<int(int)> p){
 }
 
 int neighborHeightFunc(int pos){
-    int scoreArr[] = {0, 1, 1, 1, 0,
-                      1, 2, 2, 2, 1,
-                      1, 2, 2, 2, 1,
-                      1, 2, 2, 2, 2,
-                      0, 1, 1, 1, 0};
-    return scoreArr[pos];
+    return numNeighbors[pos];
 }
 
 int neighborHeight(int a, int b, int c, Board board){

@@ -13,4 +13,10 @@ int nh_c(Board board);
 
 #define MAX_SCORE 10000
 
+int numNeighbors[] = {3, 5, 5, 5, 3,
+                  5, 9, 9, 9, 5,
+                  5, 9, 9, 9, 5,
+                  5, 9, 9, 9, 5,
+                  3, 5, 5, 5, 3};
+
 #endif /* EVAL_H */
