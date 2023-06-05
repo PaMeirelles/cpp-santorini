@@ -1,10 +1,11 @@
 #include "eval.h"
+#include <iostream>
 
 int numNeighbors[] = {3, 5, 5, 5, 3,
-                  5, 9, 9, 9, 5,
-                  5, 9, 9, 9, 5,
-                  5, 9, 9, 9, 5,
-                  3, 5, 5, 5, 3};
+                      5, 8, 8, 8, 5,
+                      5, 8, 8, 8, 5,
+                      5, 8, 8, 8, 5,
+                      3, 5, 5, 5, 3};
 
 int positionHeight(int a, int b, int c, Board board, std::function<int(int)> p){
     int score = 0;

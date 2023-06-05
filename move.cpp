@@ -45,3 +45,6 @@ Move::Move(int f, int t, int b){
 void Move::printMove() {
         std::cout << "From: " << from << ", To: " << to << ", Build: " << build << std::endl;
     }
+std::string Move::toString(){
+    return "From: " + std::to_string(from) + ", To: " + std::to_string(to) + ", Build: " + std::to_string(build);
+}

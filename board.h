@@ -7,6 +7,7 @@ struct Board {
     int squares[25];
     int workers[4];
 
+    Board(const int (&w)[4], const int (&s)[25]);
     Board(const int (&w)[4]);
     Board();
 
@@ -17,6 +18,7 @@ struct Board {
     void unmakeMove (Move move);
     std::vector<Move> gen_moves(int player);
     bool isFree(int square);
+    int getHeight(int square);
 
 };
 #define WIN -1

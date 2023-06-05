@@ -26,49 +26,67 @@ int negamax(Board b, int depth, int turn, std::function<int(Board)> eval){
     return maxScore;
 }
 
-Move getBestMove(Board b, int turn, std::function<int(Board)> eval, std::function<int(int)> timeManager, int time){ 
+Move getBestMove(Board b, int turn, std::function<int(Board)> eval, std::function<int(int)> timeManager, int time) {
     auto start = std::chrono::high_resolution_clock::now();
     std::chrono::_V2::system_clock::time_point end;
     std::chrono::milliseconds duration;
-    int thinkingTime = timeManager(time);    
+    int thinkingTime = timeManager(time);
 
     int depth = 1;
     bool running = true;
-
     int maxScore;
     Move bestMove = Move(-2, -2, -2);
+    Move gbestMove = Move(-2, -2, -2);
     int currScore;
-
-    while(running){
-        std::vector<Move> moves = b.gen_moves(turn);
-        if(moves.size() == 0){
-            throw std::runtime_error("No moves available");
-        }   
-
+    
+    std::vector<Move> moves = b.gen_moves(turn);
+    if (moves.size() == 0) {
+        throw std::runtime_error("No moves available");
+    }
+    
+    int numMoves = moves.size(); // Store the number of moves
+    
+    while (running) {
         maxScore = -MAX_SCORE;
         bestMove = moves.front();
-        currScore;
 
-        for(Move move: moves){
+        for (Move move : moves) {
             end = std::chrono::high_resolution_clock::now();
             duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-            if(duration.count() > thinkingTime){
+            if (duration.count() > thinkingTime) {
                 running = false;
                 break;
             }
 
-            if(move.build == WIN){
+            if (move.build == WIN) {
                 return move;
             }
             b.makeMove(move);
-            currScore = -negamax(b, depth-1, -turn, eval);
-            if (currScore > maxScore){
+            currScore = -negamax(b, depth - 1, -turn, eval);
+            if (currScore > maxScore) {
                 maxScore = currScore;
                 bestMove = move;
             }
             b.unmakeMove(move);
         }
+        
+        // Print the maximum score at each depth
+        if (VERBOSE) {
+            std::cout << "Depth: " << depth << std::endl;
+            std::cout << "Best move at depth " << depth << ": " << bestMove.toString() << std::endl;
+            std::cout << "Time spent at depth " << depth << ": " << duration.count() << "ms" << std::endl;
+            std::cout << "Maximum score at depth " << depth << ": " << maxScore << std::endl;
+            std::cout << "------------------------------" << std::endl;
+        }
+        
+        depth++;
+    }
+    
+    // Print the number of moves and the final maximum score
+    if (VERBOSE) {
+        std::cout << "Number of moves: " << numMoves << std::endl;
+        std::cout << "Final Maximum Score: " << maxScore << std::endl;
     }
 
-    return bestMove;
+    return gbestMove;
 }

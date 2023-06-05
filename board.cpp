@@ -4,16 +4,23 @@
 #include <iostream>
 
 Board::Board(const int (&w)[4]) {
-    // Fill the squares array with zeros
-    for (int i = 0; i < 25; i++) {
-        squares[i] = 0;
-    }
-  
     // Copy the worker array to the workers array
     for (int i = 0; i < 4; i++) {
         workers[i] = w[i];
     }
 }
+Board::Board(const int (&w)[4], const int (&s)[25]) {
+    // Copy the squares array to the squares member variable
+    for (int i = 0; i < 25; i++) {
+        squares[i] = s[i];
+    }
+
+    // Copy the worker array to the workers member variable
+    for (int i = 0; i < 4; i++) {
+        workers[i] = w[i];
+    }
+}
+
 void Board::print() const {
     std::cout << "Squares:\n";
     for (int i = 0; i < 25; i++) {
@@ -90,7 +97,9 @@ void Board::makeMove(Move move) {
 
 std::vector<Move> Board::gen_moves(int player){
     int w[2];
+    int wId[2];
     int currW;
+    int currH;
     std::vector<int> neighbors;
     std::vector<int> toBuild;
     std::vector<Move> moves;
@@ -100,13 +109,14 @@ std::vector<Move> Board::gen_moves(int player){
     }
     else{
         w[0] = workers[2];
-        w[1] = workers[3];
+        w[1] = workers[3];     
     }
     for(int i=0; i < 2; i++){
         currW = w[i];
         neighbors = getNeighbors(currW);
+        currH = getHeight(currW);
         for(int nb: neighbors){
-            if(!isFree(nb)){
+            if(!isFree(nb) || getHeight(nb) - currH > 1){
                 continue;
             }
             if(squares[nb] == 3){
@@ -136,7 +146,9 @@ bool Board::isFree(int square){
     }
     return true;
 }
-
+int Board::getHeight(int square){
+    return squares[square];
+}
 void Board::unmakeMove(Move move) {
     bool workerFound = false;
 
