@@ -4,10 +4,15 @@
 #include <iostream>
 
 Board::Board(const int (&w)[4]) {
+    // Fill the squares array with zeros
+    for (int i = 0; i < 25; i++) {
+        squares[i] = 0;
+    }
     // Copy the worker array to the workers array
     for (int i = 0; i < 4; i++) {
         workers[i] = w[i];
     }
+    turn = 1;
 }
 Board::Board(const int (&w)[4], const int (&s)[25]) {
     // Copy the squares array to the squares member variable
@@ -19,6 +24,7 @@ Board::Board(const int (&w)[4], const int (&s)[25]) {
     for (int i = 0; i < 4; i++) {
         workers[i] = w[i];
     }
+    turn = 1;
 }
 
 void Board::print() const {
@@ -50,7 +56,8 @@ Board::Board() {
     // Copy the worker array to the workers array
     for (int i = 0; i < 4; i++) {
         workers[i] = w[i];
-    }       
+    }      
+    turn = 1; 
 }
 
 int Board::getWorkerHeight(int workerId){
@@ -93,6 +100,7 @@ void Board::makeMove(Move move) {
     }
 
     squares[move.build]++;
+    turn *= -1;
 }
 
 std::vector<Move> Board::gen_moves(int player){
@@ -181,6 +189,6 @@ void Board::unmakeMove(Move move) {
     if (squares[move.build] == 0) {
         throw std::runtime_error("Minimum number of squares already built at the specified position.");
     }
-
+    turn *= -1;
     squares[move.build]--;
 }

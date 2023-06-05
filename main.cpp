@@ -40,5 +40,5 @@ int main() {
     std::cout << nh_s(b1) << std::endl;
     std::cout << nh_s(b2) << std::endl;
 
-    getBestMove(b, 1, nh_s, et_s, 1000 * 15 * 10);
+    getBestMove(b, nh_s, et_s, 1000 * 15 * 10);
 }

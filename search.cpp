@@ -2,11 +2,11 @@
 #include "eval.h"
 #include <chrono>
 
-int negamax(Board b, int depth, int turn, std::function<int(Board)> eval){
+int negamax(Board b, int depth, std::function<int(Board)> eval){
     if(depth == 0){
-        return eval(b) * turn;
+        return eval(b) * b.turn;
     }
-    std::vector<Move> moves = b.gen_moves(turn);
+    std::vector<Move> moves = b.gen_moves(b.turn);
     if(moves.size() == 0){
         return -MAX_SCORE - depth;
     }   
@@ -17,7 +17,7 @@ int negamax(Board b, int depth, int turn, std::function<int(Board)> eval){
             return MAX_SCORE + depth - 1;
         }
         b.makeMove(move);
-        currScore = -negamax(b, depth-1, -turn, eval);
+        currScore = -negamax(b, depth-1, eval);
         if (currScore > maxScore){
             maxScore = currScore;
         }
@@ -26,7 +26,7 @@ int negamax(Board b, int depth, int turn, std::function<int(Board)> eval){
     return maxScore;
 }
 
-Move getBestMove(Board b, int turn, std::function<int(Board)> eval, std::function<int(int)> timeManager, int time) {
+Move getBestMove(Board b, std::function<int(Board)> eval, std::function<int(int)> timeManager, int time) {
     auto start = std::chrono::high_resolution_clock::now();
     std::chrono::_V2::system_clock::time_point end;
     std::chrono::milliseconds duration;
@@ -39,7 +39,7 @@ Move getBestMove(Board b, int turn, std::function<int(Board)> eval, std::functio
     Move gbestMove = Move(-2, -2, -2);
     int currScore;
     
-    std::vector<Move> moves = b.gen_moves(turn);
+    std::vector<Move> moves = b.gen_moves(b.turn);
     if (moves.size() == 0) {
         throw std::runtime_error("No moves available");
     }
@@ -62,7 +62,7 @@ Move getBestMove(Board b, int turn, std::function<int(Board)> eval, std::functio
                 return move;
             }
             b.makeMove(move);
-            currScore = -negamax(b, depth - 1, -turn, eval);
+            currScore = -negamax(b, depth - 1, eval);
             if (currScore > maxScore) {
                 maxScore = currScore;
                 bestMove = move;
