@@ -26,7 +26,7 @@ int negamax(Board b, int depth, std::function<int(Board)> eval){
     return maxScore;
 }
 
-Move getBestMove(Board b, std::function<int(Board)> eval, std::function<int(int)> timeManager, int time) {
+Move getBestMove(Board b, std::function<int(Board, int, std::function<int(Board)>)> search, std::function<int(Board)> eval, std::function<int(int)> timeManager, int time) {
     auto start = std::chrono::high_resolution_clock::now();
     std::chrono::_V2::system_clock::time_point end;
     std::chrono::milliseconds duration;
@@ -62,7 +62,7 @@ Move getBestMove(Board b, std::function<int(Board)> eval, std::function<int(int)
                 return move;
             }
             b.makeMove(move);
-            currScore = -negamax(b, depth - 1, eval);
+            currScore = -search(b, depth - 1, eval);
             if (currScore > maxScore) {
                 maxScore = currScore;
                 bestMove = move;
