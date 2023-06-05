@@ -84,48 +84,34 @@ void play(int time, int numMatches, std::string playerA, std::string playerB) {
     std::set<int> positionsA = getPositionsForMatch(playerA, playerB, numMatches);
     std::set<int> positionsB = getPositionsForMatch(playerB, playerA, numMatches);
 
-    int pos;
-    MatchResult lastResult;
     int scoreA = 0; // Initialize score for player A
     int scoreB = 0; // Initialize score for player B
     int matchesPlayed = 0;
 
     std::cout << "===== MATCHES START =====" << std::endl;
 
-    while (positionsA.size() > 0) {
-        pos = *positionsA.begin();
-        positionsA.erase(positionsA.begin());
-        lastResult = playMatch(time, pos, engineA, engineB);
-        if (lastResult.result > 0) {
-            scoreA++;
-        } else {
-            scoreB++;
-        }
-        registerMatch(pos, playerA, playerB, time, time, lastResult);
+    auto playMatchAndUpdateScores = [&](std::set<int>& positions, EngineInfo& engine1, EngineInfo& engine2, const std::string& player1, const std::string& player2) {
+        int pos = *positions.begin();
+        positions.erase(positions.begin());
+        MatchResult lastResult = playMatch(time, pos, engine1, engine2);
+        scoreA += (lastResult.result > 0) ? 1 : 0;
+        scoreB += (lastResult.result > 0) ? 0 : 1;
+        registerMatch(pos, player1, player2, time, time, lastResult);
         matchesPlayed++;
+        return lastResult;
+    };
+
+    for (int i = 0; i < numMatches; i++) {
+        // Player A vs. Player B
+        MatchResult resultA = playMatchAndUpdateScores(positionsA, engineA, engineB, playerA, playerB);
+
+        // Player B vs. Player A
+        MatchResult resultB = playMatchAndUpdateScores(positionsB, engineB, engineA, playerB, playerA);
 
         // Print the score and matches played after each match
         std::cout << "Match " << matchesPlayed << " | " << playerA << " vs " << playerB << " | ";
         std::cout << "Score: " << scoreA << " - " << scoreB << " | ";
-        std::cout << "Matches played: " << matchesPlayed << "/" << numMatches*2 << std::endl;
-    }
-
-    while (positionsB.size() > 0) {
-        pos = *positionsB.begin();
-        positionsB.erase(positionsB.begin());
-        lastResult = playMatch(time, pos, engineB, engineA);
-        if (lastResult.result > 0) {
-            scoreB++;
-        } else {
-            scoreA++;
-        }
-        registerMatch(pos, playerB, playerA, time, time, lastResult);
-        matchesPlayed++;
-
-       // Print the score and matches played after each match
-        std::cout << "Match " << matchesPlayed << " | " << playerA << " vs " << playerB << " | ";
-        std::cout << "Score: " << scoreA << " - " << scoreB << " | ";
-        std::cout << "Matches played: " << matchesPlayed << "/" << numMatches*2 << std::endl;
+        std::cout << "Matches played: " << matchesPlayed << "/" << numMatches * 2 << std::endl;
     }
 
     std::cout << "===== MATCHES END =====" << std::endl;
