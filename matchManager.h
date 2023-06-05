@@ -22,8 +22,8 @@ struct EngineInfo {
   std::function<int(int)> timeManager;
 };
 
-enum Engines { Titan, Ruler };
-void playMatch(int startingPos, int time, std::string playerA,
-               std::string playerB);
+int playMatch(int time, int startingPos, std::string playerA,
+              std::string playerB);
+EngineInfo assemblyEngine(std::string name);
 
 #endif /* MATCH_MANAGER_H */

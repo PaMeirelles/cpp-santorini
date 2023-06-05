@@ -2,6 +2,8 @@
 #include "eval.h"
 #include "search.h"
 #include "timeManagement.h"
+#include <chrono>
+#include <iomanip>
 
 int evalPosition(std::function<int(Board)> eval, int hash) {
   int w[4];
@@ -78,5 +80,72 @@ EngineInfo assemblyEngine(std::string name) {
     eInfo.timeManager = et_s;
   } else {
     throw std::runtime_error("Invalid engine");
+  }
+  return eInfo;
+}
+
+void printClocks(int clockA, int clockB){
+    // Format clockA and clockB as minutes:seconds:milliseconds
+  int clockASeconds = clockA / 1000;           // Convert milliseconds to seconds
+  int clockAMinutes = clockASeconds / 60;      // Convert seconds to minutes
+  int clockAMilliseconds = clockA % 1000;      // Extract milliseconds
+
+  int clockBSeconds = clockB / 1000;           // Convert milliseconds to seconds
+  int clockBMinutes = clockBSeconds / 60;      // Convert seconds to minutes
+  int clockBMilliseconds = clockB % 1000;      // Extract milliseconds
+
+  // Print clockA and clockB in minutes:seconds:milliseconds format
+  std::cout << "clockA: " << std::setfill('0') << std::setw(2) << clockAMinutes << ":"
+            << std::setfill('0') << std::setw(2) << clockASeconds % 60 << ":"
+            << std::setfill('0') << std::setw(3) << clockAMilliseconds << "   ";
+  std::cout << "clockB: " << std::setfill('0') << std::setw(2) << clockBMinutes << ":"
+            << std::setfill('0') << std::setw(2) << clockBSeconds % 60 << ":"
+            << std::setfill('0') << std::setw(3) << clockBMilliseconds << std::endl;
+
+}
+
+int playMatch(int time, int startingPos, std::string playerA,
+              std::string playerB) {
+  EngineInfo engineA = assemblyEngine(playerA);
+  EngineInfo engineB = assemblyEngine(playerB);
+
+  int clockA = time;
+  int clockB = time;
+
+  int result = 0;
+
+  std::chrono::_V2::system_clock::time_point start;
+  std::chrono::_V2::system_clock::time_point end;
+  std::chrono::milliseconds duration;
+
+  Board b = Board(startingPos);
+  Move move = Move(-2, -2, -2);
+
+  while (true) {
+    printClocks(clockA, clockB);
+    b.print();
+    start = std::chrono::high_resolution_clock::now();
+    if (b.turn == 1) {
+      move = getBestMove(b, engineA.search, engineA.eval, engineA.timeManager,
+                         clockA);
+    } else {
+      move = getBestMove(b, engineB.search, engineB.eval, engineB.timeManager,
+                         clockB);
+    }
+    end = std::chrono::high_resolution_clock::now();
+    duration =
+        std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+    if (b.turn == 1) {
+      clockA -= duration.count();
+    } else {
+      clockB -= duration.count();
+    }
+    if (move.build == WIN) {
+      return b.turn;
+    }
+    b.makeMove(move);
+    if (b.gen_moves(b.turn).size() == 0) {
+      return b.turn;
+    }
   }
 }

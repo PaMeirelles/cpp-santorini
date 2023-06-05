@@ -8,6 +8,7 @@ struct Board {
     int workers[4];
     int turn;
 
+    Board(int);
     Board(const int (&w)[4], const int (&s)[25]);
     Board(const int (&w)[4]);
     Board();
