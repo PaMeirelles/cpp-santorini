@@ -99,6 +99,12 @@ def match_lenght():
     # List all files in the folder
     files = os.listdir(folder_path)
 
+    # Initialize variables for maximum and minimum line counts
+    max_lines = float('-inf')
+    min_lines = float('inf')
+    max_game = ""
+    min_game = ""
+
     # Initialize a list to store the number of lines per file
     lines_per_file = []
 
@@ -111,6 +117,14 @@ def match_lenght():
             num_lines = sum(1 for line in file)
             lines_per_file.append(num_lines)
 
+            # Update maximum and minimum line counts
+            if num_lines > max_lines:
+                max_lines = num_lines
+                max_game = file_name
+            if num_lines < min_lines:
+                min_lines = num_lines
+                min_game = file_name
+
     # Calculate percentiles
     percentile_values = [0, 25, 50, 75, 90, 95, 99, 100]
     percentiles = np.percentile(lines_per_file, percentile_values)
@@ -118,7 +132,11 @@ def match_lenght():
     # Print percentiles
     print("Percentiles:")
     for i in range(len(percentile_values)):
-        print("{}th percentile: {}".format(percentile_values[i], percentiles[i]))
+        print("{}th percentile: {}".format(percentile_values[i], round(percentiles[i], 2)))
+
+    # Print game with most and least lines
+    print("Game with the most lines: {} ({} lines)".format(max_game, max_lines))
+    print("Game with the least lines: {} ({} lines)".format(min_game, min_lines))
 
     # Plot the histogram
     plt.hist(lines_per_file, bins=10)

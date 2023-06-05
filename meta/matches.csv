@@ -55,3 +55,9 @@ id,starting_pos,player_a,player_b,time_a,time_b,result
 53,27584,Ruler,Titan,60000,60000,-1
 54,41434,Ruler,Titan,60000,60000,1
 55,41460,Ruler,Titan,60000,60000,2
+56,35198,Titan,Ruler,60000,60000,1
+57,35198,Ruler,Titan,60000,60000,-1
+58,35261,Titan,Ruler,60000,60000,1
+59,35261,Ruler,Titan,60000,60000,-1
+60,35763,Titan,Ruler,60000,60000,1
+61,35763,Ruler,Titan,60000,60000,1
