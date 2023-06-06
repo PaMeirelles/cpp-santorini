@@ -69,9 +69,9 @@ def match_lenght():
 
     # Plot the histogram
     plt.hist(lines_per_file, bins=10)
-    plt.xlabel('Number of Lines')
+    plt.xlabel('Number of moves')
     plt.ylabel('Frequency')
-    plt.title('Number of Lines per File')
+    plt.title('Number of moves per game')
     plt.show()
 
 def generate_game_report():
