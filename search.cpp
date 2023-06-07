@@ -2,29 +2,68 @@
 #include "eval.h"
 #include <chrono>
 
-int negamax(Board b, int depth, std::function<int(Board)> eval) {
-  if (depth == 0) {
-    return eval(b) * b.turn;
-  }
-  std::vector<Move> moves = b.gen_moves(b.turn);
-  if (moves.size() == 0) {
-    return -MAX_SCORE - depth;
-  }
-  int maxScore = -MAX_SCORE;
-  int currScore;
-  for (Move move : moves) {
-    if (move.build == WIN) {
-      return MAX_SCORE + depth - 1;
-    }
-    b.makeMove(move);
-    currScore = -negamax(b, depth - 1, eval);
-    if (currScore > maxScore) {
-      maxScore = currScore;
-    }
-    b.unmakeMove(move);
-  }
-  return maxScore;
+AlphaBetaInfo::AlphaBetaInfo(int alpha2, int beta2){
+    alpha = alpha2;
+    beta = beta2;
 }
+
+int negamax(Board b, int depth, std::function<int(Board)> eval) {
+    if (depth == 0) {
+      return eval(b) * b.turn;
+    }
+    std::vector<Move> moves = b.gen_moves(b.turn);
+    if (moves.size() == 0) {
+      return -MAX_SCORE - depth;
+    }
+    int maxScore = -MAX_SCORE;
+    int currScore;
+    for (Move move : moves) {
+      if (move.build == WIN) {
+        return MAX_SCORE + depth - 1;
+      }
+      b.makeMove(move);
+      currScore = -negamax(b, depth - 1, eval);
+      if (currScore > maxScore) {
+        maxScore = currScore;
+      }
+      b.unmakeMove(move);
+    }
+    return maxScore;
+  }
+
+int alphabetaRecur(Board b, int depth, std::function<int(Board)> eval, AlphaBetaInfo alphaBeta) {
+    if (depth == 0) {
+      return eval(b) * b.turn;
+    }
+    std::vector<Move> moves = b.gen_moves(b.turn);
+    if (moves.size() == 0) {
+      return -MAX_SCORE - depth;
+    }
+    int maxScore = -MAX_SCORE;
+    int currScore;
+    for (Move move : moves) {
+        if (move.build == WIN) {
+          return MAX_SCORE + depth - 1;
+        }
+        b.makeMove(move);
+        currScore = -alphabetaRecur(b, depth - 1, eval, AlphaBetaInfo(-alphaBeta.beta, -alphaBeta.alpha));
+        if (currScore > maxScore) {
+          maxScore = currScore;
+        }
+        b.unmakeMove(move);
+        if(maxScore > alphaBeta.alpha){
+          alphaBeta.alpha = maxScore;
+        }
+        if(alphaBeta.alpha >= alphaBeta.beta){
+          break;
+        }
+    }
+    return maxScore;
+  }
+int alphabeta(Board b, int depth, std::function<int(Board)> eval){  
+    AlphaBetaInfo alphaBeta = AlphaBetaInfo(-MAX_SCORE, MAX_SCORE);
+    return alphabetaRecur(b, depth, eval, alphaBeta);
+    }
 
 Move getBestMove(
     Board b, std::function<int(Board, int, std::function<int(Board)>)> search,

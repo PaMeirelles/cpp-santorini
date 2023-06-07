@@ -113,6 +113,16 @@ EngineInfo assemblyEngine(std::string name) {
     eInfo.eval = nh_a;
     eInfo.timeManager = et_s;
   }
+   else if(name == "Ascendant"){
+    eInfo.search = alphabeta;
+    eInfo.eval = nh_s;
+    eInfo.timeManager = et_s;
+  }
+   else if(name == "Ranger"){
+    eInfo.search = alphabeta;
+    eInfo.eval = nh_s;
+    eInfo.timeManager = et_p;
+  }  
    else {
     throw std::runtime_error("Invalid engine");
   }
