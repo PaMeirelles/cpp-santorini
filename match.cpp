@@ -106,7 +106,11 @@ void play(int time, int numMatches, std::string playerA, std::string playerB) {
     for (int i = 0; i < numMatches; i++) {
         // Player A vs. Player B
         MatchResult resultA = playMatchAndUpdateScores(positionsA, engineA, engineB, playerA, playerB);
-
+        
+        // Print the score and matches played after each match
+        std::cout << "Match " << matchesPlayed << " | " << playerA << " vs " << playerB << " | ";
+        std::cout << "Score: " << scores[playerA] << " - " << scores[playerB] << " | ";
+        std::cout << "Matches played: " << matchesPlayed << "/" << numMatches * 2 << std::endl;
         // Player B vs. Player A
         MatchResult resultB = playMatchAndUpdateScores(positionsB, engineB, engineA, playerB, playerA);
 
