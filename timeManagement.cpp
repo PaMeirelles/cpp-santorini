@@ -6,4 +6,6 @@ int et_s(int remainingTime){
     return estimatedTurnsLeft(remainingTime, 15);
 }
 
-int et
+int et_p(int remainingTime){
+    return estimatedTurnsLeft(remainingTime, 8);
+}
