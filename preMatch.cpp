@@ -108,7 +108,12 @@ EngineInfo assemblyEngine(std::string name) {
     eInfo.search = negamax;
     eInfo.eval = nh_c;
     eInfo.timeManager = et_s;
-  } else {
+  } else if(name == "Fisher"){
+    eInfo.search = negamax;
+    eInfo.eval = nh_a;
+    eInfo.timeManager = et_s;
+  }
+   else {
     throw std::runtime_error("Invalid engine");
   }
   return eInfo;

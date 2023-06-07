@@ -34,3 +34,7 @@ int nh_s(Board board){
 int nh_c(Board board){
     return neighborHeight(4, 3, 3, board);
 }
+
+int nh_a(Board board){
+    return neighborHeight(7, 4, 1, board);
+}
