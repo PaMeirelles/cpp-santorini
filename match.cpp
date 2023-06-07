@@ -33,9 +33,11 @@ MatchResult playMatch(int time, int startingPos, EngineInfo engineA, EngineInfo 
     Move move = Move(-2, -2, -2);
 
     while (true) {
-        if (DETAILED) {
+        if (CLOCK) {
             printClocks(clockA, clockB);
-            b.print();
+        }
+        if (BOARD){
+           b.print();
         }
         start = std::chrono::high_resolution_clock::now();
         if (b.turn == 1) {
@@ -106,7 +108,7 @@ void play(int time, int numMatches, std::string playerA, std::string playerB) {
     for (int i = 0; i < numMatches; i++) {
         // Player A vs. Player B
         MatchResult resultA = playMatchAndUpdateScores(positionsA, engineA, engineB, playerA, playerB);
-        
+
         // Print the score and matches played after each match
         std::cout << "Match " << matchesPlayed << " | " << playerA << " vs " << playerB << " | ";
         std::cout << "Score: " << scores[playerA] << " - " << scores[playerB] << " | ";

@@ -9,3 +9,7 @@ int et_s(int remainingTime){
 int et_p(int remainingTime){
     return estimatedTurnsLeft(remainingTime, 8);
 }
+
+int et_f(int remainingTime){
+    return estimatedTurnsLeft(remainingTime, 25);
+}

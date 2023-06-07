@@ -123,6 +123,11 @@ EngineInfo assemblyEngine(std::string name) {
     eInfo.eval = nh_s;
     eInfo.timeManager = et_p;
   }  
+   else if(name == "Aegis"){
+    eInfo.search = alphabeta;
+    eInfo.eval = nh_s;
+    eInfo.timeManager = et_f;
+  }  
    else {
     throw std::runtime_error("Invalid engine");
   }
