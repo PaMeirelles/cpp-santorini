@@ -68,7 +68,7 @@ def match_lenght():
     print("Game with the least lines: {} ({} lines)".format(min_game, min_lines))
 
     # Plot the histogram
-    plt.hist(lines_per_file, bins=10)
+    plt.hist(lines_per_file, bins=66)
     plt.xlabel('Number of moves')
     plt.ylabel('Frequency')
     plt.title('Number of moves per game')
