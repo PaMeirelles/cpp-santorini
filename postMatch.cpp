@@ -66,7 +66,7 @@ void saveMoves(const std::vector<Move>& moves, int id) {
     std::cout << "Moves written to file: " << filename << std::endl;
 }
 void registerMatch(int startingPos, std::string playerA, std::string playerB, int timeA, int timeB, MatchResult result){
-   std::string filename = "meta/matches.csv";
+   std::string filename = "matches.csv";
     int id = findLowestUnusedID();
     // Example data to append
     std::string idS = std::to_string(id);

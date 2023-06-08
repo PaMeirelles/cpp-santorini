@@ -12,7 +12,7 @@ std::map<std::string, std::function<int(Board, int, std::function<int(Board)>)>>
 std::vector<int> getRandomStartingPos(int n) {
 
     std::vector<Record> records;
-    std::ifstream csvFile("meta/matches.csv");
+    std::ifstream csvFile("matches.csv");
     if (!csvFile) {
         std::cout << "Error opening the CSV file." << std::endl;
         return {};

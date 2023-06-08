@@ -13,7 +13,7 @@ std::vector<int> getValidPositions(const std::string& playerA, const std::string
 
   if (inputFile.is_open()) {
     std::unordered_set<int> playedPositions;
-    std::ifstream csvFile("meta/matches.csv");
+    std::ifstream csvFile("matches.csv");
     if (csvFile.is_open()) {
       std::string csvLine;
       // Skip the first line (header)

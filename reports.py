@@ -9,7 +9,7 @@ def calculate_white_wr():
     total_count = 0
     positive_count = 0
 
-    with open("meta/matches.csv", 'r') as file:
+    with open("matches.csv", 'r') as file:
         reader = csv.DictReader(file)
         for row in reader:
             result = int(row['result'])
@@ -75,7 +75,7 @@ def match_lenght():
     plt.show()
 
 def generate_game_report():
-    csv_file = "meta/matches.csv"
+    csv_file = "matches.csv"
     # Define counters for each player and result type
     players = {}
     overall_stats = {"ascension": 0, "suffocation": 0, "timeout": 0}

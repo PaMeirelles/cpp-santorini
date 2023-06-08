@@ -12,7 +12,7 @@ def elo_diff(e):
 
 
 def fill_data(time):
-    df = pd.read_csv("meta/matches.csv")
+    df = pd.read_csv("matches.csv")
     elos = pd.read_csv("elos.csv")
     players = elos["player"]
     data = {p1: {p2: {"wins": 0, "losses": 0, "matches": 0} for p2 in players} for p1 in players}
