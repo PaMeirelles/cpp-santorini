@@ -16,45 +16,44 @@ void appendToCSV(const std::string& filename, const std::string& row) {
     // Close the file
     file.close();
 }
-int readCounter() {
-    // Open the file
-    std::ifstream file("meta/counter");
-
-    // Check if the file was opened successfully
+int findLowestUnusedID() {
+    auto fileName = "matches.csv";
+    std::ifstream file(fileName);
     if (!file.is_open()) {
-        std::cout << "Failed to open the file." << std::endl;
-        return 0;  // or any other default value you prefer
+        std::cerr << "Error opening file: " << fileName << std::endl;
+        return -1;
     }
 
-    // Read the integer value from the file
-    int number;
-    file >> number;
+    std::string line;
+    std::getline(file, line);  // Read the header line and discard it
 
-    // Close the file
-    file.close();
+    std::vector<int> usedIDs;
 
-    // Return the read integer value
-    return number;
-};
-void updateCounter() {
-    int prevCounter = readCounter();
-    // Open the file in input/output mode
-    std::fstream file("meta/counter", std::ios::in | std::ios::out);
-
-    // Check if the file was opened successfully
-    if (!file.is_open()) {
-        std::cout << "Failed to open the file." << std::endl;
-        return;
+    while (std::getline(file, line)) {
+        std::istringstream iss(line);
+        std::string idStr;
+        std::getline(iss, idStr, ',');
+        int id = std::stoi(idStr);
+        usedIDs.push_back(id);
     }
 
-    // Write the new integer value to the file
-    file << prevCounter+1;
-
-    // Close the file
     file.close();
+
+    // Sort the used IDs in ascending order
+    std::sort(usedIDs.begin(), usedIDs.end());
+
+    // Find the lowest unused ID
+    for (int i = 0; i < usedIDs.size(); i++) {
+        if (usedIDs[i] != i) {
+            return i;
+        }
+    }
+
+    return usedIDs.size();
 }
-void saveMoves(const std::vector<Move>& moves) {
-    const std::string& filename = "games/"+std::to_string(readCounter());
+
+void saveMoves(const std::vector<Move>& moves, int id) {
+    const std::string& filename = "games/"+std::to_string(id);
     std::ofstream file(filename);
 
     if (!file.is_open()) {
@@ -71,9 +70,9 @@ void saveMoves(const std::vector<Move>& moves) {
 }
 void registerMatch(int startingPos, std::string playerA, std::string playerB, int timeA, int timeB, MatchResult result){
    std::string filename = "meta/matches.csv";
-
+    int id = findLowestUnusedID();
     // Example data to append
-    std::string idS = std::to_string(readCounter());
+    std::string idS = std::to_string(id);
     std::string startingPosS = std::to_string(startingPos);
     std::string timeAS = std::to_string(timeA);
     std::string timeBS = std::to_string(timeB);
@@ -87,6 +86,5 @@ void registerMatch(int startingPos, std::string playerA, std::string playerB, in
 
     // Append the row to the CSV file
     appendToCSV(filename, row);
-    saveMoves(result.moves);
-    updateCounter();
+    saveMoves(result.moves, id);
 }

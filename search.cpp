@@ -65,6 +65,52 @@ int alphabeta(Board b, int depth, std::function<int(Board)> eval){
     return alphabetaRecur(b, depth, eval, alphaBeta);
     }
 
+
+int alphabetaRecurWithMo(Board b, int depth, std::function<int(Board)> eval, AlphaBetaInfo alphaBeta, std::function<bool(const Move& a, const Move& b)> compareMoves) {
+    if (depth == 0) {
+      return eval(b) * b.turn;
+    }
+    std::vector<Move> moves = b.gen_moves(b.turn);
+    if (moves.size() == 0) {
+      return -MAX_SCORE - depth;
+    }
+    if(depth > 2){
+      std::sort(moves.begin(), moves.end(), compareMoves);
+    }
+    int maxScore = -MAX_SCORE;
+    int currScore;
+    for (Move move : moves) {
+        if (move.build == WIN) {
+          return MAX_SCORE + depth - 1;
+        }
+        b.makeMove(move);
+        currScore = -alphabetaRecur(b, depth - 1, eval, AlphaBetaInfo(-alphaBeta.beta, -alphaBeta.alpha));
+        if (currScore > maxScore) {
+          maxScore = currScore;
+        }
+        b.unmakeMove(move);
+        if(maxScore > alphaBeta.alpha){
+          alphaBeta.alpha = maxScore;
+        }
+        if(alphaBeta.alpha >= alphaBeta.beta){
+          break;
+        }
+    }
+    return maxScore;
+  }
+
+bool compareMoves(const Move& a, const Move& b) {
+    int aDiff = a.toHeight - a.fromHeight;
+    int bDiff = b.toHeight - b.fromHeight;
+    return aDiff > bDiff;
+}
+
+
+int alphabetaWitClimbhMo(Board b, int depth, std::function<int(Board)> eval){
+    AlphaBetaInfo alphaBeta = AlphaBetaInfo(-MAX_SCORE, MAX_SCORE);
+    return alphabetaRecurWithMo(b, depth, eval, alphaBeta, compareMoves);
+  }
+
 Move getBestMove(
     Board b, std::function<int(Board, int, std::function<int(Board)>)> search,
     std::function<int(Board)> eval, std::function<int(int)> timeManager,

@@ -3,7 +3,9 @@
 std::map<std::string, std::function<int(Board, int, std::function<int(Board)>)>> getEngineMap(){
     return std::map<std::string, std::function<int(Board, int, std::function<int(Board)>)>> 
     {{"negamax", negamax},
-     {"alphabeta", alphabeta}};
+     {"alphabeta", alphabeta},
+     {"climb mo v5", alphabetaWitClimbhMo}
+     };
 
 
 }

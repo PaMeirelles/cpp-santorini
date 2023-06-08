@@ -8,8 +8,11 @@ struct Move{
     int from;
     int to;
     int build;
+    int fromHeight;
+    int toHeight;
 
     Move(int from, int to, int build);
+    Move(int from, int to, int build, int fromHeight, int toHeight);
 
     void printMove();
     std::string toString();

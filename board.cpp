@@ -135,19 +135,22 @@ std::vector<Move> Board::gen_moves(int player) {
     currW = w[i];
     neighbors = getNeighbors(currW);
     currH = getHeight(currW);
+    int neighborH;
     for (int nb : neighbors) {
+      neighborH = getHeight(nb);
+      bool isClimb = neighborH > currH;
       if (!isFree(nb) || getHeight(nb) - currH > 1) {
         continue;
       }
       if (squares[nb] == 3) {
-        moves.push_back(Move(currW, nb, WIN));
+        moves.push_back(Move(currW, nb, WIN, isClimb, neighborH));
       } else {
         toBuild = getNeighbors(nb);
         for (int b : toBuild) {
           if (!isFree(b)) {
             continue;
           }
-          moves.push_back(Move(currW, nb, b));
+          moves.push_back(Move(currW, nb, b, isClimb, neighborH));
         }
       }
     }

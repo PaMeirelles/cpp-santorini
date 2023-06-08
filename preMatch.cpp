@@ -6,6 +6,7 @@ int evalPosition(std::function<int(Board)> eval, int hash) {
   Board board = Board(w);
   return eval(board);
 }
+
 std::vector<int> getValidPositions(const std::string& playerA, const std::string& playerB) {
   std::ifstream inputFile("valid_hashes.txt");
   std::vector<int> validPositions;
@@ -127,6 +128,11 @@ EngineInfo assemblyEngine(std::string name) {
     eInfo.search = alphabeta;
     eInfo.eval = nh_s;
     eInfo.timeManager = et_f;
+  }  
+    else if(name == "Whisper"){
+    eInfo.search = alphabetaWitClimbhMo;
+    eInfo.eval = nh_s;
+    eInfo.timeManager = et_s;
   }  
    else {
     throw std::runtime_error("Invalid engine");
