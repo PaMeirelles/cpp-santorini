@@ -38,7 +38,7 @@ int findLowestUnusedID() {
     }
 
     file.close();
-
+    std::sort(usedIDs.begin(), usedIDs.end());
     // Find the lowest unused ID
     for (int i = 0; i < usedIDs.size(); i++) {
         if (usedIDs[i] != i) {

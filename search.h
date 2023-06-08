@@ -11,6 +11,12 @@ struct AlphaBetaInfo{
 
     AlphaBetaInfo(int alpha, int beta);
 };
+
+struct SearchResult{
+    Move move;
+    int score;
+};
+
 int alphabetaWitClimbhMo(Board b, int depth, std::function<int(Board)> eval);
 int alphabeta(Board b, int depth, std::function<int(Board)> eval);
 int negamax(Board b, int depth, std::function<int(Board)> eval);
