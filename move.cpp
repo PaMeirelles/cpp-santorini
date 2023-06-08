@@ -42,6 +42,13 @@ Move::Move(int f, int t, int b){
     build = b;
 }
 
+Move::Move(int f, int t, int b, int fh, int th){
+    from = f;
+    to = t;
+    build = b;
+    fromHeight = fh;
+    toHeight = th;
+}
 void Move::printMove() {
         std::cout << "From: " << from << ", To: " << to << ", Build: " << build << std::endl;
     }
