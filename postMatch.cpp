@@ -11,7 +11,7 @@ void appendToCSV(const std::string& filename, const std::string& row) {
     }
 
     // Append the row to the CSV file
-    file << row << std::endl;
+    file << std::endl << row;
 
     // Close the file
     file.close();

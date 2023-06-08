@@ -31,7 +31,6 @@ MatchResult playMatch(int time, int startingPos, EngineInfo engineA, EngineInfo 
 
     Board b = Board(startingPos);
     Move move = Move(-2, -2, -2);
-
     while (true) {
         if (CLOCK) {
             printClocks(clockA, clockB);

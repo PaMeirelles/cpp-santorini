@@ -1,7 +1,7 @@
 #include "benchmark.h"
 
-std::map<std::string, std::function<int(Board, int, std::function<int(Board)>)>> getEngineMap(){
-    return std::map<std::string, std::function<int(Board, int, std::function<int(Board)>)>> 
+std::map<std::string, std::function<SearchResult(Board, int, std::function<int(Board)>, int)>> getEngineMap(){
+    return std::map<std::string, std::function<SearchResult(Board, int, std::function<int(Board)>, int)>> 
     {{"negamax", negamax},
      {"alphabeta", alphabeta},
      {"climb mo v5", alphabetaWitClimbhMo}
@@ -55,17 +55,17 @@ std::vector<int> getRandomStartingPos(int n) {
     return startingPos;
 }
 
-std::vector<int> runTest(std::vector<int> positions, std::string search, int depth) {
-    std::vector<int> moves;  // Vector to store the moves
-    std::map<std::string, std::function<int(Board, int, std::function<int(Board)>)>> engineMap = getEngineMap();
+std::vector<Move> runTest(std::vector<int> positions, std::string search, int depth) {
+    std::vector<Move> moves;  // Vector to store the moves
+    auto engineMap = getEngineMap();
     Board b;
-    std::function<int(Board, int, std::function<int(Board)>)> searchFunc = engineMap[search];
+    auto searchFunc = engineMap[search];
     std::chrono::system_clock::time_point start = std::chrono::high_resolution_clock::now();
     for (int pos : positions) {
         b = Board(pos);
-        auto move = searchFunc(b, depth, nh_s);
+        auto s = searchFunc(b, depth, nh_s, 1000 * 60 * 60);
         std::cout << "Completed test for " << search << " on depth " << depth << std::endl;
-        moves.push_back(move);  // Add the move to the vector
+        moves.push_back(s.move);  // Add the move to the vector
     }
     std::chrono::system_clock::time_point end = std::chrono::high_resolution_clock::now();
     std::chrono::milliseconds duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
@@ -79,8 +79,8 @@ std::vector<int> runTest(std::vector<int> positions, std::string search, int dep
 
 void twinTest(std::string search1, std::string search2, int n, int depth) {
     auto positions = getRandomStartingPos(n);
-    std::vector<int> moves1 = runTest(positions, search1, depth);
-    std::vector<int> moves2 = runTest(positions, search2, depth);
+    std::vector<Move> moves1 = runTest(positions, search1, depth);
+    std::vector<Move> moves2 = runTest(positions, search2, depth);
 
     // Compare move vectors
     if (moves1.size() != moves2.size()) {
@@ -90,7 +90,10 @@ void twinTest(std::string search1, std::string search2, int n, int depth) {
 
     bool equal = true;
     for (size_t i = 0; i < moves1.size(); i++) {
-        if (moves1[i] != moves2[i]) {
+        auto m1 = moves1[i];
+        auto m2 = moves2[i];
+
+        if (m1.from != m2.from || m1.to != m2.to || m1.build != m2.build) {
             equal = false;
             break;
         }

@@ -41,6 +41,8 @@ Move::Move(int f, int t, int b){
     to = t;
     build = b;
 }
+Move::Move(){
+}
 
 Move::Move(int f, int t, int b, int fh, int th){
     from = f;

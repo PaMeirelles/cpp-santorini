@@ -11,6 +11,7 @@ struct Move{
     int fromHeight;
     int toHeight;
 
+    Move();
     Move(int from, int to, int build);
     Move(int from, int to, int build, int fromHeight, int toHeight);
 

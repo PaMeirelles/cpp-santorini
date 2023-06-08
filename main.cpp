@@ -3,6 +3,5 @@
 #include "postMatch.h"
 
 int main() { 
-    auto id = findLowestUnusedID();
-    std::cout << id;
+    play(1 * 60 * 1000, 1, "Titan", "Ascendant");
  }

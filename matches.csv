@@ -1233,3 +1233,6 @@ id,starting_pos,player_a,player_b,time_a,time_b,result
 1968,35766,Fisher,Titan,60000,60000,1
 1969,35767,Titan,Fisher,60000,60000,-1
 1970,35767,Fisher,Titan,60000,60000,-1
+1140,35662,Titan,Ascendant,60000,60000,-1
+1141,35661,Titan,Ascendant,10000,10000,-1
+1142,35662,Ascendant,Titan,10000,10000,1

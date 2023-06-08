@@ -15,13 +15,20 @@ struct AlphaBetaInfo{
 struct SearchResult{
     Move move;
     int score;
+    bool outOftime;
+
+    SearchResult(Move move, int score, bool oot);
+    SearchResult();
 };
 
-int alphabetaWitClimbhMo(Board b, int depth, std::function<int(Board)> eval);
-int alphabeta(Board b, int depth, std::function<int(Board)> eval);
-int negamax(Board b, int depth, std::function<int(Board)> eval);
+SearchResult alphabetaWitClimbhMo(Board b, int depth, std::function<int(Board)> eval, int time);
+SearchResult alphabeta(Board b, int depth, std::function<int(Board)> eval, int time);
+SearchResult negamax(Board b, int depth, std::function<int(Board)> eval, int time);
 
-Move getBestMove(Board b, std::function<int(Board, int, std::function<int(Board)>)> search, std::function<int(Board)> eval, std::function<int(int)> timeManager, int time);
+Move getBestMove(
+    Board b, std::function<SearchResult(Board, int, std::function<int(Board)>, int)> search,
+    std::function<int(Board)> eval, std::function<int(int)> timeManager,
+    int time);
 #define VERBOSE false
 
 #endif
