@@ -1236,3 +1236,6 @@ id,starting_pos,player_a,player_b,time_a,time_b,result
 1140,35662,Titan,Ascendant,60000,60000,-1
 1141,35661,Titan,Ascendant,10000,10000,-1
 1142,35662,Ascendant,Titan,10000,10000,1
+1143,27597,Titan,Ascendant,60000,60000,-1
+1144,27598,Titan,Ascendant,60000,60000,-1
+1145,27598,Ascendant,Titan,60000,60000,-1

@@ -3,5 +3,5 @@
 #include "postMatch.h"
 
 int main() { 
-    play(1 * 60 * 1000, 1, "Titan", "Ascendant");
+    play(1 * 60 * 1000, 100, "Titan", "Ascendant");
  }

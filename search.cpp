@@ -79,7 +79,7 @@ AlphaBetaInfo alphaBeta, int * diveCheck, int time, std::chrono::_V2::system_clo
     }
     int maxScore = -MAX_SCORE;
     int currScore;
-    Move bestMove = Move();
+    Move bestMove = moves[0];
     SearchResult s = SearchResult();
     bool oot;
     for (Move move : moves) {
@@ -136,7 +136,7 @@ SearchResult alphabetaRecurWithMo(Board b, int depth, std::function<int(Board)> 
     int maxScore = -MAX_SCORE;
     int currScore;
     bool oot;
-    Move bestMove = Move();
+    Move bestMove = moves[0];
     SearchResult s = SearchResult();
     std::sort(moves.begin(), moves.end(), compareMoves);
     for (Move move : moves) {
@@ -197,7 +197,7 @@ Move getBestMove(
     s = search(b, depth, eval, thinkingTime);
     bestMove = s.move;
     maxScore = s.score;
-    running = !s.outOftime || bestMove.build == WIN;
+    running = !(s.outOftime || bestMove.build == WIN);
     duration = std::chrono::steady_clock::now() - start;
     // Print the maximum score at each depth
     if (VERBOSE && running) {
@@ -211,7 +211,7 @@ Move getBestMove(
       std::cout << "------------------------------" << std::endl;
     }
     depth++;
-    if (running) {
+    if (!s.outOftime) {
       gbestMove = bestMove;
     }
   }
