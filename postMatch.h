@@ -13,7 +13,6 @@ struct MatchResult {
     int result;
     std::vector<Move> moves;
 };
-
 void appendToCSV(const std::string& filename, const std::string& row);
 int findLowestUnusedID();
 void saveMoves(const std::vector<Move>& moves, int id);
