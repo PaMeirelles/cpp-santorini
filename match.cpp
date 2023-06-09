@@ -1,5 +1,6 @@
 #include "match.h"
 
+
 void printClocks(int clockA, int clockB){
     // Format clockA and clockB as minutes:seconds:milliseconds
   int clockASeconds = clockA / 1000;           // Convert milliseconds to seconds

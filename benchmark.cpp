@@ -4,7 +4,7 @@ std::map<std::string, std::function<SearchResult(Board, int, std::function<int(B
     return std::map<std::string, std::function<SearchResult(Board, int, std::function<int(Board)>, int)>> 
     {{"negamax", negamax},
      {"alphabeta", alphabeta},
-     {"climb mo v5", alphabetaWitClimbhMo}
+     {"climb mo v6", alphabetaWitClimbhMo}
      };
 
 
@@ -94,6 +94,8 @@ void twinTest(std::string search1, std::string search2, int n, int depth) {
         auto m2 = moves2[i];
 
         if (m1.from != m2.from || m1.to != m2.to || m1.build != m2.build) {
+            m1.printMove();
+            m2.printMove();
             equal = false;
             break;
         }
