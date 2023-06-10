@@ -71,6 +71,7 @@ bool probeHashEntry(HashEntry * hashEntry, Board b, HashTable * hashTable){
         return false;
     }
     *hashEntry = hashTable->pTable[index];
+    (hashTable->hit)++;
     return true;
 }
 
