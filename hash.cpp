@@ -1,9 +1,4 @@
-#include <cmath>
-#include <unordered_set>
-#include <random>
-#include <algorithm>
 #include "hash.h"
-#include <iostream>
 
 int hashWorkers(const int (&w)[4]){
     int sum = 0;
@@ -131,4 +126,13 @@ int reduceHash(int hash){
         }
     }
     return min;
+}
+
+U64 hashBoard (Board b){
+    U64 key = 0;
+    for(int i=0; i < 25; i++){
+        key += pow(5, i) * b.squares[i];
+    }
+    key += pow(5, 25) * hashWorkers(b.workers);
+    return key;
 }

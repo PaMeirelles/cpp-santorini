@@ -133,67 +133,6 @@ SearchResult alphabeta(Board b, int depth, std::function<int(Board)> eval, int t
       int dc = 0;
     return alphabetaRecur(b, depth, eval, alphaBeta, &dc, time, start);
     }
-
-SearchResult alphabetaRecurWithMo(Board b, int depth, std::function<int(Board)> eval, 
-AlphaBetaInfo alphaBeta, std::function<bool(const Move& a, const Move& b)>, int * diveCheck, int time, std::chrono::_V2::system_clock::time_point start) {
-    (*diveCheck)++;
-    if(*diveCheck > 1000){
-      *diveCheck = 0;
-      auto end = std::chrono::high_resolution_clock::now();  
-      auto duration =
-          std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-      if (duration.count() > time) {
-        return SearchResult(Move(), -MAX_SCORE, true);
-      }
-    }
-    if (depth == 0) {
-      return SearchResult(Move(), eval(b) * b.turn, false);
-    }
-    std::vector<Move> moves = b.gen_moves(b.turn);
-    if (moves.size() == 0) {
-      return SearchResult(Move(), -MAX_SCORE - depth, false);
-    }
-    int maxScore = -MAX_SCORE * 100;
-    int currScore;
-    Move bestMove = moves[0];
-    SearchResult s = SearchResult();
-    bool oot = false;
-    if(depth > 3){
-      std::sort(moves.begin(), moves.end(), compareMoves);
-    }
-    for (Move move : moves) {
-        if (move.build == WIN) {
-          return SearchResult(move, MAX_SCORE + depth + 1, false);
-        }
-        b.makeMove(move);
-        s = alphabetaRecurWithMo(b, depth - 1, eval, AlphaBetaInfo(-alphaBeta.beta, -alphaBeta.alpha), compareMoves, diveCheck, time, start);
-        if(s.outOftime){
-          oot = s.outOftime;
-          break;
-      }
-        currScore = -s.score;
-        if (currScore > maxScore) {
-          maxScore = currScore;
-          bestMove = move;
-        }
-        b.unmakeMove(move);
-        if(maxScore > alphaBeta.alpha){
-          alphaBeta.alpha = maxScore;
-        }
-        if(alphaBeta.alpha >= alphaBeta.beta){
-          break;
-        }
-    }
-    return SearchResult(bestMove, maxScore, oot);
-  }
-
-SearchResult alphabetaWitClimbhMo(Board b, int depth, std::function<int(Board)> eval, int time){
-    AlphaBetaInfo alphaBeta = AlphaBetaInfo(-MAX_SCORE, MAX_SCORE);
-    auto start = std::chrono::high_resolution_clock::now();
-    int diveCheck = 0;
-    return alphabetaRecurWithMo(b, depth, eval, alphaBeta, compareMoves, &diveCheck, time, start);
-}
-
 Move getBestMove(
     Board b, std::function<SearchResult(Board, int, std::function<int(Board)>, int)> search,
     std::function<int(Board)> eval, std::function<int(int)> timeManager,

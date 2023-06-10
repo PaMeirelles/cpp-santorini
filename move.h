@@ -19,5 +19,6 @@ struct Move{
     std::string toString();
 };
 std::vector<int> getNeighbors(int n);
+#define NO_MOVE Move(-2, -2, -2)
 #endif
 
