@@ -11,6 +11,7 @@ int neighborHeight(int a, int b, int c, Board board);
 int nh_s(Board board);
 int nh_c(Board board);
 int nh_a(Board board);
+int db_s(Board board);
 #define MAX_SCORE 10000
 
 #endif /* EVAL_H */

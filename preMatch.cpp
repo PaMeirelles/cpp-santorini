@@ -130,7 +130,7 @@ EngineInfo assemblyEngine(std::string name) {
     eInfo.timeManager = et_f;
   }  
     else if(name == "Whisper"){
-    eInfo.search = alphabetaWitClimbhMo;
+    eInfo.search = alphabeta;
     eInfo.eval = nh_s;
     eInfo.timeManager = et_s;
   }  
