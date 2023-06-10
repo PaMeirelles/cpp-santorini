@@ -3,7 +3,7 @@
 
 #include <functional>
 #include "board.h"
-
+#include "hashTable.h"
 
 struct AlphaBetaInfo{
     int alpha;
@@ -21,12 +21,21 @@ struct SearchResult{
     SearchResult();
 };
 
-SearchResult alphabetaWitClimbhMo(Board b, int depth, std::function<int(Board)> eval, int time);
-SearchResult alphabeta(Board b, int depth, std::function<int(Board)> eval, int time);
-SearchResult negamax(Board b, int depth, std::function<int(Board)> eval, int time);
+struct SearchInfo{
+    Board b;
+    int depth;
+    std::function<int(Board)> eval;
+    int time;
+    HashTable hashTable;
+
+    SearchInfo(Board b, int depth, std::function<int(Board)> eval, int time, HashTable hashTable);
+};
+
+SearchResult alphabeta(SearchInfo searchInfo);
+SearchResult negamax(SearchInfo searchInfo);
 
 Move getBestMove(
-    Board b, std::function<SearchResult(Board, int, std::function<int(Board)>, int)> search,
+    Board b, std::function<SearchResult(SearchInfo)> search,
     std::function<int(Board)> eval, std::function<int(int)> timeManager,
     int time);
 #define VERBOSE false

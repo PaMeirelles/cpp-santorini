@@ -1,23 +1,4 @@
-#include "move.h"
-#include "board.h"
-#include "hash.h"
-#include <math.h>
-
-struct HashEntry{
-    U64 hashKey;
-    Move move;
-    int depth;
-    int score;
-    char flag;
-};
-struct HashTable{
-	HashEntry * pTable;
-	int numEntries;
-	int newWrite;
-	int overWrite;
-	int hit;
-	int cut;
-};
+#include "hashTable.h"
 
 void clearHashTable(HashTable *table) {
 
@@ -39,11 +20,15 @@ void allocateHashTable(HashTable *hashTable, const int MB) {
     hashTable->numEntries -= 2;
     hashTable->pTable = (HashEntry *)malloc(hashTable->numEntries * sizeof(HashEntry));
     if (!hashTable->pTable) {
-        std::cout << "Hash Allocation Failed, trying " << MB / 2 << "MB...\n";
+        if(DEBUG){
+            std::cout << "Hash Allocation Failed, trying " << MB / 2 << "MB...\n";
+        }
         allocateHashTable(hashTable, MB / 2);
     } else {
         clearHashTable(hashTable);
-        std::cout << "HashTable init complete with " << hashTable->numEntries << " entries\n";
+        if(DEBUG){
+            std::cout << "HashTable init complete with " << hashTable->numEntries << " entries\n";
+        }
     }
 }
 
@@ -75,3 +60,6 @@ bool probeHashEntry(HashEntry * hashEntry, Board b, HashTable * hashTable){
     return true;
 }
 
+void freeHashTable(HashTable * hashTable){
+    free(hashTable->pTable);
+}
