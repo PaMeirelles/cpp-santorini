@@ -222,3 +222,59 @@ alphabeta,3,10,18
 climb mo v6,4,10,0
 alphabeta,4,10,157
 climb mo v6,5,10,0
+climb mo v7,1,10,0
+alphabeta,1,10,0
+climb mo v7,2,10,1
+alphabeta,2,10,1
+climb mo v7,3,10,21
+alphabeta,3,10,25
+climb mo v7,4,10,187
+alphabeta,4,10,219
+climb mo v7,5,10,2537
+alphabeta,5,10,3208
+climb mo v7,6,10,35590
+alphabeta,6,10,24650
+climb mo v7,1,10,0
+alphabeta,1,10,0
+climb mo v7,2,10,1
+alphabeta,2,10,1
+climb mo v7,3,10,17
+alphabeta,3,10,16
+climb mo v7,4,10,170
+alphabeta,4,10,159
+climb mo v8,1,10,0
+alphabeta,1,10,0
+climb mo v8,2,10,1
+alphabeta,2,10,1
+climb mo v8,3,10,13
+alphabeta,3,10,27
+climb mo v8,4,10,145
+alphabeta,4,10,235
+climb mo v8,5,10,1719
+alphabeta,5,10,3067
+climb mo v8,6,10,35571
+alphabeta,6,10,25574
+climb mo v9,1,10,0
+alphabeta,1,10,0
+climb mo v9,2,10,1
+alphabeta,2,10,1
+climb mo v9,3,10,24
+alphabeta,3,10,19
+climb mo v9,4,10,197
+alphabeta,4,10,111
+climb mo v9,5,10,2342
+alphabeta,5,10,3112
+climb mo v9,6,10,21321
+alphabeta,6,10,28687
+climb mo v10,1,10,0
+alphabeta,1,10,0
+climb mo v10,2,10,1
+alphabeta,2,10,1
+climb mo v10,3,10,26
+alphabeta,3,10,21
+climb mo v10,4,10,188
+alphabeta,4,10,165
+climb mo v10,5,10,3195
+alphabeta,5,10,3070
+climb mo v10,6,10,21483
+alphabeta,6,10,22739

@@ -3,6 +3,7 @@
 #include "postMatch.h"
 
 int main() { 
-    play(1 * 60 * 1000, 60, "Titan", "Ascendant");
-    //testUpTo("climb mo v6", "alphabeta", 10, 6);
+    play(1 * 60 * 1000, 240, "Aegis", "Ascendant");
+    //  testUpTo("climb mo v10", "alphabeta", 10, 6);
+
  }

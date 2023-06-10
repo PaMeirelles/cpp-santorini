@@ -4,7 +4,7 @@ std::map<std::string, std::function<SearchResult(Board, int, std::function<int(B
     return std::map<std::string, std::function<SearchResult(Board, int, std::function<int(Board)>, int)>> 
     {{"negamax", negamax},
      {"alphabeta", alphabeta},
-     {"climb mo v6", alphabetaWitClimbhMo}
+     {"climb mo v10", alphabetaWitClimbhMo}
      };
 
 
@@ -55,8 +55,8 @@ std::vector<int> getRandomStartingPos(int n) {
     return startingPos;
 }
 
-std::vector<Move> runTest(std::vector<int> positions, std::string search, int depth) {
-    std::vector<Move> moves;  // Vector to store the moves
+std::vector<int> runTest(std::vector<int> positions, std::string search, int depth) {
+    std::vector<int> scores;  // Vector to store the moves
     auto engineMap = getEngineMap();
     Board b;
     auto searchFunc = engineMap[search];
@@ -65,7 +65,7 @@ std::vector<Move> runTest(std::vector<int> positions, std::string search, int de
         b = Board(pos);
         auto s = searchFunc(b, depth, nh_s, 1000 * 60 * 60);
         std::cout << "Completed test for " << search << " on depth " << depth << std::endl;
-        moves.push_back(s.move);  // Add the move to the vector
+        scores.push_back(s.score);  // Add the move to the vector
     }
     std::chrono::system_clock::time_point end = std::chrono::high_resolution_clock::now();
     std::chrono::milliseconds duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
@@ -74,28 +74,26 @@ std::vector<Move> runTest(std::vector<int> positions, std::string search, int de
     file << search << "," << depth << "," << positions.size() << "," << duration.count() / positions.size() << std::endl;
     file.close();
 
-    return moves;  // Return the vector of moves
+    return scores;  // Return the vector of moves
 }
 
 void twinTest(std::string search1, std::string search2, int n, int depth) {
     auto positions = getRandomStartingPos(n);
-    std::vector<Move> moves1 = runTest(positions, search1, depth);
-    std::vector<Move> moves2 = runTest(positions, search2, depth);
+    std::vector<int> scores1 = runTest(positions, search1, depth);
+    std::vector<int> scores2 = runTest(positions, search2, depth);
 
     // Compare move vectors
-    if (moves1.size() != moves2.size()) {
+    if (scores1.size() != scores2.size()) {
         std::cout << "Move vectors have different sizes." << std::endl;
         return;
     }
 
     bool equal = true;
-    for (size_t i = 0; i < moves1.size(); i++) {
-        auto m1 = moves1[i];
-        auto m2 = moves2[i];
+    for (size_t i = 0; i < scores1.size(); i++) {
+        auto m1 = scores1[i];
+        auto m2 = scores2[i];
 
-        if (m1.from != m2.from || m1.to != m2.to || m1.build != m2.build) {
-            m1.printMove();
-            m2.printMove();
+        if (m1 != m2) {
             equal = false;
             break;
         }

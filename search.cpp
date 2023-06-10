@@ -158,7 +158,9 @@ AlphaBetaInfo alphaBeta, std::function<bool(const Move& a, const Move& b)>, int 
     Move bestMove = moves[0];
     SearchResult s = SearchResult();
     bool oot = false;
-    std::sort(moves.begin(), moves.end(), compareMoves);
+    if(depth > 3){
+      std::sort(moves.begin(), moves.end(), compareMoves);
+    }
     for (Move move : moves) {
         if (move.build == WIN) {
           return SearchResult(move, MAX_SCORE + depth + 1, false);

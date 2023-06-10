@@ -25,7 +25,7 @@ struct Record {
 std::map<std::string, std::function<SearchResult(Board, int, std::function<int(Board)>, int)>> getEngineMap();
 std::vector<int> getRandomStartingPos(int n);
 
-std::vector<Move> runTest(std::vector<int> positions, std::string search, int depth);
+std::vector<int> runTest(std::vector<int> positions, std::string search, int depth);
 void twinTest(std::string search1, std::string search2, int n, int depth);
 void testUpTo(std::string search1, std::string search2, int n, int depth);
 #endif  // BENCHMARK_H
