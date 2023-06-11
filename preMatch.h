@@ -16,7 +16,7 @@
 #include "timeManagement.h"
 
 struct EngineInfo {
-  std::function<SearchResult(Board, int, std::function<int(Board)>, int)> search;
+  std::function<SearchResult(SearchInfo)> search;
   std::function<int(Board)> eval;
   std::function<int(int)> timeManager;
 };

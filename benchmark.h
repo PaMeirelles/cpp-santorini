@@ -22,7 +22,7 @@ struct Record {
     std::string result;
 };
 
-std::map<std::string, std::function<SearchResult(Board, int, std::function<int(Board)>, int)>> getEngineMap();
+std::map<std::string, std::function<SearchResult(SearchInfo)>> getEngineMap();
 std::vector<int> getRandomStartingPos(int n);
 
 std::vector<int> runTest(std::vector<int> positions, std::string search, int depth);
