@@ -80,6 +80,16 @@ MatchResult playMatch(int time, int startingPos, EngineInfo engineA, EngineInfo 
         }
     }
 }
+void playSingleMatch(int time, std::string playerA, std::string playerB, int pos){
+    EngineInfo engineA = assemblyEngine(playerA);
+    EngineInfo engineB = assemblyEngine(playerB);
+    MatchResult lastResult = playMatch(time, pos, engineA, engineB);
+    registerMatch(pos, playerA, playerB, time, time, lastResult);
+    std::string resultA = std::to_string((lastResult.result > 0) ? 1:0);
+    std::string resultB = std::to_string((lastResult.result < 0) ? 1:0);
+    std::cout << playerA << " " << resultA << " X " << resultB << " " << playerB << std::endl;
+}
+
 void play(int time, int numMatches, std::string playerA, std::string playerB) {
     EngineInfo engineA = assemblyEngine(playerA);
     EngineInfo engineB = assemblyEngine(playerB);
@@ -123,4 +133,26 @@ void play(int time, int numMatches, std::string playerA, std::string playerB) {
     }
 
     std::cout << "===== MATCHES END =====" << std::endl;
+}
+void heal(int time){
+  auto entries = findEntriesWithNoPair(time);
+  int totalPositions = entries.size(); // Total number of positions
+  int positionsPlayed = 0; // Number of positions played
+  std::cout << "Starting healing " << totalPositions << " pos" <<std::endl;
+
+  while (!entries.empty()) {
+    auto entry = *entries.begin();
+    entries.erase(entries.begin());
+    
+    std::cout << "Playing match: " << entry.player_b << " vs " << entry.player_a << " (Starting position: " << entry.starting_pos << ")" << std::endl;
+    
+    playSingleMatch(time, entry.player_b, entry.player_a, std::stoi(entry.starting_pos));
+    
+    positionsPlayed++; // Increment the number of positions played
+    
+    double fractionPlayed = static_cast<double>(positionsPlayed) / totalPositions;
+    std::cout << fractionPlayed * 100 << "\% played" << std::endl;
+
+    entries = findEntriesWithNoPair(time);
+  }
 }

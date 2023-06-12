@@ -139,3 +139,53 @@ EngineInfo assemblyEngine(std::string name) {
   }
   return eInfo;
 }
+std::unordered_set<Entry, EntryHash, EntryEqual> findEntriesWithNoPair(int targetTime) {
+    std::string filename = "matches.csv";
+    std::vector<Entry> entries;
+    std::unordered_set<Entry, EntryHash, EntryEqual> pairs;
+
+    std::ifstream file(filename);
+    if (!file) {
+        std::cerr << "Failed to open file: " << filename << std::endl;
+        return pairs;
+    }
+
+    std::string line;
+    std::getline(file, line);  // Skip header
+    std::string time;
+    while (std::getline(file, line)) {
+        std::istringstream iss(line);
+        std::string token;
+        Entry entry;
+
+        // Read CSV values into entry struct
+        std::getline(iss, token, ',');
+        std::getline(iss, entry.starting_pos, ',');
+        std::getline(iss, entry.player_a, ',');
+        std::getline(iss, entry.player_b, ',');
+        std::getline(iss, time, ',');
+        std::getline(iss, time, ',');
+        std::getline(iss, token, ',');
+        if(stoi(time) != targetTime){
+          continue;
+        }
+        // Check if entry has a pair
+        Entry reverseEntry;
+        reverseEntry.player_a = entry.player_b;
+        reverseEntry.player_b = entry.player_a;
+        reverseEntry.starting_pos = entry.starting_pos;
+
+        auto it = pairs.find(reverseEntry);
+
+        if (it == pairs.end()) {
+            pairs.insert(entry);
+        } else {
+            // Pair found, remove from pairs map
+            pairs.erase(it);
+        }
+    }
+
+    file.close();
+    return pairs;
+}
+
