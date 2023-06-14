@@ -12,6 +12,12 @@ std::string editScore(int score, int depth){
     }
     return std::to_string(score);
 }
+TimeInfo::TimeInfo(int * dc, int t, std::chrono::_V2::system_clock::time_point s, bool * o){
+    diveCheck = dc;
+    time = t;
+    start = std::chrono::high_resolution_clock::now();
+    oot = o;
+}
 
 AlphaBetaInfo::AlphaBetaInfo(int alpha2, int beta2){
     alpha = alpha2;
@@ -142,6 +148,70 @@ SearchResult alphabeta(SearchInfo si){
       int dc = 0;
     return alphabetaRecur(si.b, si.depth, si.eval, alphaBeta, &dc, si.time, start);
     }
+
+int mvb3Recur(AlphaBetaInfo alphaBeta, int depth, Board b, TimeInfo timeInfo, std::function<int(Board)> eval, HashTable * hashTable){
+    (*(timeInfo.diveCheck))++;
+      if((*(timeInfo.diveCheck)) % 1000){
+        auto end = std::chrono::high_resolution_clock::now();  
+        auto duration =
+            std::chrono::duration_cast<std::chrono::milliseconds>(end - timeInfo.start);
+        if (duration.count() > timeInfo.time) {
+          *(timeInfo.oot) = true;
+          return 0;
+        }
+      }
+
+    if (depth == 0) {
+      return eval(b) * b.turn;
+    }
+    std::vector<Move> moves = b.gen_moves(b.turn);
+    if (moves.size() == 0) {
+      return -MAX_SCORE - depth;
+    }
+
+    int maxScore = -MAX_SCORE * 100;
+    int currScore;
+    int oldAlpha = alphaBeta.alpha;
+    Move bestMove = moves[0];
+
+    if(probeHashEntry(b, hashTable, &bestMove, &maxScore, alphaBeta.alpha, alphaBeta.beta, depth)){
+      hashTable->cut++;
+      return maxScore;
+    }
+    for (Move move : moves) {
+        if (move.build == WIN) {
+          return MAX_SCORE;
+        }
+        b.makeMove(move);
+        currScore = -mvb3Recur(AlphaBetaInfo(-alphaBeta.beta, -alphaBeta.alpha), depth-1, b, timeInfo, eval, hashTable);
+        b.unmakeMove(move);
+        if(*(timeInfo.oot)){
+          break;
+        }
+
+        if (currScore > maxScore) {
+          maxScore = currScore;
+          bestMove = move;
+            if(maxScore > alphaBeta.alpha){
+                if(maxScore >= alphaBeta.beta){
+                    storeHashEntry(b, bestMove, alphaBeta.beta, depth, 'B', hashTable);
+                    return alphaBeta.beta;
+                }
+                alphaBeta.alpha = maxScore;
+            }
+        }       
+    }
+    if(alphaBeta.alpha != oldAlpha){
+      storeHashEntry(b, bestMove, maxScore, depth, 'E', hashTable);
+    }
+    else{
+      storeHashEntry(b, bestMove, alphaBeta.alpha, depth, 'A', hashTable);
+    }
+    return alphaBeta.alpha;
+}
+
+
+
 Move getBestMove(
     Board b, std::function<SearchResult(SearchInfo)> search,
     std::function<int(Board)> eval, std::function<int(int)> timeManager,

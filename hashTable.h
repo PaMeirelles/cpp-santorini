@@ -26,7 +26,9 @@ struct HashTable {
 void clearHashTable(HashTable *table);
 void allocateHashTable(HashTable *hashTable, const int MB);
 void storeHashEntry(Board b, Move m, int score, int depth, char flag, HashTable *hashTable);
-bool probeHashEntry(HashEntry *hashEntry, Board b, HashTable *hashTable);
+bool probeHashEntry(Board b, HashTable * hashTable, Move * move, int * score, int alpha, int beta, int depth);
 void freeHashTable(HashTable * hashTable);
+void printHashTable(const HashTable& table);
+void printHashEntry(const HashEntry& entry);
 #define DEBUG false
 #endif // HASHTABLE_H

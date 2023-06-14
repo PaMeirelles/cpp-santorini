@@ -4,6 +4,7 @@
 #include <functional>
 #include "board.h"
 #include "hashTable.h"
+#include <chrono>
 
 struct AlphaBetaInfo{
     int alpha;
@@ -31,9 +32,18 @@ struct SearchInfo{
     SearchInfo(Board b, int depth, std::function<int(Board)> eval, int time, HashTable hashTable);
 };
 
+struct TimeInfo{
+    int * diveCheck;
+    int time;
+    std::chrono::_V2::system_clock::time_point start;
+    bool * oot;
+
+    TimeInfo(int * dc, int t, std::chrono::_V2::system_clock::time_point s, bool * o);
+};
+
 SearchResult alphabeta(SearchInfo searchInfo);
 SearchResult negamax(SearchInfo searchInfo);
-
+int mvb3Recur(AlphaBetaInfo alphaBeta, int depth, Board b, TimeInfo timeInfo, std::function<int(Board)> eval, HashTable * hashTable);
 Move getBestMove(
     Board b, std::function<SearchResult(SearchInfo)> search,
     std::function<int(Board)> eval, std::function<int(int)> timeManager,
