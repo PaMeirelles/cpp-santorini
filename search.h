@@ -53,6 +53,6 @@ SearchResult alphabeta(SearchInfo searchInfo);
 SearchResult negamax(SearchInfo searchInfo);
 SearchResult mvb3(SearchInfo si);
 Move getBestMove(Board b, EngineInfo engineInfo, int time);
-#define VERBOSE true
+#define VERBOSE false
 
 #endif
