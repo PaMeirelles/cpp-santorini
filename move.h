@@ -17,6 +17,10 @@ struct Move{
 
     void printMove();
     std::string toString();
+    bool operator==(const Move& other) const {
+    return from == other.from && to == other.to && build == other.build &&
+            fromHeight == other.fromHeight && toHeight == other.toHeight;
+    }
 };
 std::vector<int> getNeighbors(int n);
 #define NO_MOVE Move(-2, -2, -2)

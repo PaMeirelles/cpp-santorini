@@ -37,6 +37,9 @@ void allocateHashTable(HashTable *hashTable, const int MB) {
 
 
 void storeHashEntry(Board b, Move m, int score, int depth, char flag, HashTable * hashTable){
+    if(m.from < 0){
+        throw std::runtime_error("Invalid move");
+    }
     U64 key = hashBoard(b);
     int index = key % hashTable->numEntries;
     if(hashTable->pTable[index].hashKey == 0){
@@ -97,4 +100,15 @@ void printHashEntry(const HashEntry& entry) {
     std::cout << "Depth: " << entry.depth << std::endl;
     std::cout << "Score: " << entry.score << std::endl;
     std::cout << "Flag: " << entry.flag << std::endl;
+}
+
+Move probePvMove(Board b, HashTable * hashTable, int * score){
+    U64 key = hashBoard(b);
+    int index = key % hashTable->numEntries;
+    HashEntry he = hashTable->pTable[index];
+    if(he.hashKey == key){
+        *score = he.score;
+        return he.move;
+    }
+    return Move(-2, -2, -2);
 }

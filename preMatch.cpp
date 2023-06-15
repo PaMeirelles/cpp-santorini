@@ -134,6 +134,11 @@ EngineInfo assemblyEngine(std::string name) {
     eInfo.eval = nh_s;
     eInfo.timeManager = et_s;
   }  
+    else if(name == "Cosmic"){
+    eInfo.search = mvb3;
+    eInfo.eval = nh_s;
+    eInfo.timeManager = et_s;
+  }  
    else {
     throw std::runtime_error("Invalid engine");
   }

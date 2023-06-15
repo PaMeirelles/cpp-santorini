@@ -15,7 +15,7 @@ std::string editScore(int score, int depth){
 TimeInfo::TimeInfo(int * dc, int t, std::chrono::_V2::system_clock::time_point s, bool * o){
     diveCheck = dc;
     time = t;
-    start = std::chrono::high_resolution_clock::now();
+    start = s;
     oot = o;
 }
 
@@ -28,14 +28,23 @@ SearchResult::SearchResult(Move m, int s, bool o){
     move = m;
     score = s;
     outOftime = o;
+    keepResult = !o;
 }
 
-SearchInfo::SearchInfo(Board board, int d, std::function<int(Board)> e, int t, HashTable ht){
+SearchResult::SearchResult(Move m, int s, bool o, bool k){
+    move = m;
+    score = s;
+    outOftime = o;
+    keepResult = k;
+}
+
+SearchInfo::SearchInfo(Board board, int d, std::function<int(Board)> e, int t, HashTable ht, std::chrono::_V2::system_clock::time_point st){
   b = board;
   depth = d;
   eval = e;
   time = t;
   hashTable = ht;
+  start = st;
 }
 
 bool compareMoves(const Move& a, const Move& b) {
@@ -89,9 +98,8 @@ SearchResult negamaxRecur(Board b, int depth, std::function<int(Board)> eval, in
     return SearchResult(bestMove, maxScore, oot);
   }
 SearchResult negamax(SearchInfo si){
-  auto start = std::chrono::high_resolution_clock::now();
   int dc = 0;
-  return negamaxRecur(si.b, si.depth, si.eval, &dc, si.time, start);
+  return negamaxRecur(si.b, si.depth, si.eval, &dc, si.time, si.start);
 }
 SearchResult alphabetaRecur(Board b, int depth, std::function<int(Board)> eval, 
 AlphaBetaInfo alphaBeta, int * diveCheck, int time, std::chrono::_V2::system_clock::time_point start) {
@@ -144,11 +152,16 @@ AlphaBetaInfo alphaBeta, int * diveCheck, int time, std::chrono::_V2::system_clo
   }
 SearchResult alphabeta(SearchInfo si){  
     AlphaBetaInfo alphaBeta = AlphaBetaInfo(-MAX_SCORE, MAX_SCORE);
-      auto start = std::chrono::high_resolution_clock::now();
       int dc = 0;
-    return alphabetaRecur(si.b, si.depth, si.eval, alphaBeta, &dc, si.time, start);
+    return alphabetaRecur(si.b, si.depth, si.eval, alphaBeta, &dc, si.time, si.start);
     }
-
+template<typename T>
+void moveElementToFront(std::vector<T>& vec, const T& element) {
+    auto it = std::find(vec.begin(), vec.end(), element);
+    if (it != vec.end()) {
+        std::rotate(vec.begin(), it, it + 1);
+    }
+}
 int mvb3Recur(AlphaBetaInfo alphaBeta, int depth, Board b, TimeInfo timeInfo, std::function<int(Board)> eval, HashTable * hashTable){
     (*(timeInfo.diveCheck))++;
       if((*(timeInfo.diveCheck)) % 1000){
@@ -178,13 +191,20 @@ int mvb3Recur(AlphaBetaInfo alphaBeta, int depth, Board b, TimeInfo timeInfo, st
       hashTable->cut++;
       return maxScore;
     }
+    auto pvMove = probePvMove(b, hashTable, &currScore);
+    if(pvMove.from > 0){
+      moveElementToFront(moves, pvMove);
+    }
     for (Move move : moves) {
         if (move.build == WIN) {
-          return MAX_SCORE;
+          currScore = MAX_SCORE+depth-1;
         }
-        b.makeMove(move);
-        currScore = -mvb3Recur(AlphaBetaInfo(-alphaBeta.beta, -alphaBeta.alpha), depth-1, b, timeInfo, eval, hashTable);
-        b.unmakeMove(move);
+        else{
+          b.makeMove(move);
+          currScore = -mvb3Recur(AlphaBetaInfo(-alphaBeta.beta, -alphaBeta.alpha), depth-1, b, timeInfo, eval, hashTable);
+          b.unmakeMove(move);
+        }
+
         if(*(timeInfo.oot)){
           break;
         }
@@ -210,7 +230,15 @@ int mvb3Recur(AlphaBetaInfo alphaBeta, int depth, Board b, TimeInfo timeInfo, st
     return alphaBeta.alpha;
 }
 
-
+SearchResult mvb3(SearchInfo si){  
+    AlphaBetaInfo alphaBeta = AlphaBetaInfo(-MAX_SCORE, MAX_SCORE);
+    int dc = 0;
+    bool oot = false;
+    auto ti = TimeInfo(&dc, si.time, si.start, &oot);
+    int score = mvb3Recur(alphaBeta, si.depth, si.b, ti, si.eval, &(si.hashTable));
+    Move m = probePvMove(si.b, &(si.hashTable), &score);
+    return SearchResult(m, score, oot, true);
+    }
 
 Move getBestMove(
     Board b, std::function<SearchResult(SearchInfo)> search,
@@ -222,35 +250,37 @@ Move getBestMove(
   Move bestMove = Move();
   Move gbestMove = Move();
   SearchResult s = SearchResult();
-  std::chrono::steady_clock::time_point start = std::chrono::steady_clock::now();
+  std::chrono::_V2::system_clock::time_point start = std::chrono::system_clock::now();
   std::chrono::duration<double, std::milli> duration;
   HashTable ht;
-  allocateHashTable(&ht, 400);
+  allocateHashTable(&ht, 2000);
   while (true) {
-    s = search(SearchInfo(b, depth, eval, thinkingTime, ht));
+    s = search(SearchInfo(b, depth, eval, thinkingTime, ht, start));
     bestMove = s.move;
     maxScore = s.score;
-    if(s.outOftime){
-      break;
+    if(s.keepResult){
+      gbestMove = bestMove;
     }
-    duration = std::chrono::steady_clock::now() - start;
+    duration = std::chrono::system_clock::now() - start;
     // Print the maximum score at each depth
-    if (VERBOSE) {
+    if (VERBOSE && s.keepResult) {
       std::cout << "Depth: " << depth << std::endl;
-      std::cout << "Best move at depth " << depth << ": " << bestMove.toString()
+      std::cout << "Best move up to depth " << depth << ": " << bestMove.toString()
                 << std::endl;
-      std::cout << "Time spent at depth " << depth << ": " << duration.count()
+      std::cout << "Time spent up to depth " << depth << ": " << duration.count()
                 << "ms" << std::endl;
-      std::cout << "Maximum score at depth " << depth << ": " << editScore(maxScore, depth)
+      std::cout << "Maximum score up to depth " << depth << ": " << editScore(maxScore, depth)
                 << std::endl;
       std::cout << "------------------------------" << std::endl;
+    }
+    if(s.outOftime){
+      break;
     }
     if(bestMove.build == WIN || maxScore > 9000 || maxScore < -9000){
       gbestMove = bestMove;
       break;
     }
     depth++;
-    gbestMove = bestMove;
   }
   freeHashTable(&ht);
   return gbestMove;

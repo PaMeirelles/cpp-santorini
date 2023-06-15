@@ -30,5 +30,6 @@ bool probeHashEntry(Board b, HashTable * hashTable, Move * move, int * score, in
 void freeHashTable(HashTable * hashTable);
 void printHashTable(const HashTable& table);
 void printHashEntry(const HashEntry& entry);
+Move probePvMove(Board b, HashTable * hashTable, int * score);
 #define DEBUG false
 #endif // HASHTABLE_H

@@ -17,7 +17,8 @@ struct SearchResult{
     Move move;
     int score;
     bool outOftime;
-
+    bool keepResult;
+    SearchResult(Move move, int score, bool oot, bool keepResult);
     SearchResult(Move move, int score, bool oot);
     SearchResult();
 };
@@ -28,8 +29,9 @@ struct SearchInfo{
     std::function<int(Board)> eval;
     int time;
     HashTable hashTable;
+    std::chrono::_V2::system_clock::time_point start;
 
-    SearchInfo(Board b, int depth, std::function<int(Board)> eval, int time, HashTable hashTable);
+    SearchInfo(Board b, int depth, std::function<int(Board)> eval, int time, HashTable hashTable, std::chrono::_V2::system_clock::time_point start);
 };
 
 struct TimeInfo{
@@ -43,11 +45,11 @@ struct TimeInfo{
 
 SearchResult alphabeta(SearchInfo searchInfo);
 SearchResult negamax(SearchInfo searchInfo);
-int mvb3Recur(AlphaBetaInfo alphaBeta, int depth, Board b, TimeInfo timeInfo, std::function<int(Board)> eval, HashTable * hashTable);
+SearchResult mvb3(SearchInfo si);
 Move getBestMove(
     Board b, std::function<SearchResult(SearchInfo)> search,
     std::function<int(Board)> eval, std::function<int(int)> timeManager,
     int time);
-#define VERBOSE false
+#define VERBOSE true
 
 #endif
