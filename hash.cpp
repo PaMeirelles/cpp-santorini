@@ -133,6 +133,6 @@ U64 hashBoard (Board b){
     for(int i=0; i < 25; i++){
         key += pow(5, i) * b.squares[i];
     }
-    key += pow(5, 25) * hashWorkers(b.workers);
+    key *= hashWorkers(b.workers);
     return key;
 }

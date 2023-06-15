@@ -2,16 +2,18 @@
 
 void clearHashTable(HashTable *table) {
 
-  HashEntry *tableEntry;
-  
-  for (tableEntry = table->pTable; tableEntry < table->pTable + table->numEntries; tableEntry++) {
-    tableEntry->hashKey = 0ULL;
-    tableEntry->move = NO_MOVE;
-    tableEntry->depth = 0;
-    tableEntry->score = 0;
-    tableEntry->flag = ' ';
-  }
-  table->newWrite=0;
+    HashEntry *tableEntry;
+    table->cut = 0;
+    table->hit = 0;
+    table->newWrite = 0;
+    table->overWrite = 0;
+    for (tableEntry = table->pTable; tableEntry < table->pTable + table->numEntries; tableEntry++) {
+        tableEntry->hashKey = 0ULL;
+        tableEntry->move = NO_MOVE;
+        tableEntry->depth = 0;
+        tableEntry->score = 0;
+        tableEntry->flag = ' ';
+    }
 }
 
 void allocateHashTable(HashTable *hashTable, const int MB) {
@@ -19,6 +21,7 @@ void allocateHashTable(HashTable *hashTable, const int MB) {
     hashTable->numEntries = hashSize / sizeof(HashEntry);
     hashTable->numEntries -= 2;
     hashTable->pTable = (HashEntry *)malloc(hashTable->numEntries * sizeof(HashEntry));
+
     if (!hashTable->pTable) {
         if(DEBUG){
             std::cout << "Hash Allocation Failed, trying " << MB / 2 << "MB...\n";
@@ -42,24 +45,56 @@ void storeHashEntry(Board b, Move m, int score, int depth, char flag, HashTable 
     else{
         hashTable->overWrite++;
     }
-    hashTable->pTable->depth = depth;
-    hashTable->pTable->score = score;
-    hashTable->pTable->flag = flag;
-    hashTable->pTable->move = m;
-    hashTable->pTable->hashKey = key;
+    hashTable->pTable[index].depth = depth;
+    hashTable->pTable[index].score = score;
+    hashTable->pTable[index].flag = flag;
+    hashTable->pTable[index].move = m;
+    hashTable->pTable[index].hashKey = key;
 }
 
-bool probeHashEntry(HashEntry * hashEntry, Board b, HashTable * hashTable){
+bool probeHashEntry(Board b, HashTable * hashTable, Move * move, int * score, int alpha, int beta, int depth){
     U64 key = hashBoard(b);
     int index = key % hashTable->numEntries;
-    if(hashTable->pTable[index].hashKey != key){
+    char flag;
+    HashEntry he = hashTable->pTable[index];
+    if(he.hashKey != key){
         return false;
     }
-    *hashEntry = hashTable->pTable[index];
     (hashTable->hit)++;
+    *move = he.move;
+    if(he.depth < depth){
+        return false;
+    }
+    flag = he.flag;
+    if(flag == 'A'){
+        *score = alpha;
+    }
+    else if(flag == 'B'){
+        *score = beta;
+    }
+    else{
+        *score = he.score;
+    }
     return true;
 }
 
 void freeHashTable(HashTable * hashTable){
     free(hashTable->pTable);
+}
+void printHashTable(const HashTable& table) {
+    std::cout << "Number of entries: " << table.numEntries << std::endl;
+    std::cout << "New writes: " << table.newWrite << std::endl;
+    std::cout << "Overwrites: " << table.overWrite << std::endl;
+    std::cout << "Hits: " << table.hit << std::endl;
+    std::cout << "Cuts: " << table.cut << std::endl;
+}
+
+void printHashEntry(const HashEntry& entry) {
+    auto m = entry.move;
+    auto s = m.toString();
+    std::cout << "Hash Key: " << entry.hashKey << std::endl;
+    std::cout << "Move: " << s << std::endl;
+    std::cout << "Depth: " << entry.depth << std::endl;
+    std::cout << "Score: " << entry.score << std::endl;
+    std::cout << "Flag: " << entry.flag << std::endl;
 }
