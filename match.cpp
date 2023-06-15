@@ -32,6 +32,10 @@ MatchResult playMatch(int time, int startingPos, EngineInfo engineA, EngineInfo 
 
     Board b = Board(startingPos);
     Move move = Move(-2, -2, -2);
+
+    allocateHashTable(&(engineA.hashTable), 1000);
+    allocateHashTable(&(engineB.hashTable), 1000);
+
     while (true) {
         if (CLOCK) {
             printClocks(clockA, clockB);
@@ -41,9 +45,9 @@ MatchResult playMatch(int time, int startingPos, EngineInfo engineA, EngineInfo 
         }
         start = std::chrono::high_resolution_clock::now();
         if (b.turn == 1) {
-            move = getBestMove(b, engineA.search, engineA.eval, engineA.timeManager, clockA);
+            move = getBestMove(b, engineA, clockA);
         } else {
-            move = getBestMove(b, engineB.search, engineB.eval, engineB.timeManager, clockB);
+            move = getBestMove(b, engineB, clockB);
         }
         end = std::chrono::high_resolution_clock::now();
         duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
@@ -57,6 +61,8 @@ MatchResult playMatch(int time, int startingPos, EngineInfo engineA, EngineInfo 
             MatchResult result;
             result.result = b.turn;
             result.moves = moves;
+            freeHashTable(&(engineA.hashTable));
+            freeHashTable(&(engineB.hashTable));
             return result; // Return the MatchResult struct with the result and moves played
         }
         b.makeMove(move);
@@ -64,21 +70,28 @@ MatchResult playMatch(int time, int startingPos, EngineInfo engineA, EngineInfo 
             MatchResult result;
             result.result = b.turn * 2;
             result.moves = moves;
+            freeHashTable(&(engineA.hashTable));
+            freeHashTable(&(engineB.hashTable));            
             return result; // Return the MatchResult struct with the result and moves played
         }
         if (clockA <= 0) {
             MatchResult result;
             result.result = -3;
             result.moves = moves;
+            freeHashTable(&(engineA.hashTable));
+            freeHashTable(&(engineB.hashTable));            
             return result; // Return the MatchResult struct with the result and moves played
         }
         if (clockB <= 0) {
             MatchResult result;
             result.result = 3;
             result.moves = moves;
+            freeHashTable(&(engineA.hashTable));
+            freeHashTable(&(engineB.hashTable));            
             return result; // Return the MatchResult struct with the result and moves played
         }
     }
+
 }
 void playSingleMatch(int time, std::string playerA, std::string playerB, int pos){
     EngineInfo engineA = assemblyEngine(playerA);

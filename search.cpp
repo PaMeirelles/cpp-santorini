@@ -164,7 +164,7 @@ void moveElementToFront(std::vector<T>& vec, const T& element) {
 }
 int mvb3Recur(AlphaBetaInfo alphaBeta, int depth, Board b, TimeInfo timeInfo, std::function<int(Board)> eval, HashTable * hashTable){
     (*(timeInfo.diveCheck))++;
-      if((*(timeInfo.diveCheck)) % 1000){
+      if((*(timeInfo.diveCheck)) % 1000 == 0){
         auto end = std::chrono::high_resolution_clock::now();  
         auto duration =
             std::chrono::duration_cast<std::chrono::milliseconds>(end - timeInfo.start);
@@ -204,11 +204,6 @@ int mvb3Recur(AlphaBetaInfo alphaBeta, int depth, Board b, TimeInfo timeInfo, st
           currScore = -mvb3Recur(AlphaBetaInfo(-alphaBeta.beta, -alphaBeta.alpha), depth-1, b, timeInfo, eval, hashTable);
           b.unmakeMove(move);
         }
-
-        if(*(timeInfo.oot)){
-          break;
-        }
-
         if (currScore > maxScore) {
           maxScore = currScore;
           bestMove = move;
@@ -219,7 +214,12 @@ int mvb3Recur(AlphaBetaInfo alphaBeta, int depth, Board b, TimeInfo timeInfo, st
                 }
                 alphaBeta.alpha = maxScore;
             }
-        }       
+        }  
+        
+        if(*(timeInfo.oot)){
+          return 0;
+        }
+     
     }
     if(alphaBeta.alpha != oldAlpha){
       storeHashEntry(b, bestMove, maxScore, depth, 'E', hashTable);
@@ -230,32 +230,28 @@ int mvb3Recur(AlphaBetaInfo alphaBeta, int depth, Board b, TimeInfo timeInfo, st
     return alphaBeta.alpha;
 }
 
-SearchResult mvb3(SearchInfo si){  
+SearchResult mvb3(SearchInfo si){ 
     AlphaBetaInfo alphaBeta = AlphaBetaInfo(-MAX_SCORE, MAX_SCORE);
     int dc = 0;
     bool oot = false;
     auto ti = TimeInfo(&dc, si.time, si.start, &oot);
     int score = mvb3Recur(alphaBeta, si.depth, si.b, ti, si.eval, &(si.hashTable));
     Move m = probePvMove(si.b, &(si.hashTable), &score);
-    return SearchResult(m, score, oot, true);
+    bool keep = m.from >= 0;
+    return SearchResult(m, score, oot, keep);
     }
 
-Move getBestMove(
-    Board b, std::function<SearchResult(SearchInfo)> search,
-    std::function<int(Board)> eval, std::function<int(int)> timeManager,
-    int time) {
-  int thinkingTime = timeManager(time);
+Move getBestMove(Board b, EngineInfo engineInfo, int time) {
+  int thinkingTime = engineInfo.timeManager(time);
   int depth = 1;
   int maxScore;
   Move bestMove = Move();
   Move gbestMove = Move();
   SearchResult s = SearchResult();
-  std::chrono::_V2::system_clock::time_point start = std::chrono::system_clock::now();
+  std::chrono::_V2::system_clock::time_point start = std::chrono::high_resolution_clock::now();
   std::chrono::duration<double, std::milli> duration;
-  HashTable ht;
-  allocateHashTable(&ht, 2000);
   while (true) {
-    s = search(SearchInfo(b, depth, eval, thinkingTime, ht, start));
+    s = engineInfo.search(SearchInfo(b, depth, engineInfo.eval, thinkingTime, engineInfo.hashTable, start));
     bestMove = s.move;
     maxScore = s.score;
     if(s.keepResult){
@@ -282,6 +278,5 @@ Move getBestMove(
     }
     depth++;
   }
-  freeHashTable(&ht);
   return gbestMove;
 }

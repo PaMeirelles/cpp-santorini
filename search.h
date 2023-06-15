@@ -42,14 +42,17 @@ struct TimeInfo{
 
     TimeInfo(int * dc, int t, std::chrono::_V2::system_clock::time_point s, bool * o);
 };
+struct EngineInfo {
+  std::function<SearchResult(SearchInfo)> search;
+  std::function<int(Board)> eval;
+  std::function<int(int)> timeManager;
+  HashTable hashTable;
 
+};
 SearchResult alphabeta(SearchInfo searchInfo);
 SearchResult negamax(SearchInfo searchInfo);
 SearchResult mvb3(SearchInfo si);
-Move getBestMove(
-    Board b, std::function<SearchResult(SearchInfo)> search,
-    std::function<int(Board)> eval, std::function<int(int)> timeManager,
-    int time);
+Move getBestMove(Board b, EngineInfo engineInfo, int time);
 #define VERBOSE true
 
 #endif

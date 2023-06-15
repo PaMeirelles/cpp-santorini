@@ -17,5 +17,5 @@ void play(int time, int numMatches, std::string playerA, std::string playerB);
 void playSingleMatch(int time, std::string playerA, std::string playerB, int pos);
 void heal(int time);
 #define CLOCK true
-#define BOARD true
+#define BOARD false
 #endif  // MATCH_H

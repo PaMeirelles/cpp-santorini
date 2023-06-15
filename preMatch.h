@@ -16,12 +16,7 @@
 #include "eval.h"
 #include "search.h"
 #include "timeManagement.h"
-
-struct EngineInfo {
-  std::function<SearchResult(SearchInfo)> search;
-  std::function<int(Board)> eval;
-  std::function<int(int)> timeManager;
-};
+#include "hashTable.h"
 struct Entry {
     std::string starting_pos;
     std::string player_a;
