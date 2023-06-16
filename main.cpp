@@ -4,5 +4,5 @@
 #include "hashTable.h"
 
 int main() { 
-    play(1000 * 60 * 1, 12, "Ascendant", "Cosmic");
+    play(1000 * 60 * 30, 1, "Cosmic", "Dream");
  }

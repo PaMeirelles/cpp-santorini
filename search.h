@@ -51,8 +51,10 @@ struct EngineInfo {
 };
 SearchResult alphabeta(SearchInfo searchInfo);
 SearchResult negamax(SearchInfo searchInfo);
-SearchResult mvb3(SearchInfo si);
+SearchResult mvb15(SearchInfo si);
+SearchResult mvb31(SearchInfo si);
 Move getBestMove(Board b, EngineInfo engineInfo, int time);
-#define VERBOSE false
+std::vector<Move> bucketOrder(std::vector<Move> moves, HashTable * hashTable, Board b, int depth);
+#define VERBOSE true
 
 #endif
