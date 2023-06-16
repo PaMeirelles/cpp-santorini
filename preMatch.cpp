@@ -135,10 +135,15 @@ EngineInfo assemblyEngine(std::string name) {
     eInfo.timeManager = et_s;
   }  
     else if(name == "Cosmic"){
-    eInfo.search = mvb3;
+    eInfo.search = mvb15;
     eInfo.eval = nh_s;
     eInfo.timeManager = et_s;
   }  
+    else if(name == "Dream"){
+    eInfo.search = mvb31;
+    eInfo.eval = nh_s;
+    eInfo.timeManager = et_s;
+  }    
    else {
     throw std::runtime_error("Invalid engine");
   }

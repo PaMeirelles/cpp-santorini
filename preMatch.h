@@ -17,6 +17,7 @@
 #include "search.h"
 #include "timeManagement.h"
 #include "hashTable.h"
+
 struct Entry {
     std::string starting_pos;
     std::string player_a;
