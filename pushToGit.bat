@@ -10,5 +10,3 @@ git commit -m "%commit_message%"
 
 REM Push changes to remote repository
 git push
-
-pause
