@@ -4,5 +4,8 @@
 #include "hashTable.h"
 
 int main() { 
-    play(1000 * 60 * 1, 40, "Ascendant", "Cosmic");
+    while (true){
+        system(".\\pushToGit.bat");
+        play(1000 * 60 * 1, 12, "Ascendant", "Cosmic");
+    }
  }
