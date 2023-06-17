@@ -7,6 +7,7 @@ int main() {
     while (true){
         system("python core.py");
         system(".\\pushToGit.bat");
-        play(1000 * 60 * 1, 12, "Ascendant", "Cosmic");
+        heal(1000 * 60);
+        play(1000 * 60 * 1, 20, "Ascendant", "Cosmic");
     }
  }
