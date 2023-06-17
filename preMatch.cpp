@@ -30,7 +30,7 @@ std::vector<int> getValidPositions(const std::string& playerA, const std::string
         std::getline(ss, result, ',');
 
         // Check if the match involves playerA and playerB
-        if (playerARecord == playerA && playerBRecord == playerB) {
+        if ((playerARecord == playerA && playerBRecord == playerB) || (playerARecord == playerB && playerBRecord == playerA)) {
           int startingPosition = std::stoi(startingPos);
           playedPositions.insert(startingPosition);
         }
