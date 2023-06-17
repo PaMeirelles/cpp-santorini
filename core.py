@@ -75,4 +75,4 @@ def adjust_elos(n, anchor, first=True):
     return adjust_elos(n - 1, anchor, False)
 
 fill_data(60000)
-adjust_elos(10, ("Titan", 1000))
+adjust_elos(100, ("Titan", 1000))
