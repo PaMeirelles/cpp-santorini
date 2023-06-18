@@ -145,7 +145,7 @@ EngineInfo assemblyEngine(std::string name) {
     eInfo.timeManager = et_s;
   } 
     else if(name == "Eclipse"){
-    eInfo.search = mvb31;
+    eInfo.search = mvb15;
     eInfo.eval = ss_h;
     eInfo.timeManager = et_s;
   }    

@@ -147,7 +147,7 @@ std::vector<Move> Board::gen_moves(int player) {
       } else {
         toBuild = getNeighbors(nb);
         for (int b : toBuild) {
-          if (!isFree(b)) {
+          if (!isFree(b) && b != currW) {
             continue;
           }
           moves.push_back(Move(currW, nb, b, isClimb, neighborH));
