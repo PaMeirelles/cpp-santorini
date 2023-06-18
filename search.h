@@ -55,7 +55,6 @@ SearchResult mvb15(SearchInfo si);
 SearchResult mvb31(SearchInfo si);
 Move getBestMove(Board b, EngineInfo engineInfo, int time);
 std::vector<Move> bucketOrder(std::vector<Move> moves, HashTable * hashTable, Board b, int depth);
-SearchResult mvbNovo(SearchInfo si);
-#define VERBOSE false
+#define VERBOSE true
 
 #endif
