@@ -22,7 +22,12 @@ int et_f(TMInfo info){
 }
 
 int estimatedGameLength(int remainingTime, int ply, int a){
-    return remainingTime / (a - ply);
+    if((a - (ply / 2)) != 0){
+        return remainingTime / (a - (ply / 2));
+    }
+    else{
+        return remainingTime;
+    }
 }
 
 int eg_c(TMInfo info){
