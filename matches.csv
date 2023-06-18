@@ -8593,3 +8593,5 @@ id,starting_pos,player_a,player_b,time_a,time_b,result
 8591,9149,Cosmic,Ascendant,60000,60000,1
 8592,9245,Ascendant,Cosmic,60000,60000,-1
 8593,9245,Cosmic,Ascendant,60000,60000,1
+8594,19378,Eclipse,Cosmic,60000,60000,1
+8595,2531,Cosmic,Eclipse,60000,60000,1
