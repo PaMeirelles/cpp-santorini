@@ -8813,3 +8813,10 @@ id,starting_pos,player_a,player_b,time_a,time_b,result
 8811,35222,Cosmic,Pilot,60000,60000,-1
 8812,35223,Pilot,Cosmic,60000,60000,-1
 8813,35223,Cosmic,Pilot,60000,60000,-1
+8814,30183,Eclipse,Cosmic,60000,60000,1
+8815,41524,Cosmic,Eclipse,60000,60000,1
+8816,12243,Eclipse,Cosmic,60000,60000,-1
+8817,41399,Cosmic,Eclipse,60000,60000,-1
+8818,12242,Eclipse,Cosmic,60000,60000,-1
+8819,38399,Cosmic,Eclipse,60000,60000,1
+8820,12011,Eclipse,Cosmic,60000,60000,-1

@@ -65,7 +65,17 @@ MatchResult playMatch(int time, int startingPos, EngineInfo engineA, EngineInfo 
             freeHashTable(&(engineB.hashTable));
             return result; // Return the MatchResult struct with the result and moves played
         }
-        b.makeMove(move);
+        try{
+            b.makeMove(move);
+        }
+        catch (const std::runtime_error& e){
+            MatchResult result;
+            result.result = b.turn * -4;
+            result.moves = moves;
+            freeHashTable(&(engineA.hashTable));
+            freeHashTable(&(engineB.hashTable));            
+            return result; // Return the MatchResult struct with the result and moves played
+        }
         if (b.gen_moves(b.turn).empty()) {
             MatchResult result;
             result.result = b.turn * 2;
