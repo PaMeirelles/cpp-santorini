@@ -7,7 +7,7 @@
 using namespace std;
 
 int main() { 
-    play(1000 * 60 * 30, 1, "Cosmic", "Pilot");
+    // play(1000 * 60 * 30, 1, "Cosmic", "Pilot");
 
     while (true){
         system("python core.py");
