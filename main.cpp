@@ -7,14 +7,14 @@
 using namespace std;
 
 int main() { 
-    play(1000 * 60 * 30, 1, "Cosmic", "Eclipse");
+    // play(1000 * 60 * 30, 1, "Cosmic", "Eclipse");
 
-    // while (true){
-    //     system("python core.py");
-    //     system(".\\pushToGit.bat");
-    //     heal(1000 * 60);
-    //     play(1000 * 60 * 1, 50, "Ascendant", "Cosmic");
-    // }
+    while (true){
+        system("python core.py");
+        system(".\\pushToGit.bat");
+        heal(1000 * 60);
+        play(1000 * 60 * 1, 50, "Eclipse", "Cosmic");
+    }
     // int squares[25] = 
     //     {1, 0, 4, 2, 0,
     //      1, 0, 1, 3, 1,
