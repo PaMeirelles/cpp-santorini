@@ -1,6 +1,7 @@
 #include "search.h"
 #include "eval.h"
 #include "hashTable.h"
+#include "timeManagement.h"
 #include <chrono>
 
 std::string editScore(int score, int depth){
@@ -354,7 +355,7 @@ SearchResult mvb31(SearchInfo si){
     return SearchResult(m, score, oot, keep);
     }
 Move getBestMove(Board b, EngineInfo engineInfo, int time) {
-  int thinkingTime = engineInfo.timeManager(time);
+  int thinkingTime = engineInfo.timeManager(TMInfo(time, b.ply));
   int depth = 1;
   int maxScore;
   Move bestMove = Move();

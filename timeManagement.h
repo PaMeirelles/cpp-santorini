@@ -1,4 +1,16 @@
+#ifndef TIME_MANAGEMENT_H
+#define TIME_MANAGEMENT_H
+
+struct TMInfo {
+    int remainingTime;
+    int ply;
+
+    TMInfo(int remainingTime, int ply);
+};
+
 int estimatedTurnsLeft(int remainingTime, int a);
-int et_s(int remainingTime);
-int et_p(int remainingTime);
-int et_f(int remainingTime);
+int et_s(TMInfo info);
+int et_p(TMInfo info);
+int et_f(TMInfo info);
+
+#endif

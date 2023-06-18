@@ -7,6 +7,7 @@ struct Board {
     int squares[25];
     int workers[4];
     int turn;
+    int ply;
 
     Board(int);
     Board(const int (&w)[4], const int (&s)[25]);

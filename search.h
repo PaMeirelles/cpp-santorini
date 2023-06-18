@@ -4,6 +4,7 @@
 #include <functional>
 #include "board.h"
 #include "hashTable.h"
+#include "timeManagement.h"
 #include <chrono>
 
 struct AlphaBetaInfo{
@@ -45,10 +46,10 @@ struct TimeInfo{
 struct EngineInfo {
   std::function<SearchResult(SearchInfo)> search;
   std::function<int(Board)> eval;
-  std::function<int(int)> timeManager;
+  std::function<int(TMInfo)> timeManager;
   HashTable hashTable;
-
 };
+
 SearchResult alphabeta(SearchInfo searchInfo);
 SearchResult negamax(SearchInfo searchInfo);
 SearchResult mvb15(SearchInfo si);

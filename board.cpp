@@ -13,6 +13,7 @@ Board::Board(const int (&w)[4]) {
     workers[i] = w[i];
   }
   turn = 1;
+  ply = 0;
 }
 
 Board::Board(int startingPos) {
@@ -27,6 +28,7 @@ Board::Board(int startingPos) {
     workers[i] = w[i];
   }
   turn = 1;
+  ply = 0;
 }
 
 Board::Board(const int (&w)[4], const int (&s)[25]) {
@@ -40,6 +42,7 @@ Board::Board(const int (&w)[4], const int (&s)[25]) {
     workers[i] = w[i];
   }
   turn = 1;
+  ply = 0;
 }
 
 void Board::print() const {
@@ -73,6 +76,7 @@ Board::Board() {
     workers[i] = w[i];
   }
   turn = 1;
+  ply = 0;
 }
 
 int Board::getWorkerHeight(int workerId) { return squares[workers[workerId]]; }
@@ -114,6 +118,7 @@ void Board::makeMove(Move move) {
 
   squares[move.build]++;
   turn *= -1;
+  ply++;
 }
 
 std::vector<Move> Board::gen_moves(int player) {
@@ -205,4 +210,5 @@ void Board::unmakeMove(Move move) {
   }
   turn *= -1;
   squares[move.build]--;
+  ply--;
 }

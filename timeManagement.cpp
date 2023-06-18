@@ -1,15 +1,22 @@
+#include "timeManagement.h"
+
+TMInfo::TMInfo(int r, int p){
+    remainingTime = r;
+    ply = p;
+}
+
 int estimatedTurnsLeft(int remainingTime, int a){
     return remainingTime / a;
 }
 
-int et_s(int remainingTime){
-    return estimatedTurnsLeft(remainingTime, 15);
+int et_s(TMInfo info){
+    return estimatedTurnsLeft(info.remainingTime, 15);
 }
 
-int et_p(int remainingTime){
-    return estimatedTurnsLeft(remainingTime, 8);
+int et_p(TMInfo info){
+    return estimatedTurnsLeft(info.remainingTime, 8);
 }
 
-int et_f(int remainingTime){
-    return estimatedTurnsLeft(remainingTime, 25);
+int et_f(TMInfo info){
+    return estimatedTurnsLeft(info.remainingTime, 25);
 }
