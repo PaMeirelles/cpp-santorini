@@ -148,7 +148,12 @@ EngineInfo assemblyEngine(std::string name) {
     eInfo.search = mvb15;
     eInfo.eval = ss_h;
     eInfo.timeManager = et_s;
-  }    
+  }   
+    else if(name == "Pilot"){
+    eInfo.search = mvb15;
+    eInfo.eval = nh_s;
+    eInfo.timeManager = eg_c;
+  }   
    else {
     throw std::runtime_error("Invalid engine");
   }

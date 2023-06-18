@@ -20,3 +20,11 @@ int et_p(TMInfo info){
 int et_f(TMInfo info){
     return estimatedTurnsLeft(info.remainingTime, 25);
 }
+
+int estimatedGameLength(int remainingTime, int ply, int a){
+    return remainingTime / (a - ply);
+}
+
+int eg_c(TMInfo info){
+    return estimatedGameLength(info.remainingTime, info.ply, 40);
+}
