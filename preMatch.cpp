@@ -154,6 +154,11 @@ EngineInfo assemblyEngine(std::string name) {
     eInfo.eval = nh_s;
     eInfo.timeManager = eg_c;
   }   
+    else if(name == "Harmony"){
+    eInfo.search = mvb15;
+    eInfo.eval = nh_s;
+    eInfo.timeManager = withEmerg;
+  }   
    else {
     throw std::runtime_error("Invalid engine");
   }

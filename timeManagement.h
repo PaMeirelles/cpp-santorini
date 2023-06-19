@@ -13,4 +13,5 @@ int et_s(TMInfo info);
 int et_p(TMInfo info);
 int et_f(TMInfo info);
 int eg_c(TMInfo info);
+int withEmerg(TMInfo info);
 #endif

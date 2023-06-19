@@ -33,3 +33,10 @@ int estimatedGameLength(int remainingTime, int ply, int a){
 int eg_c(TMInfo info){
     return estimatedGameLength(info.remainingTime, info.ply, 40);
 }
+
+int withEmerg(TMInfo info){
+    if(info.ply > 50){
+        return estimatedGameLength(info.remainingTime, info.ply, 40);
+    }
+    return estimatedGameLength(info.remainingTime, info.ply, 28);
+}
