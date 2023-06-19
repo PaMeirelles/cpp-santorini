@@ -161,5 +161,5 @@ def generate_game_report():
 
 
 print(calculate_white_wr())
-match_lenght()
+# match_lenght()
 generate_game_report()
