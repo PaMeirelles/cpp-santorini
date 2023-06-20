@@ -160,7 +160,7 @@ EngineInfo assemblyEngine(std::string name) {
     eInfo.timeManager = withEmerg;
   }   
    else {
-    throw std::runtime_error("Invalid engine");
+    throw std::runtime_error("Invalid engine: " + name);
   }
   return eInfo;
 }
