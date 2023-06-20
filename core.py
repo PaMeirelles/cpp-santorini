@@ -1,5 +1,5 @@
 import pandas as pd
-from math import log10
+from math import log10, sqrt
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -74,5 +74,28 @@ def adjust_elos(n, anchor, first=True):
     print(f"Adjusting...{n} left")
     return adjust_elos(n - 1, anchor, False)
 
+def calculate_confidence_interval(n, p):
+    q = 1-p
+    a = sqrt(p * q / n) * 1.64
+    return elo_diff(0.5+a)
+
+def process_player_csv(player):
+    df = pd.read_csv(f"data/{player}.csv")
+    df["confidence interval"] = df.apply(lambda row: calculate_confidence_interval(row["matches"], float(row["wr"].strip("%")) / 100), axis=1)
+    df["player"] = player
+    return df[["player", "opponent", "confidence interval"]]
+
+def fill_confidence_interval():
+    elos = pd.read_csv("elos.csv")
+    player = elos["player"]
+    df = pd.DataFrame()
+    for p in player:
+        df = pd.concat([df, process_player_csv(p)])
+    ordered =  df.sort_values(["confidence interval"], ascending=False).reset_index(drop=True)
+    unique = ordered[ordered.index % 2 == 0].reset_index(drop=True)
+    unique.to_csv("confidence_interval.csv", index=False, float_format='%.2f')
+
+fill_confidence_interval()
 fill_data(60000)
 adjust_elos(100, ("Titan", 1000))
+

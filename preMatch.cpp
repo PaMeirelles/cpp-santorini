@@ -213,4 +213,35 @@ std::unordered_set<Entry, EntryHash, EntryEqual> findEntriesWithNoPair(int targe
     file.close();
     return pairs;
 }
+std::vector<std::string> getHighestConfidenceRange() {
+    auto filename = "confidence_interval.csv";
+    std::vector<std::string> playerAndOpponent;
+    std::ifstream file(filename);
+    
+    if (file) {
+        std::string line;
+        if (std::getline(file, line)) {
+            std::stringstream ss(line);
+            std::string cell;
+
+            if (std::getline(ss, cell, ',')) {
+                playerAndOpponent.push_back(cell);  // Add 'player' to the vector
+            } else {
+                std::cerr << "Error: Insufficient elements in the first row." << std::endl;
+            }
+
+            if (std::getline(ss, cell, ',')) {
+                playerAndOpponent.push_back(cell);  // Add 'opponent' to the vector
+            } else {
+                std::cerr << "Error: Insufficient elements in the first row." << std::endl;
+            }
+        }
+        
+        file.close();
+    } else {
+        std::cerr << "Failed to open file: " << filename << std::endl;
+    }
+
+    return playerAndOpponent;
+}
 

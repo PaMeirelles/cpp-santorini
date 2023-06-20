@@ -44,4 +44,5 @@ std::vector<int> getValidPositions(const std::string& playerA, const std::string
 std::set<int> getPositionsForMatch(std::string playerA, std::string playerB, int n);
 EngineInfo assemblyEngine(std::string name);
 std::unordered_set<Entry, EntryHash, EntryEqual> findEntriesWithNoPair(int targetTime);
+std::vector<std::string> getHighestConfidenceRange();
 #endif  // PRE_MATCH_H
