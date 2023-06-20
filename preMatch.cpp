@@ -218,6 +218,9 @@ std::vector<std::string> getHighestConfidenceRange() {
     std::vector<std::string> playerAndOpponent;
     std::ifstream file(filename);
     
+    std::string header;
+    std::getline(file, header);
+
     if (file) {
         std::string line;
         if (std::getline(file, line)) {
