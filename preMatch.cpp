@@ -129,11 +129,6 @@ EngineInfo assemblyEngine(std::string name) {
     eInfo.eval = nh_s;
     eInfo.timeManager = et_f;
   }  
-    else if(name == "Whisper"){
-    eInfo.search = alphabeta;
-    eInfo.eval = nh_s;
-    eInfo.timeManager = et_s;
-  }  
     else if(name == "Cosmic"){
     eInfo.search = mvb15;
     eInfo.eval = nh_s;
@@ -162,6 +157,11 @@ EngineInfo assemblyEngine(std::string name) {
     else if(name == "Angel"){
     eInfo.search = mvb15;
     eInfo.eval = nh_s_1;
+    eInfo.timeManager = et_s;
+  }   
+    else if(name == "Vortex"){
+    eInfo.search = mvb15;
+    eInfo.eval = db_s;
     eInfo.timeManager = et_s;
   }   
    else {

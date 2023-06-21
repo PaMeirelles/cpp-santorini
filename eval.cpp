@@ -74,7 +74,7 @@ int nh_a(Board board){
 }
 
 int db_s(Board board){
-    return neighborHeight(9, 3, 1, board);
+    return doublePH(9, 3, 1, board);
 }
 
 int dist(int posW1, int posW2){
