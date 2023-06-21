@@ -18,5 +18,5 @@ void playSingleMatch(int time, std::string playerA, std::string playerB, int pos
 void heal(int time);
 void playHighestConfidence(int time, int blockSize);
 #define CLOCK true
-#define BOARD false
+#define BOARD true
 #endif  // MATCH_H

@@ -158,6 +158,11 @@ EngineInfo assemblyEngine(std::string name) {
     eInfo.search = mvb15;
     eInfo.eval = nh_s;
     eInfo.timeManager = withEmerg;
+  }  
+    else if(name == "Angel"){
+    eInfo.search = mvb15;
+    eInfo.eval = nh_s_1;
+    eInfo.timeManager = et_s;
   }   
    else {
     throw std::runtime_error("Invalid engine: " + name);
@@ -217,7 +222,7 @@ std::vector<std::string> getHighestConfidenceRange() {
     auto filename = "confidence_interval.csv";
     std::vector<std::string> playerAndOpponent;
     std::ifstream file(filename);
-    
+
     std::string header;
     std::getline(file, header);
 

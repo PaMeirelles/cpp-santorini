@@ -7,7 +7,7 @@
 using namespace std;
 
 int main() { 
-    // play(1000 * 60 * 5, 1, "Harmony", "Pilot");
+    // play(1000 * 60 * 30, 1, "Cosmic", "Angel");
     int defaultTime = 1000 * 60;
     while (true){
         system("python core.py");
@@ -15,4 +15,8 @@ int main() {
         heal(defaultTime);
         playHighestConfidence(defaultTime, 12);
     }
+    // int w[4] = {0, 12, 1, 2};
+    // Board b = Board(w);
+    // std::cout << nh_s(b) << std::endl;
+    // std::cout << nh_s_1(b) << std::endl;
  }

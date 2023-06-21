@@ -29,6 +29,18 @@ int positionHeight(int a, int b, int c, Board board, std::function<int(int)> p){
     return score;
 }
 
+int communistPositionHeight(int a, int b, int c, Board board, std::function<int(int)> p){
+    int scoreA = 1;
+    int scoreB = 1;
+    for(int i=0; i < 2; i++){
+        scoreA *= (a * pow(b, board.getWorkerHeight(i)) + c * p(board.getWorkerPos(i))); 
+    }  
+    for(int i=2; i < 4; i++){
+        scoreB *= (a * pow(b, board.getWorkerHeight(i)) + c * p(board.getWorkerPos(i))); 
+    }   
+    return scoreA - scoreB;  
+}
+
 int neighborHeightFunc(int pos){
     return numNeighbors[pos];
 }
@@ -39,13 +51,20 @@ int doubleNeighborHeightFunc(int pos){
 int neighborHeight(int a, int b, int c, Board board){
     return positionHeight(a, b, c, board, neighborHeightFunc);
 }
+
+int communistNeighborHeight(int a, int b, int c, Board board){
+    return communistPositionHeight(a, b, c, board, neighborHeightFunc);
+}
+
 int doublePH(int a, int b, int c, Board board){
     return positionHeight(a, b, c, board, doubleNeighborHeightFunc);
 }
 int nh_s(Board board){
     return neighborHeight(6, 2, 1, board);
 }
-
+int nh_s_1(Board board){
+    return communistNeighborHeight(6, 2, 1, board);
+}
 int nh_c(Board board){
     return neighborHeight(4, 3, 3, board);
 }
