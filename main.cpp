@@ -9,7 +9,7 @@ using namespace std;
 int main() { 
     // play(1000 * 60 * 30, 1, "Cosmic", "Angel");
     int defaultTime = 1000 * 60;
-    play(defaultTime, 1, "Cosmic", "Angel");
+    play(defaultTime, 12, "Cosmic", "Angel");
     while (true){
         system("python core.py");
         system(".\\pushToGit.bat");
