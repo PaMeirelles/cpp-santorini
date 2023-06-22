@@ -10363,3 +10363,4 @@ id,starting_pos,player_a,player_b,time_a,time_b,result
 2203,38283,Cosmic,Vortex,60000,60000,1
 2204,98887,Vortex,Cosmic,60000,60000,-1
 2205,39043,Cosmic,Vortex,60000,60000,-1
+2206,39043,Vortex,Cosmic,60000,60000,1
