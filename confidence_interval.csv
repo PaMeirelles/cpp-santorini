@@ -1,13 +1,13 @@
 player,opponent,confidence interval
-Vortex,Cosmic,20.90
-Ruler,Titan,20.80
+Titan,Ruler,20.80
 Ascendant,Aegis,20.79
 Harmony,Pilot,20.74
 Ascendant,Ranger,20.73
-Angel,Cosmic,20.67
-Eclipse,Cosmic,20.62
-Cosmic,Dream,20.52
+Cosmic,Eclipse,20.62
+Cosmic,Vortex,20.57
+Dream,Cosmic,20.52
 Ascendant,Titan,20.44
-Fisher,Titan,18.11
-Pilot,Cosmic,12.07
+Cosmic,Angel,20.35
+Titan,Fisher,18.11
+Cosmic,Pilot,12.07
 Cosmic,Ascendant,11.72
