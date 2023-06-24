@@ -7,9 +7,8 @@
 using namespace std;
 
 int main() { 
-    // play(1000 * 60 * 30, 1, "Cosmic", "Vortex");
     int defaultTime = 1000 * 60;
-    // play(defaultTime, 12, "Cosmic", "Vortex");
+    play(defaultTime, 12, "Infinity", "Vortex");
     while (true){
         system("python core.py");
         system(".\\pushToGit.bat");
