@@ -1,12 +1,12 @@
 player,opponent,confidence interval
-Ascendant,Aegis,18.31
 Harmony,Pilot,18.26
-Ascendant,Ranger,18.25
-Cosmic,Angel,18.19
+Ranger,Ascendant,18.25
+Angel,Cosmic,18.19
 Vortex,Cosmic,18.16
 Dream,Cosmic,18.16
 Titan,Fisher,18.11
 Ruler,Titan,18.11
+Aegis,Ascendant,18.09
 Cosmic,Eclipse,17.99
 Ascendant,Titan,17.73
 Cosmic,Pilot,12.07
