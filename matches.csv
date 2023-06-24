@@ -13295,3 +13295,10 @@ id,starting_pos,player_a,player_b,time_a,time_b,result
 5198,37590,Aegis,Ascendant,60000,60000,1
 5199,37594,Ascendant,Aegis,60000,60000,-1
 5200,37594,Aegis,Ascendant,60000,60000,1
+5201,23596,Harmony,Pilot,60000,60000,1
+5202,23596,Pilot,Harmony,60000,60000,1
+5203,26594,Harmony,Pilot,60000,60000,-1
+5204,26594,Pilot,Harmony,60000,60000,1
+5205,27214,Harmony,Pilot,60000,60000,1
+5206,27214,Pilot,Harmony,60000,60000,-1
+5207,27215,Harmony,Pilot,60000,60000,1
