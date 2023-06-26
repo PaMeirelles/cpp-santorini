@@ -6,18 +6,24 @@
 
 using namespace std;
 
-int main() { 
-    play(1000 * 60 * 10, 1, "Infinity", "Divine");
+int main() {   
+    // EngineInfo engineA = assemblyEngine("Infinity");
+    // EngineInfo engineB = assemblyEngine("Divine");
+    // allocateHashTable(&(engineA.hashTable), 1000);
+    // allocateHashTable(&(engineB.hashTable), 1000);
+
+    // Board b = Board();
+
+    // getBestMove(b, engineA, 1000 * 60 * 25);
+    // getBestMove(b, engineB, 1000 * 60 * 25);
+
+    // play(1000 * 60 * 10, 1, "Infinity", "Divine");
     int defaultTime = 1000 * 60;
-    // play(defaultTime, 12, "Infinity", "Missing");
+    play(defaultTime, 12, "Infinity", "Divine");
     while (true){
         system("python core.py");
         system(".\\pushToGit.bat");
         heal(defaultTime);
         playHighestConfidence(defaultTime, 60);
     }
-    int w[4] = {0, 12, 1, 2};
-    Board b = Board(w);
-    std::cout << nh_s(b) << std::endl;
-    std::cout << nh_s_1(b) << std::endl;
  }

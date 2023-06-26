@@ -25,5 +25,4 @@ struct Board {
     int getHeight(int square);
 
 };
-#define WIN -1
 #endif

@@ -24,6 +24,7 @@ struct Move{
 };
 std::vector<int> getNeighbors(int n);
 #define HALF_MOVE -1
+#define WIN -3
 #define NO_MOVE Move(-2, -2, -2)
 #endif
 

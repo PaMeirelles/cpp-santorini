@@ -429,7 +429,7 @@ int mvb143Recur(AlphaBetaInfo alphaBeta, int depth, Board b, TimeInfo timeInfo, 
       return maxScore;
     }
     auto pvMove = probePvMove(b, hashTable, &currScore);
-    if(pvMove.from >= 0){
+    if(!(pvMove == NO_MOVE)){
       moveElementToFront(moves, pvMove);
     }
     for (Move move : moves) {
@@ -474,6 +474,6 @@ SearchResult mvb143(SearchInfo si){
     auto ti = TimeInfo(&dc, si.time, si.start, &oot);
     int score = mvb143Recur(alphaBeta, si.depth, si.b, ti, si.eval, &(si.hashTable));
     Move m = probePvMove(si.b, &(si.hashTable), &score);
-    bool keep = m.from >= 0;
+    bool keep = !(m == NO_MOVE);
     return SearchResult(m, score, oot, keep);
     }
