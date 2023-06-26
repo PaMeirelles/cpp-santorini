@@ -16745,3 +16745,11 @@ id,starting_pos,player_a,player_b,time_a,time_b,result
 16743,20706,Missing,Infinity,60000,60000,-1
 16744,21398,Infinity,Missing,60000,60000,1
 16745,21398,Missing,Infinity,60000,60000,1
+16746,1620,Infinity,Vortex,60000,60000,1
+16747,1620,Vortex,Infinity,60000,60000,1
+16748,1624,Infinity,Vortex,60000,60000,1
+16749,1624,Vortex,Infinity,60000,60000,1
+16750,1644,Infinity,Vortex,60000,60000,1
+16751,1644,Vortex,Infinity,60000,60000,1
+16752,1646,Infinity,Vortex,60000,60000,1
+16753,1646,Vortex,Infinity,60000,60000,1
