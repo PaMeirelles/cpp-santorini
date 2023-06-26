@@ -167,7 +167,12 @@ EngineInfo assemblyEngine(std::string name) {
     else if(name == "Infinity"){
     eInfo.search = mvb15;
     eInfo.eval = db_s;
-    eInfo.timeManager = et_p;
+    eInfo.timeManager = et_p; 
+  }   
+    else if(name == "Missing"){
+    eInfo.search = mvb15;
+    eInfo.eval = db_s;
+    eInfo.timeManager = withEmerg;
   }   
    else {
     throw std::runtime_error("Invalid engine: " + name);
