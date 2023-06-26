@@ -80,7 +80,7 @@ def calculate_confidence_interval(n, p):
     return elo_diff(0.5+a)
 
 def process_player_csv(player):
-    df = pd.read_csv(f"data/{player}.csv")
+    df = pd.read_csv(f"data/{player}.csv", dtype={'opponent': str})
     df["confidence interval"] = df.apply(lambda row: calculate_confidence_interval(row["matches"], float(row["wr"].strip("%")) / 100), axis=1)
     df["player"] = player
     return df[["player", "opponent", "confidence interval"]]
