@@ -52,7 +52,7 @@ def adjust_elos(n, anchor, first=True):
     elos = pd.read_csv("elos.csv")
     player = elos["player"]
     for p in player:
-        df = pd.read_csv(f"data/{p}.csv")
+        df = pd.read_csv(f"data/{p}.csv", dtype={'opponent': str})
         temp = df.merge(elos, left_on="opponent", right_on="player")
         if first:
             temp["elo"] = avg

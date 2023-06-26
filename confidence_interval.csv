@@ -1,14 +1,15 @@
 player,opponent,confidence interval
-Infinity,Vortex,45.52
+Missing,inf,116.83
+Infinity,Vortex,42.30
 Ascendant,Aegis,17.88
 Titan,Ruler,17.87
 Dream,Cosmic,17.83
-Ranger,Ascendant,17.81
-Harmony,Pilot,17.76
+Ascendant,Ranger,17.81
+Pilot,Harmony,17.76
 Cosmic,Angel,17.76
 Vortex,Cosmic,17.74
 Titan,Ascendant,17.73
-Eclipse,Cosmic,17.56
+Cosmic,Eclipse,17.56
 Pilot,Cosmic,12.07
-Cosmic,Ascendant,11.72
-Titan,Fisher,9.10
+Ascendant,Cosmic,11.72
+Fisher,Titan,9.10
