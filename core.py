@@ -96,6 +96,6 @@ def fill_confidence_interval():
     unique.to_csv("confidence_interval.csv", index=False, float_format='%.2f')
 
 fill_data(60000)
-adjust_elos(100, ("Titan", 1000))
+adjust_elos(600, ("Titan", 1000))
 fill_confidence_interval()
 

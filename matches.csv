@@ -16575,3 +16575,12 @@ id,starting_pos,player_a,player_b,time_a,time_b,result
 16573,117166,Titan,Fisher,60000,60000,1
 16574,117292,Fisher,Titan,60000,60000,1
 16575,117292,Titan,Fisher,60000,60000,1
+16576,6120,Infinity,Vortex,60000,60000,1
+16577,6120,Vortex,Infinity,60000,60000,1
+16578,6148,Infinity,Vortex,60000,60000,-1
+16579,6148,Vortex,Infinity,60000,60000,-1
+16580,8796,Infinity,Vortex,60000,60000,1
+16581,8796,Vortex,Infinity,60000,60000,1
+16582,8798,Infinity,Vortex,60000,60000,1
+16583,8798,Vortex,Infinity,60000,60000,1
+16584,8834,Infinity,Vortex,60000,60000,1

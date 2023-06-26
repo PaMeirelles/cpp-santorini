@@ -8,12 +8,12 @@ using namespace std;
 
 int main() { 
     int defaultTime = 1000 * 60;
-    play(defaultTime, 12, "Infinity", "Vortex");
+    // play(defaultTime, 12, "Infinity", "Vortex");
     while (true){
         system("python core.py");
         system(".\\pushToGit.bat");
         heal(defaultTime);
-        playHighestConfidence(defaultTime, 12);
+        playHighestConfidence(defaultTime, 60);
     }
     int w[4] = {0, 12, 1, 2};
     Board b = Board(w);
