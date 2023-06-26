@@ -7,6 +7,7 @@
 using namespace std;
 
 int main() { 
+    play(1000 * 60 * 10, 1, "Infinity", "Divine");
     int defaultTime = 1000 * 60;
     // play(defaultTime, 12, "Infinity", "Missing");
     while (true){

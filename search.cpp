@@ -279,7 +279,7 @@ std::vector<Move> bucketOrder(std::vector<Move> moves, HashTable * hashTable, Bo
     }
     return orderedMoves;
 }
-int mvb31Recur(AlphaBetaInfo alphaBeta, int depth, Board b, TimeInfo timeInfo, std::function<int(Board)> eval, HashTable * hashTable){
+int mvb127Recur(AlphaBetaInfo alphaBeta, int depth, Board b, TimeInfo timeInfo, std::function<int(Board)> eval, HashTable * hashTable){
     (*(timeInfo.diveCheck))++;
       if((*(timeInfo.diveCheck)) % 1000 == 0){
         auto end = std::chrono::high_resolution_clock::now();  
@@ -315,7 +315,7 @@ int mvb31Recur(AlphaBetaInfo alphaBeta, int depth, Board b, TimeInfo timeInfo, s
         }
         else{
           b.makeMove(move);
-          currScore = -mvb31Recur(AlphaBetaInfo(-alphaBeta.beta, -alphaBeta.alpha), depth-1, b, timeInfo, eval, hashTable);
+          currScore = -mvb127Recur(AlphaBetaInfo(-alphaBeta.beta, -alphaBeta.alpha), depth-1, b, timeInfo, eval, hashTable);
           b.unmakeMove(move);
         }
         if (currScore > maxScore) {
@@ -344,12 +344,12 @@ int mvb31Recur(AlphaBetaInfo alphaBeta, int depth, Board b, TimeInfo timeInfo, s
     return alphaBeta.alpha;
 }
 
-SearchResult mvb31(SearchInfo si){ 
+SearchResult mvb127(SearchInfo si){ 
     AlphaBetaInfo alphaBeta = AlphaBetaInfo(-MAX_SCORE, MAX_SCORE);
     int dc = 0;
     bool oot = false;
     auto ti = TimeInfo(&dc, si.time, si.start, &oot);
-    int score = mvb31Recur(alphaBeta, si.depth, si.b, ti, si.eval, &(si.hashTable));
+    int score = mvb127Recur(alphaBeta, si.depth, si.b, ti, si.eval, &(si.hashTable));
     Move m = probePvMove(si.b, &(si.hashTable), &score);
     bool keep = m.from >= 0;
     return SearchResult(m, score, oot, keep);
@@ -393,3 +393,87 @@ Move getBestMove(Board b, EngineInfo engineInfo, int time) {
   }
   return gbestMove;
 }
+int mvb143Recur(AlphaBetaInfo alphaBeta, int depth, Board b, TimeInfo timeInfo, std::function<int(Board)> eval, HashTable * hashTable){
+    (*(timeInfo.diveCheck))++;
+      if((*(timeInfo.diveCheck)) % 1000 == 0){
+        auto end = std::chrono::high_resolution_clock::now();  
+        auto duration =
+            std::chrono::duration_cast<std::chrono::milliseconds>(end - timeInfo.start);
+        if (duration.count() > timeInfo.time) {
+          *(timeInfo.oot) = true;
+          return 0;
+        }
+      }
+
+    if (depth == 0) {
+      return eval(b) * b.turn;
+    }
+    std::vector<Move> moves;
+    if(depth > 1){
+      moves = b.gen_moves(b.turn);
+    }
+    else{
+      moves = b.gen_half_moves(b.turn);
+    }
+    if (moves.size() == 0) {
+      return -MAX_SCORE - depth;
+    }
+
+    int maxScore = -MAX_SCORE * 100;
+    int currScore;
+    int oldAlpha = alphaBeta.alpha;
+    Move bestMove = moves[0];
+
+    if(probeHashEntry(b, hashTable, &bestMove, &maxScore, alphaBeta.alpha, alphaBeta.beta, depth)){
+      hashTable->cut++;
+      return maxScore;
+    }
+    auto pvMove = probePvMove(b, hashTable, &currScore);
+    if(pvMove.from >= 0){
+      moveElementToFront(moves, pvMove);
+    }
+    for (Move move : moves) {
+        if (move.build == WIN) {
+          currScore = MAX_SCORE+depth-1;
+        }
+        else{
+          b.makeMove(move);
+          currScore = -mvb143Recur(AlphaBetaInfo(-alphaBeta.beta, -alphaBeta.alpha), depth-1, b, timeInfo, eval, hashTable);
+          b.unmakeMove(move);
+        }
+        if (currScore > maxScore) {
+          maxScore = currScore;
+          bestMove = move;
+            if(maxScore > alphaBeta.alpha){
+                if(maxScore >= alphaBeta.beta){
+                    storeHashEntry(b, bestMove, alphaBeta.beta, depth, 'B', hashTable);
+                    return alphaBeta.beta;
+                }
+                alphaBeta.alpha = maxScore;
+            }
+        }  
+        
+        if(*(timeInfo.oot)){
+          return 0;
+        }
+     
+    }
+    if(alphaBeta.alpha != oldAlpha){
+      storeHashEntry(b, bestMove, maxScore, depth, 'E', hashTable);
+    }
+    else{
+      storeHashEntry(b, bestMove, alphaBeta.alpha, depth, 'A', hashTable);
+    }
+    return alphaBeta.alpha;
+}
+
+SearchResult mvb143(SearchInfo si){ 
+    AlphaBetaInfo alphaBeta = AlphaBetaInfo(-MAX_SCORE, MAX_SCORE);
+    int dc = 0;
+    bool oot = false;
+    auto ti = TimeInfo(&dc, si.time, si.start, &oot);
+    int score = mvb143Recur(alphaBeta, si.depth, si.b, ti, si.eval, &(si.hashTable));
+    Move m = probePvMove(si.b, &(si.hashTable), &score);
+    bool keep = m.from >= 0;
+    return SearchResult(m, score, oot, keep);
+    }

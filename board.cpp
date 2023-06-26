@@ -115,8 +115,9 @@ void Board::makeMove(Move move) {
     throw std::runtime_error(
         "Maximum number of squares already built at the specified position.");
   }
-
-  squares[move.build]++;
+  if(move.build != HALF_MOVE){
+    squares[move.build]++;
+  }
   turn *= -1;
   ply++;
 }
@@ -209,6 +210,43 @@ void Board::unmakeMove(Move move) {
         "Minimum number of squares already built at the specified position.");
   }
   turn *= -1;
-  squares[move.build]--;
+  if(move.build != HALF_MOVE){
+      squares[move.build]--;
+  }
   ply--;
+}
+std::vector<Move> Board::gen_half_moves(int player) {
+  int w[2];
+  int wId[2];
+  int currW;
+  int currH;
+  std::vector<int> neighbors;
+  std::vector<int> toBuild;
+  std::vector<Move> moves;
+  if (player == 1) {
+    w[0] = workers[0];
+    w[1] = workers[1];
+  } else {
+    w[0] = workers[2];
+    w[1] = workers[3];
+  }
+  for (int i = 0; i < 2; i++) {
+    currW = w[i];
+    neighbors = getNeighbors(currW);
+    currH = getHeight(currW);
+    int neighborH;
+    for (int nb : neighbors) {
+      neighborH = getHeight(nb);
+      bool isClimb = neighborH > currH;
+      if (!isFree(nb) || getHeight(nb) - currH > 1) {
+        continue;
+      }
+      if (squares[nb] == 3) {
+        moves.push_back(Move(currW, nb, WIN, isClimb, neighborH));
+      } else {
+        moves.push_back(Move(currW, nb, HALF_MOVE, isClimb, neighborH));
+      }
+    }
+  }
+  return moves;
 }

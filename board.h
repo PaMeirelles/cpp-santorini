@@ -20,6 +20,7 @@ struct Board {
     void makeMove (Move move);
     void unmakeMove (Move move);
     std::vector<Move> gen_moves(int player);
+    std::vector<Move> gen_half_moves(int player);
     bool isFree(int square);
     int getHeight(int square);
 

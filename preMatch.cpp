@@ -135,7 +135,7 @@ EngineInfo assemblyEngine(std::string name) {
     eInfo.timeManager = et_s;
   }  
     else if(name == "Dream"){
-    eInfo.search = mvb31;
+    eInfo.search = mvb127;
     eInfo.eval = nh_s;
     eInfo.timeManager = et_s;
   } 
@@ -174,6 +174,11 @@ EngineInfo assemblyEngine(std::string name) {
     eInfo.eval = db_s;
     eInfo.timeManager = withEmerg;
   }   
+    else if(name == "Divine"){
+    eInfo.search = mvb143;
+    eInfo.eval = db_s;
+    eInfo.timeManager = et_p;
+  }     
    else {
     throw std::runtime_error("Invalid engine: " + name);
   }
