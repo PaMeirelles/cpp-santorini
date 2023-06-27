@@ -16914,3 +16914,11 @@ id,starting_pos,player_a,player_b,time_a,time_b,result
 16912,19596,Divine,Infinity,60000,60000,1
 16913,19598,Infinity,Divine,60000,60000,-1
 16914,19598,Divine,Infinity,60000,60000,1
+16915,19596,Infinity,Missing,60000,60000,-1
+16916,1024,Divine,Infinity,60000,60000,1
+16917,1024,Infinity,Divine,60000,60000,1
+16918,1120,Divine,Infinity,60000,60000,1
+16919,1120,Infinity,Divine,60000,60000,1
+16920,1146,Divine,Infinity,60000,60000,-1
+16921,1146,Infinity,Divine,60000,60000,4
+16922,1148,Divine,Infinity,60000,60000,-1
