@@ -1,13 +1,7 @@
 player,opponent,confidence interval
-<<<<<<< HEAD
-Missing,Infinity,23.72
-Divine,Infinity,22.79
-Infinity,Vortex,22.60
-=======
-Divine,Infinity,20.87
 Infinity,Vortex,20.70
+Divine,Infinity,20.05
 Missing,Infinity,19.77
->>>>>>> 427514646f0f4728616e920b35d026655b9b7e95
 Aegis,Ascendant,17.88
 Titan,Ruler,17.87
 Dream,Cosmic,17.83
