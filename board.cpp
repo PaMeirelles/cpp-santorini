@@ -244,7 +244,7 @@ std::vector<Move> Board::gen_half_moves(int player) {
       if (squares[nb] == 3) {
         moves.push_back(Move(currW, nb, WIN, isClimb, neighborH));
       } else {
-        moves.push_back(Move(currW, nb, HALF_MOVE, isClimb, neighborH));
+        moves.push_back(Move(currW, nb, currW, isClimb, neighborH));
       }
     }
   }

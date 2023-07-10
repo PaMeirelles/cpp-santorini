@@ -11,7 +11,7 @@ def remove_whisper_entries(csv_file_path):
             writer.writeheader()
 
             for row in reader:
-                if row["player_a"] != "Whisper" and row["player_b"] != "Whisper":
+                if row["player_a"] != "Divine" and row["player_b"] != "Divine":
                     writer.writerow(row)
 
     # Replace the original file with the filtered one

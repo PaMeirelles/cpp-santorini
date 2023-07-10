@@ -19,7 +19,7 @@ int main() {
 
     // play(1000 * 60 * 10, 1, "Infinity", "Divine");
     int defaultTime = 1000 * 60;
-    // play(defaultTime, 12, "Infinity", "Divine");
+    play(defaultTime, 12, "Infinity", "Divine");
     while (true){
         system("python core.py");
         system(".\\pushToGit.bat");

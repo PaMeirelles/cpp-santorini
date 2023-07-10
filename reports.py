@@ -104,10 +104,10 @@ def generate_game_report():
             elif abs(result) == 2:
                 to_update["suffocation"] += 1 
                 overall_stats["suffocation"] += 1
-            elif abs(result == 3):
+            elif abs(result) == 3:
                 to_update["timeout"] += 1 
                 overall_stats["timeout"] += 1
-            elif abs(result == 4):
+            elif abs(result) == 4:
                 to_update["illegal_move"] += 1 
                 overall_stats["illegal_move"] += 1
 
@@ -129,10 +129,10 @@ def generate_game_report():
             elif abs(result) == 2:
                 to_update["suffocation"] += 1 
                 overall_stats["suffocation"] += 1
-            elif abs(result == 3):
+            elif abs(result) == 3:
                 to_update["timeout"] += 1 
                 overall_stats["timeout"] += 1
-            elif abs(result == 4):
+            elif abs(result) == 4:
                 to_update["illegal_move"] += 1 
                 overall_stats["illegal_move"] += 1
             
