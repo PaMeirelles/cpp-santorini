@@ -78,7 +78,7 @@ def generate_game_report():
     csv_file = "matches.csv"
     # Define counters for each player and result type
     players = {}
-    overall_stats = {"ascension": 0, "suffocation": 0, "timeout": 0}
+    overall_stats = {"ascension": 0, "suffocation": 0, "timeout": 0, "illegal_move": 0}
 
     # Open the CSV file and read the data
     with open(csv_file, 'r') as file:
@@ -90,8 +90,8 @@ def generate_game_report():
 
             # Update player A's stats
             if player_a not in players:
-                players[player_a] = {"wins": {"ascension": 0, "suffocation": 0, "timeout": 0, "total": 0},
-                                     "losses": {"ascension": 0, "suffocation": 0, "timeout": 0, "total": 0}}
+                players[player_a] = {"wins": {"ascension": 0, "suffocation": 0, "timeout": 0, "illegal_move": 0, "total": 0},
+                                     "losses": {"ascension": 0, "suffocation": 0, "timeout": 0, "illegal_move": 0,"total": 0}}
             
             if result > 0:
                 to_update = players[player_a]["wins"]
@@ -104,16 +104,19 @@ def generate_game_report():
             elif abs(result) == 2:
                 to_update["suffocation"] += 1 
                 overall_stats["suffocation"] += 1
-            else:
+            elif abs(result == 3):
                 to_update["timeout"] += 1 
                 overall_stats["timeout"] += 1
-            
+            elif abs(result == 4):
+                to_update["illegal_move"] += 1 
+                overall_stats["illegal_move"] += 1
+
             to_update["total"] += 1
 
             # Update player B's stats
             if player_b not in players:
-                players[player_b] = {"wins": {"ascension": 0, "suffocation": 0, "timeout": 0, "total": 0},
-                                     "losses": {"ascension": 0, "suffocation": 0, "timeout": 0, "total": 0}}
+                players[player_b] = {"wins": {"ascension": 0, "suffocation": 0, "timeout": 0, "illegal_move": 0, "total": 0},
+                                     "losses": {"ascension": 0, "suffocation": 0, "timeout": 0, "illegal_move": 0,"total": 0}}
             
             if result < 0:
                 to_update = players[player_b]["wins"]
@@ -126,9 +129,12 @@ def generate_game_report():
             elif abs(result) == 2:
                 to_update["suffocation"] += 1 
                 overall_stats["suffocation"] += 1
-            else:
+            elif abs(result == 3):
                 to_update["timeout"] += 1 
                 overall_stats["timeout"] += 1
+            elif abs(result == 4):
+                to_update["illegal_move"] += 1 
+                overall_stats["illegal_move"] += 1
             
             to_update["total"] += 1
 
@@ -142,10 +148,12 @@ def generate_game_report():
         print(f"  Ascension: {stats['wins']['ascension']} ({stats['wins']['ascension'] / stats['wins']['total'] * 100:.2f}%)")
         print(f"  Suffocation: {stats['wins']['suffocation']} ({stats['wins']['suffocation'] / stats['wins']['total'] * 100:.2f}%)")
         print(f"  Timeout: {stats['wins']['timeout']} ({stats['wins']['timeout'] / stats['wins']['total'] * 100:.2f}%)")
+        print(f"  Illegal move: {stats['wins']['illegal_move']} ({stats['wins']['illegal_move'] / stats['wins']['total'] * 100:.2f}%)")        
         print("Losses:")
         print(f"  Ascension: {stats['losses']['ascension']} ({stats['losses']['ascension'] / stats['losses']['total'] * 100:.2f}%)")
         print(f"  Suffocation: {stats['losses']['suffocation']} ({stats['losses']['suffocation'] / stats['losses']['total'] * 100:.2f}%)")
         print(f"  Timeout: {stats['losses']['timeout']} ({stats['losses']['timeout'] / stats['losses']['total'] * 100:.2f}%)")
+        print(f"  Illegal move: {stats['losses']['illegal_move']} ({stats['losses']['illegal_move'] / stats['losses']['total'] * 100:.2f}%)")        
         print(f"Total Games: {stats['wins']['total'] + stats['losses']['total']}")
         print("-----------------------")
     
@@ -156,10 +164,11 @@ def generate_game_report():
     print(f"Overall Ascension: {overall_stats['ascension']} ({overall_stats['ascension'] / overall_total * 100:.2f}%)")
     print(f"Overall Suffocation: {overall_stats['suffocation']} ({overall_stats['suffocation'] / overall_total * 100:.2f}%)")
     print(f"Overall Timeout: {overall_stats['timeout']} ({overall_stats['timeout'] / overall_total * 100:.2f}%)")
+    print(f"Overall Illegal Move: {overall_stats['illegal_move']} ({overall_stats['illegal_move'] / overall_total * 100:.2f}%)")
     print("-----------------------")
 
 
 
 print(calculate_white_wr())
-match_lenght()
+# match_lenght()
 generate_game_report()
