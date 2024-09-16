@@ -3,6 +3,7 @@
 #include "postMatch.h"
 #include "hashTable.h"
 #include "eval.h"
+#include "db_manager.h"
 
 using namespace std;
 
@@ -26,4 +27,5 @@ int main() {
     //     heal(defaultTime);
     //     playHighestConfidence(defaultTime, 60);
     // }
+    // add_moves();
  }

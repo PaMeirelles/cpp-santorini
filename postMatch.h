@@ -13,8 +13,6 @@ struct MatchResult {
     int result;
     vector<Move> moves;
 };
-void appendToCSV(const string& filename, const string& row);
-int findLowestUnusedID();
 void saveMoves(const vector<Move>& moves, int id);
-void registerMatch(int startingPos, string playerA, string playerB, int timeA, int timeB, MatchResult result);
+void registerMatch(int startingPos, const string& playerA, const string& playerB, int timeA, int timeB, const MatchResult& result);
 #endif // POST_MATCH_H

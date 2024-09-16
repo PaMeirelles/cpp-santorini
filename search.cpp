@@ -7,42 +7,45 @@
 #include "timeManagement.h"
 #include <chrono>
 
-std::string editScore(int score, int depth){
+using namespace std;
+
+string editScore(const int score, const int depth){
     if(score > 9000){
-        return "#" + std::to_string((MAX_SCORE-score + depth + 1) / 2);
+        return "#" + to_string((MAX_SCORE-score + depth + 1) / 2);
     }
     if(score < -9000){
-        return "#" + std::to_string((MAX_SCORE+score - depth - 1) / 2);
+        return "#" + to_string((MAX_SCORE+score - depth - 1) / 2);
     }
-    return std::to_string(score);
+    return to_string(score);
 }
-TimeInfo::TimeInfo(int * dc, int t, std::chrono::_V2::system_clock::time_point s, bool * o){
+
+TimeInfo::TimeInfo(int * dc, const int t, const chrono::_V2::system_clock::time_point s, bool * o){
     diveCheck = dc;
     time = t;
     start = s;
     oot = o;
 }
 
-AlphaBetaInfo::AlphaBetaInfo(int alpha2, int beta2){
+AlphaBetaInfo::AlphaBetaInfo(const int alpha2, const int beta2){
     alpha = alpha2;
     beta = beta2;
 }
 
-SearchResult::SearchResult(Move m, int s, bool o){
+SearchResult::SearchResult(const Move &m, const int s, const bool o){
     move = m;
     score = s;
     outOftime = o;
     keepResult = !o;
 }
 
-SearchResult::SearchResult(Move m, int s, bool o, bool k){
+SearchResult::SearchResult(Move &m, const int s, const bool o, const bool k){
     move = m;
     score = s;
     outOftime = o;
     keepResult = k;
 }
 
-SearchInfo::SearchInfo(Board board, int d, std::function<int(Board)> e, int t, HashTable ht, std::chrono::_V2::system_clock::time_point st){
+SearchInfo::SearchInfo(const Board &board, int d, function<int(Board)> e, int t, const HashTable &ht, chrono::_V2::system_clock::time_point st){
   b = board;
   depth = d;
   eval = e;
@@ -51,60 +54,67 @@ SearchInfo::SearchInfo(Board board, int d, std::function<int(Board)> e, int t, H
   start = st;
 }
 
-bool compareMoves(const Move& a, const Move& b) {
-    int aDiff = a.toHeight - a.fromHeight;
-    int bDiff = b.toHeight - b.fromHeight;
+bool compareMoveHeightOnly(const Move& a, const Move& b) {
+  const int aDiff = a.toHeight - a.fromHeight;
+  const int bDiff = b.toHeight - b.fromHeight;
     return aDiff > bDiff;
 }
 
-SearchResult::SearchResult(){};
-SearchResult negamaxRecur(Board b, int depth, std::function<int(Board)> eval, int * diveCheck, int time, std::chrono::_V2::system_clock::time_point start) {
+SearchResult::SearchResult()= default;
+
+SearchResult negamaxRecur(Board b, const int depth, const function<int(Board)>& eval, int * diveCheck, const int time,
+  chrono::_V2::system_clock::time_point start) {
     (*diveCheck)++;
-    if(*diveCheck == 1000){
+    if(*diveCheck == DIVE_CHECK){
       *diveCheck = 0;
-      auto end = std::chrono::high_resolution_clock::now();  
-      auto duration =
-          std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+      const auto end = chrono::high_resolution_clock::now();
+      const auto duration = chrono::duration_cast<std::chrono::milliseconds>(end - start);
       if (duration.count() > time) {
-        return SearchResult(Move(), -MAX_SCORE, true);
+        return {Move(), -MAX_SCORE, true};
       }
     }
+
     if (depth == 0) {
-      return SearchResult(Move(), eval(b) * b.turn, false);
+      return {Move(), eval(b) * b.turn, false};
     }
-    std::vector<Move> moves = b.gen_moves(b.turn);
-    if (moves.size() == 0) {
-      return SearchResult(Move(), -MAX_SCORE - depth, false);
+
+    vector<Move> moves = b.gen_moves(b.turn);
+    if (moves.empty()) {
+      return {Move(), -MAX_SCORE - depth, false};
     }
+
     int maxScore = -MAX_SCORE * 100;
-    int currScore;
     Move bestMove = moves[0];
     SearchResult s = SearchResult();
     bool oot = false;
 
     for (Move move : moves) {
       if (move.build == WIN) {
-        return SearchResult(move, MAX_SCORE + depth, false);
+        return {move, MAX_SCORE + depth, false};
       }
+
       b.makeMove(move);
       s = negamaxRecur(b, depth - 1, eval, diveCheck, time, start);
+
       if(s.outOftime){
         oot = s.outOftime;
         break;
       }
-      currScore = -s.score;
-      if (currScore > maxScore) {
+
+      if (const int currScore = -s.score; currScore > maxScore) {
         maxScore = currScore;
         bestMove = move;
       }
       b.unmakeMove(move);
     }
-    return SearchResult(bestMove, maxScore, oot);
+    return {bestMove, maxScore, oot};
   }
-SearchResult negamax(SearchInfo si){
+
+SearchResult negamax(const SearchInfo& si){
   int dc = 0;
   return negamaxRecur(si.b, si.depth, si.eval, &dc, si.time, si.start);
 }
+
 SearchResult alphabetaRecur(Board b, int depth, std::function<int(Board)> eval, 
 AlphaBetaInfo alphaBeta, int * diveCheck, int time, std::chrono::_V2::system_clock::time_point start) {
     (*diveCheck)++;
