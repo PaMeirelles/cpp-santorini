@@ -9,7 +9,7 @@ void clearHashTable(HashTable *table) {
     table->overWrite = 0;
     for (HashEntry *tableEntry = table->pTable; tableEntry < table->pTable + table->numEntries; tableEntry++) {
         tableEntry->hashKey = 0ULL;
-        tableEntry->move = Move::NO_MOVE;
+        tableEntry->move = NO_MOVE;
         tableEntry->depth = 0;
         tableEntry->score = 0;
         tableEntry->flag = ' ';

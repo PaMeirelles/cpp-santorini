@@ -13,8 +13,8 @@ void printClocks(int clockA, int clockB);
 
 MatchResult playMatch(int time, int startingPos, EngineInfo engineA, EngineInfo engineB);
 
-void play(int time, int numMatches, std::string playerA, std::string playerB);
-void playSingleMatch(int time, std::string playerA, std::string playerB, int pos);
+void play(int time, int numMatches, const std::string& playerA, const std::string& playerB);
+void playSingleMatch(int time, const std::string& playerA, const std::string& playerB, int pos);
 void heal(int time);
 void playHighestConfidence(int time, int blockSize);
 #define CLOCK true

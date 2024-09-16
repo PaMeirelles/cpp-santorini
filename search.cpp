@@ -1,4 +1,7 @@
 #include "search.h"
+
+#include <algorithm>
+
 #include "eval.h"
 #include "hashTable.h"
 #include "timeManagement.h"

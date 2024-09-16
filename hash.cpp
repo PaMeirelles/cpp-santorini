@@ -1,5 +1,7 @@
 #include "hash.h"
 
+#include <unordered_set>
+
 using namespace std;
 
 int hashWorkers(const int (&w)[4]){

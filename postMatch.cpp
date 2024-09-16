@@ -1,5 +1,9 @@
 #include "postMatch.h"
 
+#include <fstream>
+#include <sstream>
+#include <algorithm>
+
 void appendToCSV(const std::string& filename, const std::string& row) {
     // Open the CSV file in append mode
     std::ofstream file(filename, std::ios::app);
