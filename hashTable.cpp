@@ -1,15 +1,15 @@
 #include "hashTable.h"
 
-void clearHashTable(HashTable *table) {
+using namespace std;
 
-    HashEntry *tableEntry;
+void clearHashTable(HashTable *table) {
     table->cut = 0;
     table->hit = 0;
     table->newWrite = 0;
     table->overWrite = 0;
-    for (tableEntry = table->pTable; tableEntry < table->pTable + table->numEntries; tableEntry++) {
+    for (HashEntry *tableEntry = table->pTable; tableEntry < table->pTable + table->numEntries; tableEntry++) {
         tableEntry->hashKey = 0ULL;
-        tableEntry->move = NO_MOVE;
+        tableEntry->move = Move::NO_MOVE;
         tableEntry->depth = 0;
         tableEntry->score = 0;
         tableEntry->flag = ' ';
@@ -17,14 +17,14 @@ void clearHashTable(HashTable *table) {
 }
 
 void allocateHashTable(HashTable *hashTable, const int MB) {
-    int hashSize = 0x100000 * MB;
+    const unsigned long long hashSize = 0x100000 * MB;
     hashTable->numEntries = hashSize / sizeof(HashEntry);
     hashTable->numEntries -= 2;
-    hashTable->pTable = (HashEntry *)malloc(hashTable->numEntries * sizeof(HashEntry));
+    hashTable->pTable = static_cast<HashEntry *>(malloc(hashTable->numEntries * sizeof(HashEntry)));
 
     if (!hashTable->pTable) {
         if(DEBUG){
-            std::cout << "Hash Allocation Failed, trying " << MB / 2 << "MB...\n";
+            cout << "Hash Allocation Failed, trying " << MB / 2 << "MB...\n";
         }
         allocateHashTable(hashTable, MB / 2);
     } else {
@@ -36,12 +36,12 @@ void allocateHashTable(HashTable *hashTable, const int MB) {
 }
 
 
-void storeHashEntry(Board b, Move m, int score, int depth, char flag, HashTable * hashTable){
+void storeHashEntry(const Board &b, const Move &m, const int score, const int depth, const char flag, HashTable * hashTable){
     if(m.from < 0){
-        throw std::runtime_error("Invalid move");
+        throw runtime_error("Invalid move");
     }
-    U64 key = hashBoard(b);
-    int index = key % hashTable->numEntries;
+    const U64 key = hashBoard(b);
+    const U64 index = key % hashTable->numEntries;
     if(hashTable->pTable[index].hashKey == 0){
         hashTable->newWrite++;
     }
@@ -55,11 +55,10 @@ void storeHashEntry(Board b, Move m, int score, int depth, char flag, HashTable 
     hashTable->pTable[index].hashKey = key;
 }
 
-bool probeHashEntry(Board b, HashTable * hashTable, Move * move, int * score, int alpha, int beta, int depth){
-    U64 key = hashBoard(b);
-    int index = key % hashTable->numEntries;
-    char flag;
-    HashEntry he = hashTable->pTable[index];
+bool probeHashEntry(const Board &b, HashTable * hashTable, Move * move, int * score, const int alpha, const int beta, const int depth){
+    const U64 key = hashBoard(b);
+    const U64 index = key % hashTable->numEntries;
+    const HashEntry he = hashTable->pTable[index];
     if(he.hashKey != key){
         return false;
     }
@@ -68,7 +67,7 @@ bool probeHashEntry(Board b, HashTable * hashTable, Move * move, int * score, in
     if(he.depth < depth){
         return false;
     }
-    flag = he.flag;
+    const char flag = he.flag;
     if(flag == 'A'){
         *score = alpha;
     }
@@ -81,7 +80,7 @@ bool probeHashEntry(Board b, HashTable * hashTable, Move * move, int * score, in
     return true;
 }
 
-void freeHashTable(HashTable * hashTable){
+void freeHashTable(const HashTable * hashTable){
     free(hashTable->pTable);
 }
 void printHashTable(const HashTable& table) {
@@ -94,7 +93,7 @@ void printHashTable(const HashTable& table) {
 
 void printHashEntry(const HashEntry& entry) {
     auto m = entry.move;
-    auto s = m.toString();
+    const auto s = m.toString();
     std::cout << "Hash Key: " << entry.hashKey << std::endl;
     std::cout << "Move: " << s << std::endl;
     std::cout << "Depth: " << entry.depth << std::endl;
@@ -102,10 +101,10 @@ void printHashEntry(const HashEntry& entry) {
     std::cout << "Flag: " << entry.flag << std::endl;
 }
 
-Move probePvMove(Board b, HashTable * hashTable, int * score){
-    U64 key = hashBoard(b);
-    int index = key % hashTable->numEntries;
-    HashEntry he = hashTable->pTable[index];
+Move probePvMove(const Board &b, const HashTable * hashTable, int * score){
+    const U64 key = hashBoard(b);
+    const U64 index = key % hashTable->numEntries;
+    const HashEntry he = hashTable->pTable[index];
     if(he.hashKey == key){
         *score = he.score;
         return he.move;

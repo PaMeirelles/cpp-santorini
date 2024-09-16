@@ -116,7 +116,7 @@ void Board::makeMove(const Move &move) {
   ply++;
 }
 
-vector<Move> Board::gen_moves(const int player) {
+vector<Move> Board::gen_moves(const int player) const {
   int w[2];
   vector<Move> moves;
   if (player == 1) {

@@ -1,6 +1,8 @@
 #include "move.h"
 
-std::vector<int> neighbors[] = {
+using namespace std;
+
+vector<int> neighbors[] = {
     {1, 5, 6},
     {0, 2, 5, 6, 7},
     {1, 3, 6, 7, 8},
@@ -32,17 +34,17 @@ std::vector<int> neighbors[] = {
     {18, 19, 23}
 };
 
-std::vector<int> getNeighbors(int n){
+std::vector<int> getNeighbors(const int n){
     return neighbors[n];
 }
 
-Move::Move(int f, int t, int b){
+Move::Move(int f, int t, int b): fromHeight(0), toHeight(0) {
     from = f;
     to = t;
     build = b;
 }
-Move::Move(){
-}
+
+Move::Move()= default;
 
 Move::Move(int f, int t, int b, int fh, int th){
     from = f;
@@ -51,9 +53,10 @@ Move::Move(int f, int t, int b, int fh, int th){
     fromHeight = fh;
     toHeight = th;
 }
-void Move::printMove() {
+
+void Move::printMove() const {
         std::cout << "From: " << from << ", To: " << to << ", Build: " << build << std::endl;
     }
-std::string Move::toString(){
+std::string Move::toString() const{
     return "From: " + std::to_string(from) + ", To: " + std::to_string(to) + ", Build: " + std::to_string(build);
 }

@@ -3,17 +3,16 @@
 
 #include "board.h"
 #include <functional>
-#include <math.h>
 int dist(int posW1, int posW2);
-int positionHeight(int a, int b, int c, Board board, std::function<int(int)> p);
+int positionHeight(int a, int b, int c, const Board &board, const std::function<int(int)>& p);
 int neighborHeightFunc(int pos);
-int neighborHeight(int a, int b, int c, Board board);
-int nh_s(Board board);
-int nh_c(Board board);
-int nh_a(Board board);
-int db_s(Board board);
-int ss_h(Board b);
-int nh_s_1(Board board);
+int neighborHeight(int a, int b, int c, const Board &board);
+int nh_s(const Board &board);
+int nh_c(const Board &board);
+int nh_a(const Board &board);
+int db_s(const Board &board);
+int ss_h(const Board &b);
+int nh_s_1(const Board &board);
 #define MAX_SCORE 10000
 
 #endif /* EVAL_H */
