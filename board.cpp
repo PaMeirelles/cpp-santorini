@@ -3,12 +3,12 @@
 #include "move.h"
 #include <iostream>
 
+using namespace  std;
+
 Board::Board(const int (&w)[4]) {
-  // Fill the squares array with zeros
-  for (int i = 0; i < 25; i++) {
-    squares[i] = 0;
+  for (int & square : squares) {
+    square = 0;
   }
-  // Copy the worker array to the workers array
   for (int i = 0; i < 4; i++) {
     workers[i] = w[i];
   }
@@ -16,14 +16,12 @@ Board::Board(const int (&w)[4]) {
   ply = 0;
 }
 
-Board::Board(int startingPos) {
+Board::Board(const int startingPos) {
   int w[4];
   unhashWorkers(startingPos, w);
-  // Fill the squares array with zeros
-  for (int i = 0; i < 25; i++) {
-    squares[i] = 0;
+  for (int & square : squares) {
+    square = 0;
   }
-  // Copy the worker array to the workers array
   for (int i = 0; i < 4; i++) {
     workers[i] = w[i];
   }
@@ -32,12 +30,10 @@ Board::Board(int startingPos) {
 }
 
 Board::Board(const int (&w)[4], const int (&s)[25]) {
-  // Copy the squares array to the squares member variable
   for (int i = 0; i < 25; i++) {
     squares[i] = s[i];
   }
 
-  // Copy the worker array to the workers member variable
   for (int i = 0; i < 4; i++) {
     workers[i] = w[i];
   }
@@ -46,32 +42,31 @@ Board::Board(const int (&w)[4], const int (&s)[25]) {
 }
 
 void Board::print() const {
-  std::cout << "Squares:\n";
+  cout << "Squares:\n";
   for (int i = 0; i < 25; i++) {
-    std::cout << squares[i] << " ";
+    cout << squares[i] << " ";
     if ((i + 1) % 5 == 0) {
-      std::cout << "\n";
+      cout << "\n";
     }
   }
 
-  std::cout << "\nWorkers:\n";
-  for (int i = 0; i < 4; i++) {
-    std::cout << workers[i] << " ";
+  cout << "\nWorkers:\n";
+  for (const int worker : workers) {
+    cout << worker << " ";
   }
-  std::cout << std::endl;
+  cout << endl;
 }
+
 Board::Board() {
   int w[4];
-  int hash = genHash();
+  const int hash = genHash();
 
   unhashWorkers(hash, w);
 
-  // Fill the squares array with zeros
-  for (int i = 0; i < 25; i++) {
-    squares[i] = 0;
+  for (int & square : squares) {
+    square = 0;
   }
 
-  // Copy the worker array to the workers array
   for (int i = 0; i < 4; i++) {
     workers[i] = w[i];
   }
@@ -79,40 +74,39 @@ Board::Board() {
   ply = 0;
 }
 
-int Board::getWorkerHeight(int workerId) { return squares[workers[workerId]]; }
-int Board::getWorkerPos(int workerId) { return workers[workerId]; }
-void Board::makeMove(Move move) {
+int Board::getWorkerHeight(const int workerId) const { return squares[workers[workerId]]; }
+int Board::getWorkerPos(const int workerId) const { return workers[workerId]; }
+void Board::makeMove(const Move &move) {
   bool workerFound = false;
 
-  for (int i = 0; i < 4; i++) {
-    if (workers[i] == move.from) {
+  for (int & worker : workers) {
+    if (worker == move.from) {
       workerFound = true;
 
-      if (workers[i] == move.to) {
-        throw std::runtime_error(
+      if (worker == move.to) {
+        throw runtime_error(
             "Invalid move: 'from' and 'to' positions cannot be the same.");
       }
 
-      workers[i] = move.to;
-      break;
+      worker = move.to;
     } else {
-      if (workers[i] == move.build) {
-        throw std::runtime_error(
+      if (worker == move.build) {
+        throw runtime_error(
             "Invalid move: a worker cannot be at the 'build' position.");
       }
     }
   }
 
   if (!workerFound) {
-    throw std::runtime_error("Worker not found at the specified position.");
+    throw runtime_error("Worker not found at the specified position.");
   }
 
   if (move.from > 24 || move.to > 24 || move.build > 24) {
-    throw std::runtime_error("Invalid position specified in the move.");
+    throw runtime_error("Invalid position specified in the move.");
   }
 
   if (squares[move.build] == 4) {
-    throw std::runtime_error(
+    throw runtime_error(
         "Maximum number of squares already built at the specified position.");
   }
   if(move.build != HALF_MOVE){
@@ -122,14 +116,9 @@ void Board::makeMove(Move move) {
   ply++;
 }
 
-std::vector<Move> Board::gen_moves(int player) {
+vector<Move> Board::gen_moves(const int player) {
   int w[2];
-  int wId[2];
-  int currW;
-  int currH;
-  std::vector<int> neighbors;
-  std::vector<int> toBuild;
-  std::vector<Move> moves;
+  vector<Move> moves;
   if (player == 1) {
     w[0] = workers[0];
     w[1] = workers[1];
@@ -137,35 +126,34 @@ std::vector<Move> Board::gen_moves(int player) {
     w[0] = workers[2];
     w[1] = workers[3];
   }
-  for (int i = 0; i < 2; i++) {
-    currW = w[i];
-    neighbors = getNeighbors(currW);
-    currH = getHeight(currW);
-    int neighborH;
-    for (int nb : neighbors) {
-      neighborH = getHeight(nb);
-      bool isClimb = neighborH > currH;
+  for (const int currW : w) {
+    vector<int> neighbors = getNeighbors(currW);
+    const int currH = getHeight(currW);
+    for (const int nb : neighbors) {
+      const int neighborH = getHeight(nb);
+      const bool isClimb = neighborH > currH;
       if (!isFree(nb) || getHeight(nb) - currH > 1) {
         continue;
       }
       if (squares[nb] == 3) {
-        moves.push_back(Move(currW, nb, WIN, isClimb, neighborH));
+        moves.emplace_back(currW, nb, WIN, isClimb, neighborH);
       } else {
-        toBuild = getNeighbors(nb);
-        for (int b : toBuild) {
+        vector<int> toBuild = getNeighbors(nb);
+        for (const int b : toBuild) {
           if (!isFree(b) && b != currW) {
             continue;
           }
-          moves.push_back(Move(currW, nb, b, isClimb, neighborH));
+          moves.emplace_back(currW, nb, b, isClimb, neighborH);
         }
       }
     }
   }
   return moves;
 }
-bool Board::isFree(int square) {
-  for (int i = 0; i < 4; i++) {
-    if (workers[i] == square) {
+
+bool Board::isFree(const int square) const {
+  for (const int worker : workers) {
+    if (worker == square) {
       return false;
     }
   }
@@ -174,39 +162,38 @@ bool Board::isFree(int square) {
   }
   return true;
 }
-int Board::getHeight(int square) { return squares[square]; }
-void Board::unmakeMove(Move move) {
+int Board::getHeight(const int square) const { return squares[square]; }
+void Board::unmakeMove(const Move &move) {
   bool workerFound = false;
 
-  for (int i = 0; i < 4; i++) {
-    if (workers[i] == move.to) {
+  for (int & worker : workers) {
+    if (worker == move.to) {
       workerFound = true;
 
-      if (workers[i] == move.from) {
-        throw std::runtime_error(
+      if (worker == move.from) {
+        throw runtime_error(
             "Invalid move: 'from' and 'to' positions cannot be the same.");
       }
 
-      workers[i] = move.from;
-      break;
+      worker = move.from;
     } else {
-      if (workers[i] == move.build) {
-        throw std::runtime_error(
+      if (worker == move.build) {
+        throw runtime_error(
             "Invalid move: a worker cannot be at the 'build' position.");
       }
     }
   }
 
   if (!workerFound) {
-    throw std::runtime_error("Worker not found at the specified position.");
+    throw runtime_error("Worker not found at the specified position.");
   }
 
   if (move.from > 24 || move.to > 24 || move.build > 24) {
-    throw std::runtime_error("Invalid position specified in the move.");
+    throw runtime_error("Invalid position specified in the move.");
   }
 
   if (squares[move.build] == 0) {
-    throw std::runtime_error(
+    throw runtime_error(
         "Minimum number of squares already built at the specified position.");
   }
   turn *= -1;
@@ -215,14 +202,10 @@ void Board::unmakeMove(Move move) {
   }
   ply--;
 }
-std::vector<Move> Board::gen_half_moves(int player) {
+vector<Move> Board::gen_half_moves(const int player) const {
   int w[2];
-  int wId[2];
-  int currW;
-  int currH;
-  std::vector<int> neighbors;
-  std::vector<int> toBuild;
-  std::vector<Move> moves;
+  vector<int> toBuild;
+  vector<Move> moves;
   if (player == 1) {
     w[0] = workers[0];
     w[1] = workers[1];
@@ -230,21 +213,19 @@ std::vector<Move> Board::gen_half_moves(int player) {
     w[0] = workers[2];
     w[1] = workers[3];
   }
-  for (int i = 0; i < 2; i++) {
-    currW = w[i];
-    neighbors = getNeighbors(currW);
-    currH = getHeight(currW);
-    int neighborH;
-    for (int nb : neighbors) {
-      neighborH = getHeight(nb);
-      bool isClimb = neighborH > currH;
+  for (const int currW : w) {
+    vector<int> neighbors = getNeighbors(currW);
+    const int currH = getHeight(currW);
+    for (const int nb : neighbors) {
+      const int neighborH = getHeight(nb);
+      const bool isClimb = neighborH > currH;
       if (!isFree(nb) || getHeight(nb) - currH > 1) {
         continue;
       }
       if (squares[nb] == 3) {
-        moves.push_back(Move(currW, nb, WIN, isClimb, neighborH));
+        moves.emplace_back(currW, nb, WIN, isClimb, neighborH);
       } else {
-        moves.push_back(Move(currW, nb, currW, isClimb, neighborH));
+        moves.emplace_back(currW, nb, currW, isClimb, neighborH);
       }
     }
   }
