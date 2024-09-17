@@ -29,6 +29,6 @@ int main() {
     // }
     // add_moves();
     for(int i=0;i<1000;i++) {
-        compare_engines("mvb-0", "mvb-1", "nhs-0", 5);
+        compare_engines("mvb-15", "mvb-1", "nhs-0", 6);
     }
  }
