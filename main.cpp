@@ -18,7 +18,7 @@ int main() {
     // getBestMove(b, engineA, 1000 * 60 * 25);
     // getBestMove(b, engineB, 1000 * 60 * 25);
 
-    play(1000 * 60 * 1 * .1, 1, "Infinity", "Divine");
+    // play(1000 * 60 * 1 * .1, 1, "Infinity", "Divine");
     // int defaultTime = 1 * 60;
     // play(defaultTime, 12, "Angel", "Angel");
     // while (true){
@@ -28,4 +28,5 @@ int main() {
     //     playHighestConfidence(defaultTime, 60);
     // }
     // add_moves();
+    runBenchmark("mvb-0", "nhs-0", 4);
  }

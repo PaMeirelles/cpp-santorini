@@ -6,6 +6,8 @@
 #include <stdexcept>
 #include <filesystem>
 
+#include "board.h"
+
 using namespace std;
 namespace fs = std::filesystem;
 
@@ -187,4 +189,105 @@ void add_moves() {
 
     sqlite3_close(db);
     cout << "Total files parsed: " << file_count << endl;
+}
+
+bool saveBenchmark(sqlite3* db, int match_id, int move_number, string search_engine, string eval_func, int depth, int eval, int time) {
+    string sql = "INSERT INTO TB_BENCHMARK (match_id, move_num, search_engine, eval_func, depth, eval, time) "
+                 "VALUES (?, ?, ?, ?, ?, ?, ?);";
+    sqlite3_stmt* stmt;
+
+    // Prepare the SQL statement
+    if (sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, nullptr) != SQLITE_OK) {
+        cerr << "Failed to prepare statement: " << sqlite3_errmsg(db) << endl;
+        return false;
+    }
+
+    // Bind the values to the SQL statement
+    if (sqlite3_bind_int(stmt, 1, match_id) != SQLITE_OK ||
+        sqlite3_bind_int(stmt, 2, move_number) != SQLITE_OK ||
+        sqlite3_bind_text(stmt, 3, search_engine.c_str(), -1, SQLITE_STATIC) != SQLITE_OK ||
+        sqlite3_bind_text(stmt, 4, eval_func.c_str(), -1, SQLITE_STATIC) != SQLITE_OK ||
+        sqlite3_bind_int(stmt, 5, depth) != SQLITE_OK ||
+        sqlite3_bind_int(stmt, 6, eval) != SQLITE_OK ||
+        sqlite3_bind_int(stmt, 7, time) != SQLITE_OK) {
+        cerr << "Failed to bind values: " << sqlite3_errmsg(db) << endl;
+        sqlite3_finalize(stmt);
+        return false;
+        }
+
+    // Execute the SQL statement
+    if (sqlite3_step(stmt) != SQLITE_DONE) {
+        cerr << "Failed to execute statement: " << sqlite3_errmsg(db) << endl;
+        sqlite3_finalize(stmt);
+        return false;
+    }
+
+    // Finalize the statement
+    sqlite3_finalize(stmt);
+    return true;
+}
+
+// Function to retrieve a random match ID and its starting position
+int retrieveRandomMatchId(sqlite3 *db, int *starting_pos) {
+    string sql = "SELECT ID, starting_pos FROM TB_MATCHES ORDER BY RANDOM() LIMIT 1;";
+    sqlite3_stmt *stmt;
+
+    if (sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, nullptr) != SQLITE_OK) {
+        cerr << "Failed to prepare statement: " << sqlite3_errmsg(db) << endl;
+        return -1;
+    }
+
+    int match_id = -1;
+
+    if (sqlite3_step(stmt) == SQLITE_ROW) {
+        match_id = sqlite3_column_int(stmt, 0);
+        *starting_pos = sqlite3_column_int(stmt, 1);
+    }
+
+    sqlite3_finalize(stmt);
+    return match_id;
+}
+
+// Function to retrieve moves for a given match ID
+vector<Move> retrieveRandomMatch(sqlite3 *db, int mid) {
+    vector<Move> moves;
+    string sql = "SELECT from_square, to_square, build_square FROM TB_MOVES WHERE ID_match = ? ORDER BY move_num;";
+    sqlite3_stmt *stmt;
+
+    if (sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, nullptr) != SQLITE_OK) {
+        cerr << "Failed to prepare statement: " << sqlite3_errmsg(db) << endl;
+        return moves;
+    }
+
+    // Bind the match ID
+    sqlite3_bind_int(stmt, 1, mid);
+
+    // Iterate through all moves of the match and store them in the vector
+    while (sqlite3_step(stmt) == SQLITE_ROW) {
+        int from_square = sqlite3_column_int(stmt, 0);
+        int to_square = sqlite3_column_int(stmt, 1);
+        int build_square = sqlite3_column_int(stmt, 2);
+        moves.emplace_back(from_square, to_square, build_square);
+    }
+
+    sqlite3_finalize(stmt);
+    return moves;
+}
+
+
+Board retrieveRandomBoard(int * matchId, int * moveNumber) {
+    sqlite3* db;
+    if (sqlite3_open("santorini.db", &db)) {
+        cerr << "Can't open database: " << sqlite3_errmsg(db) << endl;
+    }
+    int starting_pos;
+    *matchId = retrieveRandomMatchId(db, &starting_pos);
+    auto moves = retrieveRandomMatch(db, *matchId);
+    *moveNumber = static_cast<int>(moves.size());
+    auto board = Board(starting_pos);
+    for (const auto& move : moves) {
+        board.makeMove(move);
+    }
+    sqlite3_close(db);
+    return board;
 }
