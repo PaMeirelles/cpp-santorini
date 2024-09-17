@@ -178,7 +178,17 @@ EngineInfo assemblyEngine(std::string name) {
     eInfo.search = mvb143;
     eInfo.eval = db_s;
     eInfo.timeManager = et_p;
-  }     
+  }
+    else if(name == "Canyon"){
+      eInfo.search = properMOV2;
+      eInfo.eval = nh_s;
+      eInfo.timeManager = et_s;
+    }
+    else if(name == "Zephyr"){
+      eInfo.search = properMOV3;
+      eInfo.eval = db_s;
+      eInfo.timeManager = et_s;
+    }
    else {
     throw std::runtime_error("Invalid engine: " + name);
   }

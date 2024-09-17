@@ -52,6 +52,8 @@ Move::Move(int f, int t, int b, int fh, int th){
     build = b;
     fromHeight = fh;
     toHeight = th;
+    fromN = static_cast<int>(neighbors[f].size());
+    toN = static_cast<int>(neighbors[t].size());
 }
 
 void Move::printMove() const {

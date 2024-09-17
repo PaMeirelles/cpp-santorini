@@ -9,15 +9,22 @@ using namespace std::chrono;
 map<string, function<SearchResult(SearchInfo)>> getEngineMap(){
     return map<string, function<SearchResult(SearchInfo)>>
     {{"mvb-0", negamax},
-     {"mvb-1", alphabeta},
-        {"mvb-15", mvb15}
+    {"mvb-1", alphabeta},
+    {"mvb-15", mvb15},
+        {"mvb-127", mvb127},
+        {"properMO", properMO},
+        {"properMOV2", properMOV2},
+{"properMOV3", properMOV3},
+        {"mvb-143", mvb143}
+
      };
 }
 
 map<string, function<int(Board)>> getEvalMap(){
     return map<string, function<int(Board)>>
     {{"nhs-0", nh_s},
-     {"nhc-0", nh_c}
+     {"nhc-0", nh_c},
+        {"dbs-0", db_s}
     };
 
 }
@@ -59,15 +66,15 @@ void runBenchmark(const string &search_engine, const string &eval_function, cons
 
 }
 
-void compare_engines(const string &engine_1, const string &engine_2, const string &eval, int depth) {
+void compare_engines(const vector<string>& engines, const string &eval, int depth) {
     int matchId, moveNumber;
 
     sqlite3 * db;
     sqlite3_open("santorini.db", &db);
 
     const auto board = retrieveRandomBoard(db, &matchId, &moveNumber);
-    runBenchmark(board, matchId, engine_1, eval, depth);
-    runBenchmark(board, matchId, engine_2, eval, depth);
-
+    for(const auto& engine: engines) {
+        runBenchmark(board, matchId, engine, eval, depth);
+    }
     sqlite3_close(db);
 }

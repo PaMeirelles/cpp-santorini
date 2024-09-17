@@ -18,7 +18,7 @@ int main() {
     // getBestMove(b, engineA, 1000 * 60 * 25);
     // getBestMove(b, engineB, 1000 * 60 * 25);
 
-    // play(1000 * 60 * 1 * .1, 1, "Infinity", "Divine");
+    play(1000 * 60, 12, "Canyon", "Cosmic");
     // int defaultTime = 1 * 60;
     // play(defaultTime, 12, "Angel", "Angel");
     // while (true){
@@ -28,7 +28,7 @@ int main() {
     //     playHighestConfidence(defaultTime, 60);
     // }
     // add_moves();
-    for(int i=0;i<1000;i++) {
-        compare_engines("mvb-15", "mvb-1", "nhs-0", 6);
-    }
+    // for(int i=0;i<1000;i++) {
+    //     compare_engines({"properMOV2", "mvb-143", "mvb-15"}, "nhs-0", 6 );
+    // }
  }

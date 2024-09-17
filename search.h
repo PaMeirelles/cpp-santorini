@@ -59,8 +59,11 @@ SearchResult negamax(const SearchInfo& searchInfo);
 SearchResult mvb15(SearchInfo si);
 SearchResult mvb127(SearchInfo si);
 SearchResult mvb143(SearchInfo si);
+SearchResult properMO(SearchInfo si);
+SearchResult properMOV2(SearchInfo si);
+SearchResult properMOV3(SearchInfo si);
 Move getBestMove(Board b, EngineInfo engineInfo, int time);
-std::vector<Move> bucketOrder(std::vector<Move> moves, HashTable * hashTable, Board b, int depth);
+std::vector<Move> bucketOrder(const std::vector<Move>& moves, HashTable * hashTable, Board b, int depth);
 #define VERBOSE false
 #define DIVE_CHECK 1000
 #endif

@@ -5,12 +5,17 @@
 #ifndef MOVE_H
 #define MOVE_H
 
+using namespace std;
+
 struct Move{
     int from;
     int to;
     int build;
     int fromHeight;
     int toHeight;
+    int moveOrderingScore;
+    int fromN;
+    int toN;
 
     Move();
     Move(int from, int to, int build);
@@ -18,7 +23,7 @@ struct Move{
 
     void printMove() const;
 
-    std::string toString() const;
+    [[nodiscard]] string toString() const;
 
     bool operator==(const Move& other) const {
     return from == other.from && to == other.to && build == other.build &&

@@ -249,9 +249,18 @@ int retrieveRandomMatchId(sqlite3 *db, int *starting_pos) {
 }
 
 // Function to retrieve moves for a given match ID
+#include <cstdlib>   // For rand()
+#include <ctime>     // For seeding rand()
+#include <vector>
+#include <iostream>
+#include <sqlite3.h>
+
+using namespace std;
+
 vector<Move> retrieveRandomMatch(sqlite3 *db, int mid) {
     vector<Move> moves;
-    string sql = "SELECT from_square, to_square, build_square FROM TB_MOVES WHERE ID_match = ? ORDER BY move_num;";
+    vector<int> move_numbers;
+    string sql = "SELECT from_square, to_square, build_square, move_num FROM TB_MOVES WHERE ID_match = ? ORDER BY move_num;";
     sqlite3_stmt *stmt;
 
     if (sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, nullptr) != SQLITE_OK) {
@@ -262,16 +271,37 @@ vector<Move> retrieveRandomMatch(sqlite3 *db, int mid) {
     // Bind the match ID
     sqlite3_bind_int(stmt, 1, mid);
 
-    // Iterate through all moves of the match and store them in the vector
+    // Retrieve all moves and store them in the vector, along with their move numbers
     while (sqlite3_step(stmt) == SQLITE_ROW) {
         int from_square = sqlite3_column_int(stmt, 0);
         int to_square = sqlite3_column_int(stmt, 1);
         int build_square = sqlite3_column_int(stmt, 2);
+        int move_num = sqlite3_column_int(stmt, 3);
         moves.emplace_back(from_square, to_square, build_square);
+        move_numbers.push_back(move_num);
     }
 
     sqlite3_finalize(stmt);
-    return moves;
+
+    if (move_numbers.empty()) {
+        cerr << "No moves found for the match." << endl;
+        return {};
+    }
+
+    // Seed the random number generator
+    srand(time(nullptr));
+
+    // Pick a random move number
+    int random_index = rand() % move_numbers.size();
+    int random_move_num = move_numbers[random_index];
+
+    // Collect moves that have a smaller move number than the random move
+    vector<Move> filtered_moves;
+    for (int i = 0; i < random_index; ++i) {
+        filtered_moves.push_back(moves[i]);
+    }
+
+    return filtered_moves;
 }
 
 

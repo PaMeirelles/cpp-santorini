@@ -131,19 +131,18 @@ vector<Move> Board::gen_moves(const int player) const {
     const int currH = getHeight(currW);
     for (const int nb : neighbors) {
       const int neighborH = getHeight(nb);
-      const bool isClimb = neighborH > currH;
       if (!isFree(nb) || getHeight(nb) - currH > 1) {
         continue;
       }
       if (squares[nb] == 3) {
-        moves.emplace_back(currW, nb, WIN, isClimb, neighborH);
+        moves.emplace_back(currW, nb, WIN, currH, neighborH);
       } else {
         vector<int> toBuild = getNeighbors(nb);
         for (const int b : toBuild) {
           if (!isFree(b) && b != currW) {
             continue;
           }
-          moves.emplace_back(currW, nb, b, isClimb, neighborH);
+          moves.emplace_back(currW, nb, b, currH, neighborH);
         }
       }
     }

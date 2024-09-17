@@ -13,5 +13,5 @@
 #include "eval.h"
 void runBenchmark(const Board &board, int matchId, const string &search_engine, const string &eval_function, int depth);
 void runBenchmark(const string &search_engine, const string &eval_function, int depth);
-void compare_engines(const string &engine_1, const string &engine_2, const string &eval, int depth);
+void compare_engines(const vector<string>& engines, const string &eval, int depth);
 #endif  // BENCHMARK_H
