@@ -28,5 +28,7 @@ int main() {
     //     playHighestConfidence(defaultTime, 60);
     // }
     // add_moves();
-    runBenchmark("mvb-0", "nhs-0", 4);
+    for(int i=0;i<1000;i++) {
+        compare_engines("mvb-0", "mvb-1", "nhs-0", 5);
+    }
  }

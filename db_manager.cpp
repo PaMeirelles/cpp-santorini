@@ -275,11 +275,7 @@ vector<Move> retrieveRandomMatch(sqlite3 *db, int mid) {
 }
 
 
-Board retrieveRandomBoard(int * matchId, int * moveNumber) {
-    sqlite3* db;
-    if (sqlite3_open("santorini.db", &db)) {
-        cerr << "Can't open database: " << sqlite3_errmsg(db) << endl;
-    }
+Board retrieveRandomBoard(sqlite3* db, int * matchId, int * moveNumber) {
     int starting_pos;
     *matchId = retrieveRandomMatchId(db, &starting_pos);
     auto moves = retrieveRandomMatch(db, *matchId);
@@ -288,6 +284,5 @@ Board retrieveRandomBoard(int * matchId, int * moveNumber) {
     for (const auto& move : moves) {
         board.makeMove(move);
     }
-    sqlite3_close(db);
     return board;
 }
