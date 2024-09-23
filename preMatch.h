@@ -41,8 +41,8 @@ struct EntryEqual {
 };
 int evalPosition(std::function<int(Board)> eval, int hash);
 std::vector<int> getValidPositions(const std::string& playerA, const std::string& playerB);
-std::set<int> getPositionsForMatch(std::string playerA, std::string playerB, int n);
-EngineInfo assemblyEngine(std::string name);
+std::set<int> getPositionsForMatch(const std::string& playerA, const std::string& playerB, int n);
+EngineInfo assemblyEngine(const std::string& name);
 std::unordered_set<Entry, EntryHash, EntryEqual> findEntriesWithNoPair(int targetTime);
 std::vector<std::string> getHighestConfidenceRange();
 #endif  // PRE_MATCH_H

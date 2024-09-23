@@ -1,85 +1,86 @@
 #include "preMatch.h"
+#include "sqlite3.h"
+using namespace std;
 
-int evalPosition(std::function<int(Board)> eval, int hash) {
+int evalPosition(function<int(Board)> eval, const int hash) {
   int w[4];
   unhashWorkers(hash, w);
-  Board board = Board(w);
+  const auto board = Board(w);
   return eval(board);
 }
 
-std::vector<int> getValidPositions(const std::string& playerA, const std::string& playerB) {
-  std::ifstream inputFile("valid_hashes.txt");
-  std::vector<int> validPositions;
+vector<int> getValidPositions(const string& playerA, const string& playerB, sqlite3* db) {
+  vector<int> validPositions;
+  sqlite3_stmt* stmt;
+  unordered_set<int> playedPositions;
 
-  if (inputFile.is_open()) {
-    std::unordered_set<int> playedPositions;
-    std::ifstream csvFile("matches.csv");
-    if (csvFile.is_open()) {
-      std::string csvLine;
-      // Skip the first line (header)
-      std::getline(csvFile, csvLine);
-      while (std::getline(csvFile, csvLine)) {
-        std::istringstream ss(csvLine);
-        std::string id, startingPos, playerARecord, playerBRecord, timeA, timeB, result;
-        std::getline(ss, id, ',');
-        std::getline(ss, startingPos, ',');
-        std::getline(ss, playerARecord, ',');
-        std::getline(ss, playerBRecord, ',');
-        std::getline(ss, timeA, ',');
-        std::getline(ss, timeB, ',');
-        std::getline(ss, result, ',');
+  // Query to get positions of played matches between playerA and playerB
+  string sql = R"(
+        SELECT starting_pos
+        FROM TB_MATCHES
+        WHERE (player_1 = ? AND player_2 = ?)
+           OR (player_1 = ? AND player_2 = ?);
+    )";
 
-        // Check if the match involves playerA and playerB
-        if ((playerARecord == playerA && playerBRecord == playerB) || (playerARecord == playerB && playerBRecord == playerA)) {
-          int startingPosition = std::stoi(startingPos);
-          playedPositions.insert(startingPosition);
-        }
-      }
-      csvFile.close();
-    } else {
-      std::cout << "Failed to open the CSV file." << std::endl;
-    }
-
-    std::string line;
-    while (std::getline(inputFile, line)) {
-      try {
-        int hash = std::stoi(line);
-        if (playedPositions.find(hash) == playedPositions.end()) {
-          validPositions.push_back(hash);
-        }
-      } catch (const std::exception& e) {
-        // Handle invalid lines if needed
-        std::cout << "Invalid line: " << line << std::endl;
-      }
-    }
-    inputFile.close();
-  } else {
-    std::cout << "Failed to open the file." << std::endl;
+  if (sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, nullptr) != SQLITE_OK) {
+    cerr << "Failed to prepare statement: " << sqlite3_errmsg(db) << endl;
+    return validPositions;
   }
+
+  // Bind player names
+  sqlite3_bind_text(stmt, 1, playerA.c_str(), -1, SQLITE_STATIC);
+  sqlite3_bind_text(stmt, 2, playerB.c_str(), -1, SQLITE_STATIC);
+  sqlite3_bind_text(stmt, 3, playerB.c_str(), -1, SQLITE_STATIC);
+  sqlite3_bind_text(stmt, 4, playerA.c_str(), -1, SQLITE_STATIC);
+
+  // Execute query and add starting positions to the played set
+  while (sqlite3_step(stmt) == SQLITE_ROW) {
+    int startingPos = sqlite3_column_int(stmt, 0);
+    playedPositions.insert(startingPos);
+  }
+
+  sqlite3_finalize(stmt);
+
+  // Now retrieve valid positions from TB_VALID_HASHES and check against played positions
+  sql = "SELECT hash FROM TB_VALID_HASHES;";
+  if (sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, nullptr) != SQLITE_OK) {
+    cerr << "Failed to prepare statement: " << sqlite3_errmsg(db) << endl;
+    return validPositions;
+  }
+
+  while (sqlite3_step(stmt) == SQLITE_ROW) {
+    int hash = sqlite3_column_int(stmt, 0);
+    if (!playedPositions.contains(hash)) {
+      validPositions.push_back(hash);
+    }
+  }
+
+  sqlite3_finalize(stmt);
 
   return validPositions;
 }
-std::set<int> getPositionsForMatch(std::string playerA,std::string playerB, int n) {
+
+set<int> getPositionsForMatch(const string& playerA,const string& playerB, const int n) {
  
-  std::vector<int> hashListOne = getValidPositions(playerA, playerB);                
-  std::vector<int> hashListTwo(hashListOne);
+  vector<int> hashListOne = getValidPositions(playerA, playerB);                
+  vector<int> hashListTwo(hashListOne);
 
-  auto evalOne = assemblyEngine(playerA).eval;
-  auto evalTwo = assemblyEngine(playerB).eval;
+  const auto evalOne = assemblyEngine(playerA).eval;
+  const auto evalTwo = assemblyEngine(playerB).eval;
 
-  std::sort(hashListOne.begin(), hashListOne.end(), [&](int a, int b) {
+  ranges::sort(hashListOne, [&](const int a, const int b) {
     return evalPosition(evalOne, a) < evalPosition(evalOne, b);
   });
-  std::sort(hashListTwo.begin(), hashListTwo.end(), [&](int a, int b) {
+  ranges::sort(hashListTwo, [&](const int a, const int b) {
     return evalPosition(evalTwo, a) < evalPosition(evalTwo, b);
   });
 
-  std::set<int> setHash(hashListOne.begin(), hashListOne.end());
+  set<int> setHash(hashListOne.begin(), hashListOne.end());
 
   int indexOne = 0;
-  int indexTwo = hashListTwo.size() - 1;
+  int indexTwo = static_cast<int>(hashListTwo.size()) - 1;
   int current = 1;
-  std::set<int>::iterator it;
+  set<int>::iterator it;
   while (setHash.size() > n) {
     if (current == 1) {
       it = setHash.find(hashListOne[indexOne]);
@@ -99,7 +100,8 @@ std::set<int> getPositionsForMatch(std::string playerA,std::string playerB, int 
   }
   return setHash;
 }
-EngineInfo assemblyEngine(std::string name) {
+
+EngineInfo assemblyEngine(const string& name) {
   EngineInfo eInfo;
   if (name == "Titan") {
     eInfo.search = negamax;
@@ -113,88 +115,71 @@ EngineInfo assemblyEngine(std::string name) {
     eInfo.search = negamax;
     eInfo.eval = nh_a;
     eInfo.timeManager = et_s;
-  }
-   else if(name == "Ascendant"){
+  } else if(name == "Ascendant"){
     eInfo.search = alphabeta;
     eInfo.eval = nh_s;
     eInfo.timeManager = et_s;
-  }
-   else if(name == "Ranger"){
+  } else if(name == "Ranger"){
     eInfo.search = alphabeta;
     eInfo.eval = nh_s;
     eInfo.timeManager = et_p;
-  }  
-   else if(name == "Aegis"){
+  } else if(name == "Aegis"){
     eInfo.search = alphabeta;
     eInfo.eval = nh_s;
     eInfo.timeManager = et_f;
-  }  
-    else if(name == "Cosmic"){
+  } else if(name == "Cosmic"){
     eInfo.search = mvb15;
     eInfo.eval = nh_s;
     eInfo.timeManager = et_s;
-  }  
-    else if(name == "Dream"){
+  } else if(name == "Dream"){
     eInfo.search = mvb127;
     eInfo.eval = nh_s;
     eInfo.timeManager = et_s;
-  } 
-    else if(name == "Eclipse"){
+  } else if(name == "Eclipse"){
     eInfo.search = mvb15;
     eInfo.eval = ss_h;
     eInfo.timeManager = et_s;
-  }   
-    else if(name == "Pilot"){
+  } else if(name == "Pilot"){
     eInfo.search = mvb15;
     eInfo.eval = nh_s;
     eInfo.timeManager = eg_c;
-  }   
-    else if(name == "Harmony"){
+  } else if(name == "Harmony"){
     eInfo.search = mvb15;
     eInfo.eval = nh_s;
     eInfo.timeManager = withEmerg;
-  }  
-    else if(name == "Angel"){
+  } else if(name == "Angel"){
     eInfo.search = mvb15;
     eInfo.eval = nh_s_1;
     eInfo.timeManager = et_s;
-  }   
-    else if(name == "Vortex"){
+  } else if(name == "Vortex"){
     eInfo.search = mvb15;
     eInfo.eval = db_s;
     eInfo.timeManager = et_s;
-  }   
-    else if(name == "Infinity"){
+  } else if(name == "Infinity"){
     eInfo.search = mvb15;
     eInfo.eval = db_s;
     eInfo.timeManager = et_p; 
-  }   
-    else if(name == "Missing"){
+  } else if(name == "Missing"){
     eInfo.search = mvb15;
     eInfo.eval = db_s;
     eInfo.timeManager = withEmerg;
-  }   
-    else if(name == "Divine"){
+  } else if(name == "Divine"){
     eInfo.search = mvb143;
     eInfo.eval = db_s;
     eInfo.timeManager = et_p;
-  }
-    else if(name == "Canyon"){
+  } else if(name == "Canyon"){
       eInfo.search = properMOV2;
       eInfo.eval = nh_s;
       eInfo.timeManager = et_s;
-    }
-    else if(name == "Zephyr"){
+  } else if(name == "Zephyr"){
       eInfo.search = properMOV3;
       eInfo.eval = db_s;
       eInfo.timeManager = et_s;
-    }
-    else if(name == "Creator"){
+  } else if(name == "Creator"){
       eInfo.search = creator;
       eInfo.eval = db_s;
       eInfo.timeManager = et_s;
-    }
-    else if(name == "Radiant"){
+  } else if(name == "Radiant"){
       eInfo.search = creator;
       eInfo.eval = db_s;
       eInfo.timeManager = et_p;
@@ -204,38 +189,38 @@ EngineInfo assemblyEngine(std::string name) {
     //   eInfo.eval = cyan;
     //   eInfo.timeManager = et_s;
     // }
-   else {
-    throw std::runtime_error("Invalid engine: " + name);
+  else {
+    throw runtime_error("Invalid engine: " + name);
   }
   return eInfo;
 }
-std::unordered_set<Entry, EntryHash, EntryEqual> findEntriesWithNoPair(int targetTime) {
-    std::string filename = "matches.csv";
-    std::vector<Entry> entries;
-    std::unordered_set<Entry, EntryHash, EntryEqual> pairs;
+unordered_set<Entry, EntryHash, EntryEqual> findEntriesWithNoPair(int targetTime) {
+    string filename = "matches.csv";
+    vector<Entry> entries;
+    unordered_set<Entry, EntryHash, EntryEqual> pairs;
 
-    std::ifstream file(filename);
+    ifstream file(filename);
     if (!file) {
-        std::cerr << "Failed to open file: " << filename << std::endl;
+        cerr << "Failed to open file: " << filename << endl;
         return pairs;
     }
 
-    std::string line;
-    std::getline(file, line);  // Skip header
-    std::string time;
-    while (std::getline(file, line)) {
-        std::istringstream iss(line);
-        std::string token;
+    string line;
+    getline(file, line);  // Skip header
+    string time;
+    while (getline(file, line)) {
+        istringstream iss(line);
+        string token;
         Entry entry;
 
         // Read CSV values into entry struct
-        std::getline(iss, token, ',');
-        std::getline(iss, entry.starting_pos, ',');
-        std::getline(iss, entry.player_a, ',');
-        std::getline(iss, entry.player_b, ',');
-        std::getline(iss, time, ',');
-        std::getline(iss, time, ',');
-        std::getline(iss, token, ',');
+        getline(iss, token, ',');
+        getline(iss, entry.starting_pos, ',');
+        getline(iss, entry.player_a, ',');
+        getline(iss, entry.player_b, ',');
+        getline(iss, time, ',');
+        getline(iss, time, ',');
+        getline(iss, token, ',');
         if(stoi(time) != targetTime){
           continue;
         }
@@ -258,36 +243,36 @@ std::unordered_set<Entry, EntryHash, EntryEqual> findEntriesWithNoPair(int targe
     file.close();
     return pairs;
 }
-std::vector<std::string> getHighestConfidenceRange() {
+vector<string> getHighestConfidenceRange() {
     auto filename = "confidence_interval.csv";
-    std::vector<std::string> playerAndOpponent;
-    std::ifstream file(filename);
+    vector<string> playerAndOpponent;
+    ifstream file(filename);
 
-    std::string header;
-    std::getline(file, header);
+    string header;
+    getline(file, header);
 
     if (file) {
-        std::string line;
-        if (std::getline(file, line)) {
-            std::stringstream ss(line);
-            std::string cell;
+        string line;
+        if (getline(file, line)) {
+            stringstream ss(line);
+            string cell;
 
-            if (std::getline(ss, cell, ',')) {
+            if (getline(ss, cell, ',')) {
                 playerAndOpponent.push_back(cell);  // Add 'player' to the vector
             } else {
-                std::cerr << "Error: Insufficient elements in the first row." << std::endl;
+                cerr << "Error: Insufficient elements in the first row." << endl;
             }
 
-            if (std::getline(ss, cell, ',')) {
+            if (getline(ss, cell, ',')) {
                 playerAndOpponent.push_back(cell);  // Add 'opponent' to the vector
             } else {
-                std::cerr << "Error: Insufficient elements in the first row." << std::endl;
+                cerr << "Error: Insufficient elements in the first row." << endl;
             }
         }
         
         file.close();
     } else {
-        std::cerr << "Failed to open file: " << filename << std::endl;
+        cerr << "Failed to open file: " << filename << endl;
     }
 
     return playerAndOpponent;
