@@ -15,8 +15,8 @@ map<string, function<SearchResult(SearchInfo)>> getEngineMap(){
         {"properMO", properMO},
         {"properMOV2", properMOV2},
 {"properMOV3", properMOV3},
-        {"mvb-143", mvb143}
-
+        {"mvb-143", mvb143},
+    {"creator", creator}
      };
 }
 

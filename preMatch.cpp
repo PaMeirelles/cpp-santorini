@@ -189,6 +189,21 @@ EngineInfo assemblyEngine(std::string name) {
       eInfo.eval = db_s;
       eInfo.timeManager = et_s;
     }
+    else if(name == "Creator"){
+      eInfo.search = creator;
+      eInfo.eval = db_s;
+      eInfo.timeManager = et_s;
+    }
+    else if(name == "Radiant"){
+      eInfo.search = creator;
+      eInfo.eval = db_s;
+      eInfo.timeManager = et_p;
+    }
+    // else if(name == "Cyan"){
+    //   eInfo.search = properMOV3;
+    //   eInfo.eval = cyan;
+    //   eInfo.timeManager = et_s;
+    // }
    else {
     throw std::runtime_error("Invalid engine: " + name);
   }

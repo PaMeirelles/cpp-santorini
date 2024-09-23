@@ -13,6 +13,7 @@ int nh_a(const Board &board);
 int db_s(const Board &board);
 int ss_h(const Board &b);
 int nh_s_1(const Board &board);
+int cyan(const Board &b);
 #define MAX_SCORE 10000
 
 #endif /* EVAL_H */
