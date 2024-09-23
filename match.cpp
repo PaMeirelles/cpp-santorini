@@ -170,8 +170,3 @@ void heal(const int time){
     entries = findEntriesWithNoPair(time);
   }
 }
-
-void playHighestConfidence(int time, int blockSize){
-    const auto players = getHighestConfidenceRange();
-    play(time, blockSize, players[0], players[1]);
-}

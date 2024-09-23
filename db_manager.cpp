@@ -66,62 +66,6 @@ int insertMatchData(sqlite3* db, const int id, const int starting_pos, const str
     return return_id;
 }
 
-
-// Function to process all CSV rows and insert them into the database
-void add_all() {
-    sqlite3* db;
-    if (sqlite3_open("santorini.db", &db)) {
-        cerr << "Can't open database: " << sqlite3_errmsg(db) << endl;
-    }
-    ifstream file("matches.csv");
-    if (!file.is_open()) {
-        cerr << "Could not open CSV file!" << endl;
-        sqlite3_close(db);
-        return;
-    }
-
-    string line, header;
-    getline(file, header); // Skip the header line
-
-    while (getline(file, line)) {
-        stringstream ss(line);
-        string token;
-
-        int id, starting_pos, time_a, time_b, result;
-        string player_a, player_b;
-
-        try {
-            // Parse each value from the CSV
-            getline(ss, token, ','); id = stoi(token);
-            getline(ss, token, ','); starting_pos = stoi(token);
-            getline(ss, token, ','); player_a = token;  // Text field
-            getline(ss, token, ','); player_b = token;  // Text field
-            getline(ss, token, ','); time_a = stoi(token);
-            getline(ss, token, ','); time_b = stoi(token);
-            getline(ss, token, ','); result = stoi(token);
-
-        } catch (const std::invalid_argument& e) {
-            cerr << "Error: Invalid argument while parsing row: " << line << "\n";
-            cerr << "Reason: " << e.what() << "\n";
-            continue;  // Skip this row and continue with the next
-        } catch (const std::out_of_range& e) {
-            cerr << "Error: Out of range value while parsing row: " << line << "\n";
-            cerr << "Reason: " << e.what() << "\n";
-            continue;  // Skip this row and continue with the next
-        }
-
-        // Insert the parsed data into the database
-        if (!insertMatchData(db, id, starting_pos, player_a, player_b, time_a, time_b, result)) {
-            cerr << "Failed to insert data for ID: " << id << endl;
-        }
-    }
-
-    // Close the file and the database connection
-    file.close();
-    sqlite3_close(db);
-}
-
-
 bool insertMoveData(sqlite3* db, const int match_id, const int move_num, const int from, const int to, const int build) {
     const string sql = "INSERT INTO TB_MOVES (ID_match, move_num, from_square, to_square, build_square) VALUES (?, ?, ?, ?, ?);";
     sqlite3_stmt* stmt;

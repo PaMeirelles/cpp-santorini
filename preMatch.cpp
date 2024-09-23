@@ -195,86 +195,59 @@ EngineInfo assemblyEngine(const string& name) {
   return eInfo;
 }
 unordered_set<Entry, EntryHash, EntryEqual> findEntriesWithNoPair(int targetTime) {
-    string filename = "matches.csv";
-    vector<Entry> entries;
-    unordered_set<Entry, EntryHash, EntryEqual> pairs;
+  string db_filename = "santorini.db";  // SQLite database file
+  sqlite3* db;
+  unordered_set<Entry, EntryHash, EntryEqual> pairs;
 
-    ifstream file(filename);
-    if (!file) {
-        cerr << "Failed to open file: " << filename << endl;
-        return pairs;
-    }
-
-    string line;
-    getline(file, line);  // Skip header
-    string time;
-    while (getline(file, line)) {
-        istringstream iss(line);
-        string token;
-        Entry entry;
-
-        // Read CSV values into entry struct
-        getline(iss, token, ',');
-        getline(iss, entry.starting_pos, ',');
-        getline(iss, entry.player_a, ',');
-        getline(iss, entry.player_b, ',');
-        getline(iss, time, ',');
-        getline(iss, time, ',');
-        getline(iss, token, ',');
-        if(stoi(time) != targetTime){
-          continue;
-        }
-        // Check if entry has a pair
-        Entry reverseEntry;
-        reverseEntry.player_a = entry.player_b;
-        reverseEntry.player_b = entry.player_a;
-        reverseEntry.starting_pos = entry.starting_pos;
-
-        auto it = pairs.find(reverseEntry);
-
-        if (it == pairs.end()) {
-            pairs.insert(entry);
-        } else {
-            // Pair found, remove from pairs map
-            pairs.erase(it);
-        }
-    }
-
-    file.close();
+  // Open the SQLite database
+  if (sqlite3_open(db_filename.c_str(), &db) != SQLITE_OK) {
+    cerr << "Failed to open database: " << db_filename << endl;
     return pairs;
-}
-vector<string> getHighestConfidenceRange() {
-    auto filename = "confidence_interval.csv";
-    vector<string> playerAndOpponent;
-    ifstream file(filename);
+  }
 
-    string header;
-    getline(file, header);
+  string sql = "SELECT starting_pos, player_a, player_b FROM matches WHERE time = ?";
 
-    if (file) {
-        string line;
-        if (getline(file, line)) {
-            stringstream ss(line);
-            string cell;
+  sqlite3_stmt* stmt;
+  // Prepare the SQL statement
+  if (sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, nullptr) != SQLITE_OK) {
+    cerr << "Failed to prepare statement: " << sqlite3_errmsg(db) << endl;
+    sqlite3_close(db);
+    return pairs;
+  }
 
-            if (getline(ss, cell, ',')) {
-                playerAndOpponent.push_back(cell);  // Add 'player' to the vector
-            } else {
-                cerr << "Error: Insufficient elements in the first row." << endl;
-            }
+  // Bind the targetTime parameter
+  if (sqlite3_bind_int(stmt, 1, targetTime) != SQLITE_OK) {
+    cerr << "Failed to bind time parameter: " << sqlite3_errmsg(db) << endl;
+    sqlite3_finalize(stmt);
+    sqlite3_close(db);
+    return pairs;
+  }
 
-            if (getline(ss, cell, ',')) {
-                playerAndOpponent.push_back(cell);  // Add 'opponent' to the vector
-            } else {
-                cerr << "Error: Insufficient elements in the first row." << endl;
-            }
-        }
-        
-        file.close();
+  // Loop through the query results
+  while (sqlite3_step(stmt) == SQLITE_ROW) {
+    Entry entry;
+    entry.starting_pos = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 0));
+    entry.player_a = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 1));
+    entry.player_b = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 2));
+
+    // Check if entry has a pair
+    Entry reverseEntry;
+    reverseEntry.player_a = entry.player_b;
+    reverseEntry.player_b = entry.player_a;
+    reverseEntry.starting_pos = entry.starting_pos;
+
+    auto it = pairs.find(reverseEntry);
+    if (it == pairs.end()) {
+      pairs.insert(entry);
     } else {
-        cerr << "Failed to open file: " << filename << endl;
+      // Pair found, remove from set
+      pairs.erase(it);
     }
+  }
 
-    return playerAndOpponent;
+  // Finalize and clean up
+  sqlite3_finalize(stmt);
+  sqlite3_close(db);
+
+  return pairs;
 }
-
