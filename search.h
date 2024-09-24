@@ -21,6 +21,7 @@ struct SearchResult{
     int score{};
     bool outOftime{};
     bool keepResult{};
+    vector<Move> pvLine{};
     SearchResult(const Move &move, int score, bool oot);
 
     SearchResult(Move &m, int s, bool o, bool k);
@@ -63,8 +64,7 @@ SearchResult properMO(SearchInfo si);
 SearchResult properMOV2(SearchInfo si);
 SearchResult properMOV3(SearchInfo si);
 SearchResult creator(SearchInfo si);
+SearchResult voidS(SearchInfo si);
 Move getBestMove(Board b, EngineInfo engineInfo, int time);
 std::vector<Move> bucketOrder(const std::vector<Move>& moves, HashTable * hashTable, Board b, int depth);
-#define VERBOSE true
-#define DIVE_CHECK 1000
 #endif

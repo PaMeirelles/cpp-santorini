@@ -54,6 +54,7 @@ void Board::print() const {
   for (const int worker : workers) {
     cout << worker << " ";
   }
+  cout << "\nPly: " << ply << endl;
   cout << endl;
 }
 

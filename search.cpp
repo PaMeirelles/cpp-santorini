@@ -1,7 +1,6 @@
 #include "search.h"
-
+#include "defs.h"
 #include <algorithm>
-
 #include "eval.h"
 #include "hashTable.h"
 #include "timeManagement.h"
@@ -11,10 +10,10 @@ using namespace std;
 
 string editScore(const int score, const int depth){
     if(score > 9000){
-        return "#" + to_string((MAX_SCORE-score + depth + 1) / 2);
+        return "#" + to_string((MATE-score + depth + 1) / 2);
     }
     if(score < -9000){
-        return "#" + to_string((MAX_SCORE+score - depth - 1) / 2);
+        return "#" + to_string((MATE+score - depth - 1) / 2);
     }
     return to_string(score);
 }
@@ -68,9 +67,9 @@ SearchResult negamaxRecur(Board b, const int depth, const function<int(Board)>& 
     if(*diveCheck == DIVE_CHECK){
       *diveCheck = 0;
       const auto end = chrono::high_resolution_clock::now();
-      const auto duration = chrono::duration_cast<std::chrono::milliseconds>(end - start);
+      const auto duration = chrono::duration_cast<chrono::milliseconds>(end - start);
       if (duration.count() > time) {
-        return {Move(), -MAX_SCORE, true};
+        return {Move(), -MATE, true};
       }
     }
 
@@ -80,17 +79,17 @@ SearchResult negamaxRecur(Board b, const int depth, const function<int(Board)>& 
 
     vector<Move> moves = b.gen_moves(b.turn);
     if (moves.empty()) {
-      return {Move(), -MAX_SCORE - depth, false};
+      return {Move(), -MATE - depth, false};
     }
 
-    int maxScore = -MAX_SCORE * 100;
+    int maxScore = -MATE * 100;
     Move bestMove = moves[0];
     SearchResult s = SearchResult();
     bool oot = false;
 
     for (Move move : moves) {
       if (move.build == WIN) {
-        return {move, MAX_SCORE + depth, false};
+        return {move, MATE + depth, false};
       }
 
       b.makeMove(move);
@@ -115,33 +114,33 @@ SearchResult negamax(const SearchInfo& si){
   return negamaxRecur(si.b, si.depth, si.eval, &dc, si.time, si.start);
 }
 
-SearchResult alphabetaRecur(Board b, int depth, std::function<int(Board)> eval, 
-AlphaBetaInfo alphaBeta, int * diveCheck, int time, std::chrono::_V2::system_clock::time_point start) {
+SearchResult alphabetaRecur(Board b, int depth, function<int(Board)> eval,
+AlphaBetaInfo alphaBeta, int * diveCheck, int time, chrono::_V2::system_clock::time_point start) {
     (*diveCheck)++;
     if(*diveCheck == 1000){
       *diveCheck = 0;
-      auto end = std::chrono::high_resolution_clock::now();  
+      auto end = chrono::high_resolution_clock::now();
       auto duration =
-          std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+          chrono::duration_cast<chrono::milliseconds>(end - start);
       if (duration.count() > time) {
-        return SearchResult(Move(), -MAX_SCORE, true);
+        return SearchResult(Move(), -MATE, true);
       }
     }
     if (depth == 0) {
       return SearchResult(Move(), eval(b) * b.turn, false);
     }
-    std::vector<Move> moves = b.gen_moves(b.turn);
+    vector<Move> moves = b.gen_moves(b.turn);
     if (moves.size() == 0) {
-      return SearchResult(Move(), -MAX_SCORE - depth, false);
+      return SearchResult(Move(), -MATE - depth, false);
     }
-    int maxScore = -MAX_SCORE * 100;
+    int maxScore = -MATE * 100;
     int currScore;
     Move bestMove = moves[0];
     SearchResult s = SearchResult();
     bool oot = false;
     for (Move move : moves) {
         if (move.build == WIN) {
-          return SearchResult(move, MAX_SCORE + depth - 1, false);
+          return SearchResult(move, MATE + depth - 1, false);
         }
         b.makeMove(move);
         s = alphabetaRecur(b, depth - 1, eval, AlphaBetaInfo(-alphaBeta.beta, -alphaBeta.alpha), diveCheck, time, start);
@@ -164,24 +163,24 @@ AlphaBetaInfo alphaBeta, int * diveCheck, int time, std::chrono::_V2::system_clo
     }
     return SearchResult(bestMove, maxScore, oot);
   }
-SearchResult alphabeta(SearchInfo si){  
-    AlphaBetaInfo alphaBeta = AlphaBetaInfo(-MAX_SCORE, MAX_SCORE);
+SearchResult alphabeta(SearchInfo si){
+    AlphaBetaInfo alphaBeta = AlphaBetaInfo(-MATE, MATE);
       int dc = 0;
     return alphabetaRecur(si.b, si.depth, si.eval, alphaBeta, &dc, si.time, si.start);
     }
 template<typename T>
-void moveElementToFront(std::vector<T>& vec, const T& element) {
-    auto it = std::find(vec.begin(), vec.end(), element);
+void moveElementToFront(vector<T>& vec, const T& element) {
+    auto it = find(vec.begin(), vec.end(), element);
     if (it != vec.end()) {
-        std::rotate(vec.begin(), it, it + 1);
+        rotate(vec.begin(), it, it + 1);
     }
 }
-int mvb15Recur(AlphaBetaInfo alphaBeta, int depth, Board b, TimeInfo timeInfo, std::function<int(Board)> eval, HashTable * hashTable){
+int mvb15Recur(AlphaBetaInfo alphaBeta, int depth, Board b, TimeInfo timeInfo, function<int(Board)> eval, HashTable * hashTable){
     (*(timeInfo.diveCheck))++;
       if((*(timeInfo.diveCheck)) % 1000 == 0){
-        auto end = std::chrono::high_resolution_clock::now();  
+        auto end = chrono::high_resolution_clock::now();
         auto duration =
-            std::chrono::duration_cast<std::chrono::milliseconds>(end - timeInfo.start);
+            chrono::duration_cast<chrono::milliseconds>(end - timeInfo.start);
         if (duration.count() > timeInfo.time) {
           *(timeInfo.oot) = true;
           return 0;
@@ -191,17 +190,17 @@ int mvb15Recur(AlphaBetaInfo alphaBeta, int depth, Board b, TimeInfo timeInfo, s
     if (depth == 0) {
       return eval(b) * b.turn;
     }
-    std::vector<Move> moves = b.gen_moves(b.turn);
+    vector<Move> moves = b.gen_moves(b.turn);
     if (moves.size() == 0) {
-      return -MAX_SCORE - depth;
+      return -MATE - depth;
     }
 
-    int maxScore = -MAX_SCORE * 100;
+    int maxScore = -MATE * 100;
     int currScore;
     int oldAlpha = alphaBeta.alpha;
     Move bestMove = moves[0];
 
-    if(probeHashEntry(b, hashTable, &bestMove, &maxScore, alphaBeta.alpha, alphaBeta.beta, depth)){
+    if(probeHashEntryOld(b, hashTable, &bestMove, &maxScore, alphaBeta.alpha, alphaBeta.beta, depth)){
       hashTable->cut++;
       return maxScore;
     }
@@ -211,7 +210,7 @@ int mvb15Recur(AlphaBetaInfo alphaBeta, int depth, Board b, TimeInfo timeInfo, s
     }
     for (Move move : moves) {
         if (move.build == WIN) {
-          currScore = MAX_SCORE+depth-1;
+          currScore = MATE+depth-1;
         }
         else{
           b.makeMove(move);
@@ -228,12 +227,12 @@ int mvb15Recur(AlphaBetaInfo alphaBeta, int depth, Board b, TimeInfo timeInfo, s
                 }
                 alphaBeta.alpha = maxScore;
             }
-        }  
-        
+        }
+
         if(*(timeInfo.oot)){
           return 0;
         }
-     
+
     }
     if(alphaBeta.alpha != oldAlpha){
       storeHashEntry(b, bestMove, maxScore, depth, 'E', hashTable);
@@ -244,8 +243,8 @@ int mvb15Recur(AlphaBetaInfo alphaBeta, int depth, Board b, TimeInfo timeInfo, s
     return alphaBeta.alpha;
 }
 
-SearchResult mvb15(SearchInfo si){ 
-    AlphaBetaInfo alphaBeta = AlphaBetaInfo(-MAX_SCORE, MAX_SCORE);
+SearchResult mvb15(SearchInfo si){
+    AlphaBetaInfo alphaBeta = AlphaBetaInfo(-MATE, MATE);
     int dc = 0;
     bool oot = false;
     auto ti = TimeInfo(&dc, si.time, si.start, &oot);
@@ -270,7 +269,7 @@ vector<Move> bucketOrder(const vector<Move>& moves, HashTable * hashTable, Board
         continue;
       }
       b.makeMove(move);
-      if(probeHashEntry(b, hashTable, &fakeMove, &fakeScore, 0, 0, depth)){
+      if(probeHashEntryOld(b, hashTable, &fakeMove, &fakeScore, 0, 0, depth)){
         buckets[2].push_back(move);
         b.unmakeMove(move);
         continue;
@@ -295,9 +294,9 @@ vector<Move> bucketOrder(const vector<Move>& moves, HashTable * hashTable, Board
 int mvb127Recur(const int currDepth, AlphaBetaInfo alphaBeta, const int depth, Board b, const TimeInfo &timeInfo, const function<int(Board)>& eval, HashTable * hashTable){
   (*(timeInfo.diveCheck))++;
   if((*(timeInfo.diveCheck)) % 1000 == 0){
-    auto end = std::chrono::high_resolution_clock::now();
+    auto end = chrono::high_resolution_clock::now();
     auto duration =
-        std::chrono::duration_cast<std::chrono::milliseconds>(end - timeInfo.start);
+        chrono::duration_cast<chrono::milliseconds>(end - timeInfo.start);
     if (duration.count() > timeInfo.time) {
       *(timeInfo.oot) = true;
       return 0;
@@ -307,17 +306,17 @@ int mvb127Recur(const int currDepth, AlphaBetaInfo alphaBeta, const int depth, B
   if (depth == 0) {
     return eval(b) * b.turn;
   }
-  std::vector<Move> moves = b.gen_moves(b.turn);
+  vector<Move> moves = b.gen_moves(b.turn);
   if (moves.size() == 0) {
-    return -MAX_SCORE - depth;
+    return -MATE - depth;
   }
 
-  int maxScore = -MAX_SCORE * 100;
+  int maxScore = -MATE * 100;
   int currScore;
   int oldAlpha = alphaBeta.alpha;
   Move bestMove = moves[0];
 
-  if(probeHashEntry(b, hashTable, &bestMove, &maxScore, alphaBeta.alpha, alphaBeta.beta, depth)){
+  if(probeHashEntryOld(b, hashTable, &bestMove, &maxScore, alphaBeta.alpha, alphaBeta.beta, depth)){
     hashTable->cut++;
     return maxScore;
   }
@@ -330,7 +329,7 @@ int mvb127Recur(const int currDepth, AlphaBetaInfo alphaBeta, const int depth, B
   }
   for (Move move : moves) {
     if (move.build == WIN) {
-      currScore = MAX_SCORE+depth-1;
+      currScore = MATE+depth-1;
     }
     else{
       b.makeMove(move);
@@ -363,8 +362,8 @@ int mvb127Recur(const int currDepth, AlphaBetaInfo alphaBeta, const int depth, B
   return alphaBeta.alpha;
 }
 
-SearchResult mvb127(SearchInfo si){ 
-    AlphaBetaInfo alphaBeta = AlphaBetaInfo(-MAX_SCORE, MAX_SCORE);
+SearchResult mvb127(SearchInfo si){
+    AlphaBetaInfo alphaBeta = AlphaBetaInfo(-MATE, MATE);
     int dc = 0;
     bool oot = false;
     auto ti = TimeInfo(&dc, si.time, si.start, &oot);
@@ -380,8 +379,8 @@ Move getBestMove(Board b, EngineInfo engineInfo, int time) {
   Move bestMove = Move();
   Move gbestMove = Move();
   SearchResult s = SearchResult();
-  std::chrono::_V2::system_clock::time_point start = std::chrono::high_resolution_clock::now();
-  std::chrono::duration<double, std::milli> duration;
+  chrono::_V2::system_clock::time_point start = chrono::high_resolution_clock::now();
+  chrono::duration<double, milli> duration;
   while (true) {
     s = engineInfo.search(SearchInfo(b, depth, engineInfo.eval, thinkingTime, engineInfo.hashTable, start));
     bestMove = s.move;
@@ -389,17 +388,19 @@ Move getBestMove(Board b, EngineInfo engineInfo, int time) {
     if(s.keepResult){
       gbestMove = bestMove;
     }
-    duration = std::chrono::system_clock::now() - start;
+    duration = chrono::system_clock::now() - start;
     // Print the maximum score at each depth
     if (VERBOSE && s.keepResult) {
-      std::cout << "Depth: " << depth << std::endl;
-      std::cout << "Best move up to depth " << depth << ": " << bestMove.toString()
-                << std::endl;
-      std::cout << "Time spent up to depth " << depth << ": " << duration.count()
-                << "ms" << std::endl;
-      std::cout << "Maximum score up to depth " << depth << ": " << editScore(maxScore, depth)
-                << std::endl;
-      std::cout << "------------------------------" << std::endl;
+      cout << "Depth: " << depth
+     << " - Best move: " << bestMove.toString()
+     << " - Time: " << duration.count() << "ms"
+     << setw(10 - to_string(duration.count()).length() - 2) << " "  // Calculate padding after "ms"
+     << " - Best score: " << editScore(maxScore, depth);
+     if(s.pvLine.size() > 0)
+       cout << endl << "PV Line: " << pvLineToString(s.pvLine) << endl;
+     }
+    else{
+      cout << endl;
     }
     if(s.outOftime){
       break;
@@ -412,12 +413,12 @@ Move getBestMove(Board b, EngineInfo engineInfo, int time) {
   }
   return gbestMove;
 }
-int mvb143Recur(AlphaBetaInfo alphaBeta, int depth, Board b, TimeInfo timeInfo, std::function<int(Board)> eval, HashTable * hashTable){
+int mvb143Recur(AlphaBetaInfo alphaBeta, int depth, Board b, TimeInfo timeInfo, function<int(Board)> eval, HashTable * hashTable){
     (*(timeInfo.diveCheck))++;
       if((*(timeInfo.diveCheck)) % 1000 == 0){
-        auto end = std::chrono::high_resolution_clock::now();  
+        auto end = chrono::high_resolution_clock::now();
         auto duration =
-            std::chrono::duration_cast<std::chrono::milliseconds>(end - timeInfo.start);
+            chrono::duration_cast<chrono::milliseconds>(end - timeInfo.start);
         if (duration.count() > timeInfo.time) {
           *(timeInfo.oot) = true;
           return 0;
@@ -427,7 +428,7 @@ int mvb143Recur(AlphaBetaInfo alphaBeta, int depth, Board b, TimeInfo timeInfo, 
     if (depth == 0) {
       return eval(b) * b.turn;
     }
-    std::vector<Move> moves;
+    vector<Move> moves;
     if(depth > 1){
       moves = b.gen_moves(b.turn);
     }
@@ -435,15 +436,15 @@ int mvb143Recur(AlphaBetaInfo alphaBeta, int depth, Board b, TimeInfo timeInfo, 
       moves = b.gen_half_moves(b.turn);
     }
     if (moves.size() == 0) {
-      return -MAX_SCORE - depth;
+      return -MATE - depth;
     }
 
-    int maxScore = -MAX_SCORE * 100;
+    int maxScore = -MATE * 100;
     int currScore;
     int oldAlpha = alphaBeta.alpha;
     Move bestMove = moves[0];
 
-    if(probeHashEntry(b, hashTable, &bestMove, &maxScore, alphaBeta.alpha, alphaBeta.beta, depth)){
+    if(probeHashEntryOld(b, hashTable, &bestMove, &maxScore, alphaBeta.alpha, alphaBeta.beta, depth)){
       hashTable->cut++;
       return maxScore;
     }
@@ -453,7 +454,7 @@ int mvb143Recur(AlphaBetaInfo alphaBeta, int depth, Board b, TimeInfo timeInfo, 
     }
     for (Move move : moves) {
         if (move.build == WIN) {
-          currScore = MAX_SCORE+depth-1;
+          currScore = MATE+depth-1;
         }
         else{
           b.makeMove(move);
@@ -470,12 +471,12 @@ int mvb143Recur(AlphaBetaInfo alphaBeta, int depth, Board b, TimeInfo timeInfo, 
                 }
                 alphaBeta.alpha = maxScore;
             }
-        }  
-        
+        }
+
         if(*(timeInfo.oot)){
           return 0;
         }
-     
+
     }
     if(alphaBeta.alpha != oldAlpha){
       storeHashEntry(b, bestMove, maxScore, depth, 'E', hashTable);
@@ -486,8 +487,8 @@ int mvb143Recur(AlphaBetaInfo alphaBeta, int depth, Board b, TimeInfo timeInfo, 
     return alphaBeta.alpha;
 }
 
-SearchResult mvb143(SearchInfo si){ 
-    AlphaBetaInfo alphaBeta = AlphaBetaInfo(-MAX_SCORE, MAX_SCORE);
+SearchResult mvb143(SearchInfo si){
+    AlphaBetaInfo alphaBeta = AlphaBetaInfo(-MATE, MATE);
     int dc = 0;
     bool oot = false;
     auto ti = TimeInfo(&dc, si.time, si.start, &oot);
@@ -544,7 +545,7 @@ int properMORecur(AlphaBetaInfo alphaBeta, const int depth, Board b, const TimeI
       if(*timeInfo.diveCheck % 1000 == 0){
         const auto end = chrono::high_resolution_clock::now();
         const auto duration =
-            chrono::duration_cast<std::chrono::milliseconds>(end - timeInfo.start);
+            chrono::duration_cast<chrono::milliseconds>(end - timeInfo.start);
         if (duration.count() > timeInfo.time) {
           *timeInfo.oot = true;
           return 0;
@@ -556,15 +557,15 @@ int properMORecur(AlphaBetaInfo alphaBeta, const int depth, Board b, const TimeI
     }
     vector<Move> moves = b.gen_moves(b.turn);
     if (moves.empty()) {
-      return -MAX_SCORE - depth;
+      return -MATE - depth;
     }
 
-    int maxScore = -MAX_SCORE * 100;
+    int maxScore = -MATE * 100;
     int currScore;
     const int oldAlpha = alphaBeta.alpha;
     Move bestMove = moves[0];
 
-    if(probeHashEntry(b, hashTable, &bestMove, &maxScore, alphaBeta.alpha, alphaBeta.beta, depth)){
+    if(probeHashEntryOld(b, hashTable, &bestMove, &maxScore, alphaBeta.alpha, alphaBeta.beta, depth)){
       hashTable->cut++;
       return maxScore;
     }
@@ -574,7 +575,7 @@ int properMORecur(AlphaBetaInfo alphaBeta, const int depth, Board b, const TimeI
         pickMove(moves, i);
         auto move = moves[i];
         if (move.build == WIN) {
-          currScore = MAX_SCORE+depth-1;
+          currScore = MATE+depth-1;
         }
         else{
           b.makeMove(move);
@@ -607,7 +608,7 @@ int properMORecur(AlphaBetaInfo alphaBeta, const int depth, Board b, const TimeI
     return alphaBeta.alpha;
 }
 SearchResult properMO(SearchInfo si){
-  const auto alphaBeta = AlphaBetaInfo(-MAX_SCORE, MAX_SCORE);
+  const auto alphaBeta = AlphaBetaInfo(-MATE, MATE);
   int dc = 0;
   bool oot = false;
   const auto ti = TimeInfo(&dc, si.time, si.start, &oot);
@@ -624,7 +625,7 @@ int properMORecur2(AlphaBetaInfo alphaBeta, const int depth, Board b, const Time
       if(*timeInfo.diveCheck % 1000 == 0){
         const auto end = chrono::high_resolution_clock::now();
         const auto duration =
-            chrono::duration_cast<std::chrono::milliseconds>(end - timeInfo.start);
+            chrono::duration_cast<chrono::milliseconds>(end - timeInfo.start);
         if (duration.count() > timeInfo.time) {
           *timeInfo.oot = true;
           return 0;
@@ -636,15 +637,15 @@ int properMORecur2(AlphaBetaInfo alphaBeta, const int depth, Board b, const Time
     }
     vector<Move> moves = b.gen_moves(b.turn);
     if (moves.empty()) {
-      return -MAX_SCORE - depth;
+      return -MATE - depth;
     }
 
-    int maxScore = -MAX_SCORE * 100;
+    int maxScore = -MATE * 100;
     int currScore;
     const int oldAlpha = alphaBeta.alpha;
     Move bestMove = moves[0];
 
-    if(probeHashEntry(b, hashTable, &bestMove, &maxScore, alphaBeta.alpha, alphaBeta.beta, depth)){
+    if(probeHashEntryOld(b, hashTable, &bestMove, &maxScore, alphaBeta.alpha, alphaBeta.beta, depth)){
       hashTable->cut++;
       return maxScore;
     }
@@ -654,7 +655,7 @@ int properMORecur2(AlphaBetaInfo alphaBeta, const int depth, Board b, const Time
         pickMove(moves, i);
         auto move = moves[i];
         if (move.build == WIN) {
-          currScore = MAX_SCORE+depth-1;
+          currScore = MATE+depth-1;
         }
         else{
           b.makeMove(move);
@@ -687,7 +688,7 @@ int properMORecur2(AlphaBetaInfo alphaBeta, const int depth, Board b, const Time
     return alphaBeta.alpha;
 }
 SearchResult properMOV2(SearchInfo si){
-  const auto alphaBeta = AlphaBetaInfo(-MAX_SCORE, MAX_SCORE);
+  const auto alphaBeta = AlphaBetaInfo(-MATE, MATE);
   int dc = 0;
   bool oot = false;
   const auto ti = TimeInfo(&dc, si.time, si.start, &oot);
@@ -703,7 +704,7 @@ int properMORecur3(AlphaBetaInfo alphaBeta, const int depth, Board b, const Time
       if(*timeInfo.diveCheck % 1000 == 0){
         const auto end = chrono::high_resolution_clock::now();
         const auto duration =
-            chrono::duration_cast<std::chrono::milliseconds>(end - timeInfo.start);
+            chrono::duration_cast<chrono::milliseconds>(end - timeInfo.start);
         if (duration.count() > timeInfo.time) {
           *timeInfo.oot = true;
           return 0;
@@ -715,15 +716,15 @@ int properMORecur3(AlphaBetaInfo alphaBeta, const int depth, Board b, const Time
     }
     vector<Move> moves = b.gen_moves(b.turn);
     if (moves.empty()) {
-      return -MAX_SCORE - depth;
+      return -MATE - depth;
     }
 
-    int maxScore = -MAX_SCORE * 100;
+    int maxScore = -MATE * 100;
     int currScore;
     const int oldAlpha = alphaBeta.alpha;
     Move bestMove = moves[0];
 
-    if(probeHashEntry(b, hashTable, &bestMove, &maxScore, alphaBeta.alpha, alphaBeta.beta, depth)){
+    if(probeHashEntryOld(b, hashTable, &bestMove, &maxScore, alphaBeta.alpha, alphaBeta.beta, depth)){
       hashTable->cut++;
       return maxScore;
     }
@@ -733,7 +734,7 @@ int properMORecur3(AlphaBetaInfo alphaBeta, const int depth, Board b, const Time
         pickMove(moves, i);
         auto move = moves[i];
         if (move.build == WIN) {
-          currScore = MAX_SCORE+depth-1;
+          currScore = MATE+depth-1;
         }
         else{
           b.makeMove(move);
@@ -766,7 +767,7 @@ int properMORecur3(AlphaBetaInfo alphaBeta, const int depth, Board b, const Time
     return alphaBeta.alpha;
 }
 SearchResult properMOV3(SearchInfo si){
-  const auto alphaBeta = AlphaBetaInfo(-MAX_SCORE, MAX_SCORE);
+  const auto alphaBeta = AlphaBetaInfo(-MATE, MATE);
   int dc = 0;
   bool oot = false;
   const auto ti = TimeInfo(&dc, si.time, si.start, &oot);
@@ -782,7 +783,7 @@ int creatorRecur(AlphaBetaInfo alphaBeta, const int depth, Board b, const TimeIn
       if(*timeInfo.diveCheck % 1000 == 0){
         const auto end = chrono::high_resolution_clock::now();
         const auto duration =
-            chrono::duration_cast<std::chrono::milliseconds>(end - timeInfo.start);
+            chrono::duration_cast<chrono::milliseconds>(end - timeInfo.start);
         if (duration.count() > timeInfo.time) {
           *timeInfo.oot = true;
           return 0;
@@ -797,15 +798,15 @@ int creatorRecur(AlphaBetaInfo alphaBeta, const int depth, Board b, const TimeIn
     else moves = b.gen_half_moves(b.turn);
 
     if (moves.empty()) {
-      return -MAX_SCORE - depth;
+      return -MATE - depth;
     }
 
-    int maxScore = -MAX_SCORE * 100;
+    int maxScore = -MATE * 100;
     int currScore;
     const int oldAlpha = alphaBeta.alpha;
     Move bestMove = moves[0];
 
-    if(probeHashEntry(b, hashTable, &bestMove, &maxScore, alphaBeta.alpha, alphaBeta.beta, depth)){
+    if(probeHashEntryOld(b, hashTable, &bestMove, &maxScore, alphaBeta.alpha, alphaBeta.beta, depth)){
       hashTable->cut++;
       return maxScore;
     }
@@ -815,7 +816,7 @@ int creatorRecur(AlphaBetaInfo alphaBeta, const int depth, Board b, const TimeIn
         pickMove(moves, i);
         auto move = moves[i];
         if (move.build == WIN) {
-          currScore = MAX_SCORE+depth-1;
+          currScore = MATE+depth-1;
         }
         else{
           b.makeMove(move);
@@ -848,7 +849,7 @@ int creatorRecur(AlphaBetaInfo alphaBeta, const int depth, Board b, const TimeIn
     return alphaBeta.alpha;
 }
 SearchResult creator(SearchInfo si){
-  const auto alphaBeta = AlphaBetaInfo(-MAX_SCORE, MAX_SCORE);
+  const auto alphaBeta = AlphaBetaInfo(-MATE, MATE);
   int dc = 0;
   bool oot = false;
   const auto ti = TimeInfo(&dc, si.time, si.start, &oot);
@@ -856,4 +857,89 @@ SearchResult creator(SearchInfo si){
   Move m = probePvMove(si.b, &(si.hashTable), &score);
   const bool keep = m.from >= 0;
   return {m, score, oot, keep};
+}
+
+int voidRecur(AlphaBetaInfo alphaBeta, const int depth, Board b, const TimeInfo &timeInfo,
+  const function<int(Board)>& eval, HashTable * hashTable){
+    (*timeInfo.diveCheck)++;
+      if(*timeInfo.diveCheck % 1000 == 0){
+        const auto end = chrono::high_resolution_clock::now();
+        const auto duration =
+            chrono::duration_cast<chrono::milliseconds>(end - timeInfo.start);
+        if (duration.count() > timeInfo.time) {
+          *timeInfo.oot = true;
+          return 0;
+        }
+      }
+
+    if (depth == 0) {
+      return eval(b) * b.turn;
+    }
+
+  int maxScore = -MATE * 100;
+  auto bestMove = NO_MOVE;
+
+  if(probeHashEntry(b, hashTable, &bestMove, &maxScore, alphaBeta.alpha, alphaBeta.beta, depth)){
+    hashTable->cut++;
+    return maxScore;
+  }
+
+    vector<Move> moves = b.gen_moves(b.turn);
+    if (moves.empty()) {
+      return -MATE - depth;
+    }
+
+    int currScore;
+    const int oldAlpha = alphaBeta.alpha;
+
+    scoreMovesV3(moves, hashTable, &b);
+
+    for (int i=0; i < moves.size(); i++) {
+        pickMove(moves, i);
+        auto move = moves[i];
+        if (move.build == WIN) {
+          currScore = MATE+depth-1;
+        }
+        else{
+          b.makeMove(move);
+          currScore = -voidRecur(AlphaBetaInfo(-alphaBeta.beta, -alphaBeta.alpha), depth-1, b, timeInfo, eval, hashTable);
+          b.unmakeMove(move);
+        }
+        if (currScore > maxScore) {
+          maxScore = currScore;
+          bestMove = move;
+            if(maxScore > alphaBeta.alpha){
+                if(maxScore >= alphaBeta.beta){
+                    storeHashEntry(b, bestMove, alphaBeta.beta, depth, 'B', hashTable);
+                    return alphaBeta.beta;
+                }
+                alphaBeta.alpha = maxScore;
+            }
+        }
+
+        if(*(timeInfo.oot)){
+          return 0;
+        }
+
+    }
+    if(alphaBeta.alpha != oldAlpha){
+      storeHashEntry(b, bestMove, maxScore, depth, 'E', hashTable);
+    }
+    else{
+      storeHashEntry(b, bestMove, alphaBeta.alpha, depth, 'A', hashTable);
+    }
+    return alphaBeta.alpha;
+}
+
+SearchResult voidS(SearchInfo si){
+  const auto alphaBeta = AlphaBetaInfo(-MATE, MATE);
+  int dc = 0;
+  bool oot = false;
+  const auto ti = TimeInfo(&dc, si.time, si.start, &oot);
+  int score = voidRecur(alphaBeta, si.depth, si.b, ti, si.eval, &si.hashTable);
+  Move m = probePvMove(si.b, &(si.hashTable), &score);
+  const bool keep = m.from >= 0;
+  auto sr = SearchResult(m, score, oot, keep);
+  sr.pvLine = getPvLine(si.depth, si.b, &si.hashTable);
+  return sr;
 }

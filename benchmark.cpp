@@ -2,6 +2,7 @@
 #include "db_manager.h"
 #include "search.h"
 #include "eval.h"
+#include "defs.h"
 
 using namespace std;
 using namespace std::chrono;
@@ -42,7 +43,7 @@ void runBenchmark(const Board &board, int matchId, const string &search_engine, 
     time_point<system_clock> end;
     SearchResult result;
     sqlite3 * db;
-    sqlite3_open("santorini.db", &db);
+    sqlite3_open("DB_PATH", &db);
     for(int i=1; i <= depth; i++) {
         const auto search_info = SearchInfo(board, i, eval, INT_MAX, hash_table, start);
         result = engine(search_info);
@@ -58,7 +59,7 @@ void runBenchmark(const string &search_engine, const string &eval_function, cons
     int matchId, moveNumber;
 
     sqlite3 * db;
-    sqlite3_open("santorini.db", &db);
+    sqlite3_open("DB_PATH", &db);
 
     const auto board = retrieveRandomBoard(db, &matchId, &moveNumber);
     runBenchmark(board, matchId, search_engine, eval_function, depth);
@@ -70,7 +71,7 @@ void compare_engines(const vector<string>& engines, const string &eval, int dept
     int matchId, moveNumber;
 
     sqlite3 * db;
-    sqlite3_open("santorini.db", &db);
+    sqlite3_open("DB_PATH", &db);
 
     const auto board = retrieveRandomBoard(db, &matchId, &moveNumber);
     for(const auto& engine: engines) {

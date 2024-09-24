@@ -9,7 +9,12 @@ int evalPosition(function<int(Board)> eval, const int hash) {
   return eval(board);
 }
 
-vector<int> getValidPositions(const string& playerA, const string& playerB, sqlite3* db) {
+vector<int> getValidPositions(const string& playerA, const string& playerB) {
+  sqlite3* db;
+  if (sqlite3_open("DB_PATH", &db)) {
+    cerr << "Can't open database: " << sqlite3_errmsg(db) << endl;
+  }
+
   vector<int> validPositions;
   sqlite3_stmt* stmt;
   unordered_set<int> playedPositions;
@@ -56,7 +61,7 @@ vector<int> getValidPositions(const string& playerA, const string& playerB, sqli
   }
 
   sqlite3_finalize(stmt);
-
+  sqlite3_close(db);
   return validPositions;
 }
 
@@ -184,18 +189,18 @@ EngineInfo assemblyEngine(const string& name) {
       eInfo.eval = db_s;
       eInfo.timeManager = et_p;
     }
-    // else if(name == "Cyan"){
-    //   eInfo.search = properMOV3;
-    //   eInfo.eval = cyan;
-    //   eInfo.timeManager = et_s;
-    // }
+  else if (name == "Void") {
+    eInfo.search = voidS;
+    eInfo.eval = db_s;
+    eInfo.timeManager = et_s;
+  }
   else {
     throw runtime_error("Invalid engine: " + name);
   }
   return eInfo;
 }
 unordered_set<Entry, EntryHash, EntryEqual> findEntriesWithNoPair(int targetTime) {
-  string db_filename = "santorini.db";  // SQLite database file
+  string db_filename = "DB_PATH";  // SQLite database file
   sqlite3* db;
   unordered_set<Entry, EntryHash, EntryEqual> pairs;
 

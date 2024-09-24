@@ -40,6 +40,14 @@ inline vector<int> neighbors[] = {
     {18, 19, 23}
 };
 
+inline vector<string> squareNames = {
+    "A1", "B1", "C1", "D1", "E1",
+    "A2", "B2", "C2", "D2", "E2",
+    "A3", "B3", "C3", "D3", "E3",
+    "A4", "B4", "C4", "D4", "E4",
+    "A5", "B5", "C5", "D5", "E5",
+};
+
 struct Move{
     int from;
     int to;
@@ -53,9 +61,6 @@ struct Move{
     Move();
     Move(int from, int to, int build);
     Move(int from, int to, int build, int fromHeight, int toHeight);
-
-    void printMove() const;
-
     [[nodiscard]] string toString() const;
 
     bool operator==(const Move& other) const {
@@ -66,8 +71,5 @@ struct Move{
 };
 
 std::vector<int> getNeighbors(int n);
-#define HALF_MOVE (-1)
-#define WIN (-3)
-#define NO_MOVE Move(-2, -2, -2)
 #endif
 

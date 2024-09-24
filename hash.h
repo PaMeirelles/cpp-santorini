@@ -21,6 +21,4 @@ Coord cordFromTwoInt(int x, int y);
 Coord makeCoord(int n);
 int breakCoord(Coord coord);
 U64 hashBoard (const Board &b);
-# define minHash 0
-# define maxHash 390625
 #endif // HASHWORKERS_H

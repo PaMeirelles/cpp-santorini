@@ -3,9 +3,7 @@
 #include <sstream>
 #include <string>
 #include <sqlite3.h>
-#include <stdexcept>
 #include <filesystem>
-
 #include "board.h"
 
 using namespace std;
@@ -96,7 +94,7 @@ bool insertMoveData(sqlite3* db, const int match_id, const int move_num, const i
 
 void add_moves() {
     sqlite3* db;
-    if (sqlite3_open("santorini.db", &db)) {
+    if (sqlite3_open("DB_PATH", &db)) {
         cerr << "Can't open database: " << sqlite3_errmsg(db) << endl;
     }
 

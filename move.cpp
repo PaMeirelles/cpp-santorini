@@ -2,8 +2,12 @@
 
 using namespace std;
 
-std::vector<int> getNeighbors(const int n){
+vector<int> getNeighbors(const int n){
     return neighbors[n];
+}
+
+string getSquareName(const int sq) {
+    return squareNames[sq];
 }
 
 Move::Move(int f, int t, int b): fromHeight(0), toHeight(0) {
@@ -24,9 +28,13 @@ Move::Move(int f, int t, int b, int fh, int th){
     toN = static_cast<int>(neighbors[t].size());
 }
 
-void Move::printMove() const {
-        std::cout << "From: " << from << ", To: " << to << ", Build: " << build << std::endl;
+string Move::toString() const{
+    string bd;
+    if(build == -3) {
+        bd = "WIN";
     }
-std::string Move::toString() const{
-    return "From: " + std::to_string(from) + ", To: " + std::to_string(to) + ", Build: " + std::to_string(build);
+    else {
+        bd = getSquareName(build);
+    }
+    return getSquareName(from) + "|" + getSquareName(to) + "|" + bd;
 }

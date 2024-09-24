@@ -1,6 +1,37 @@
 #include "hashTable.h"
+#include "defs.h"
 
 using namespace std;
+
+vector<Move> getPvLine(const int depth, Board & b, const HashTable * ht) {
+    int score;
+    auto move = probePvMove(b, ht, &score);
+    const int count = 0;
+    vector<Move> pvLine;
+
+    while(move != NO_MOVE && count < depth) {
+
+        b.makeMove(move);
+        pvLine.push_back(move);
+
+        move = probePvMove(b, ht, &score);
+    }
+
+    for(auto mv: pvLine) {
+        b.unmakeMove(mv);
+    }
+
+    return pvLine;
+}
+
+string pvLineToString(const vector<Move> &pvLine) {
+    string stringPvLine;
+    for(int i=1; i <= pvLine.size(); i++) {
+        stringPvLine += (to_string(i) + ". " + pvLine[i-1].toString());
+    }
+    return stringPvLine;
+}
+
 
 void clearHashTable(HashTable *table) {
     table->cut = 0;
@@ -55,7 +86,7 @@ void storeHashEntry(const Board &b, const Move &m, const int score, const int de
     hashTable->pTable[index].hashKey = key;
 }
 
-bool probeHashEntry(const Board &b, HashTable * hashTable, Move * move, int * score, const int alpha, const int beta, const int depth){
+bool probeHashEntryOld(const Board &b, HashTable * hashTable, Move * move, int * score, const int alpha, const int beta, const int depth){
     const U64 key = hashBoard(b);
     const U64 index = key % hashTable->numEntries;
     const HashEntry he = hashTable->pTable[index];
@@ -78,6 +109,33 @@ bool probeHashEntry(const Board &b, HashTable * hashTable, Move * move, int * sc
         *score = he.score;
     }
     return true;
+}
+
+bool probeHashEntry(const Board &b, HashTable * hashTable, Move * move, int * score, const int alpha, const int beta, const int depth){
+    const U64 key = hashBoard(b);
+    const U64 index = key % hashTable->numEntries;
+    const HashEntry he = hashTable->pTable[index];
+    if(he.hashKey != key) {
+        return false;
+    }
+    *move = he.move;
+    if(he.depth < depth){
+        return false;
+    }
+    hashTable->hit++;
+    *score = he.score;
+    if(const char flag = he.flag; flag == 'A' && *score <= alpha){
+        *score = alpha;
+        return true;
+    }
+    else if(flag == 'B' && *score >= beta){
+        *score = beta;
+        return true;
+    }
+    else if (flag == 'E'){
+        return true;
+    }
+    return false;
 }
 
 void freeHashTable(const HashTable * hashTable){
@@ -109,5 +167,5 @@ Move probePvMove(const Board &b, const HashTable * hashTable, int * score){
         *score = he.score;
         return he.move;
     }
-    return Move(-2, -2, -2);
+    return NO_MOVE;
 }

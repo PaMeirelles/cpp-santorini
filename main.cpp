@@ -8,5 +8,7 @@
 using namespace std;
 
 int main() {
-    play(1000 * 60 * 30, 1, "Creator", "Radiant");
+    // play(1000 * 60 * 30, 1, "Vortex", "Zephyr");
+    play(1000 * 60 * 30, 1, "Infinity", "Divine");
+    play(1000 * 60 * 30, 1, "Canyon", "Radiant");
 }
