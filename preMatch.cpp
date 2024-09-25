@@ -1,4 +1,9 @@
 #include "preMatch.h"
+
+#include <bits/ranges_algo.h>
+
+#include "defs.h"
+#include "eval.h"
 #include "sqlite3.h"
 using namespace std;
 
@@ -11,7 +16,7 @@ int evalPosition(function<int(Board)> eval, const int hash) {
 
 vector<int> getValidPositions(const string& playerA, const string& playerB) {
   sqlite3* db;
-  if (sqlite3_open("DB_PATH", &db)) {
+  if (sqlite3_open(DB_PATH, &db)) {
     cerr << "Can't open database: " << sqlite3_errmsg(db) << endl;
   }
 
@@ -112,95 +117,130 @@ EngineInfo assemblyEngine(const string& name) {
     eInfo.search = negamax;
     eInfo.eval = nh_s;
     eInfo.timeManager = et_s;
-  } else if (name == "Ruler") {
+    eInfo.name = "Titan";
+} else if (name == "Ruler") {
     eInfo.search = negamax;
     eInfo.eval = nh_c;
     eInfo.timeManager = et_s;
-  } else if(name == "Fisher"){
+    eInfo.name = "Ruler";
+} else if (name == "Fisher") {
     eInfo.search = negamax;
     eInfo.eval = nh_a;
     eInfo.timeManager = et_s;
-  } else if(name == "Ascendant"){
+    eInfo.name = "Fisher";
+} else if (name == "Ascendant") {
     eInfo.search = alphabeta;
     eInfo.eval = nh_s;
     eInfo.timeManager = et_s;
-  } else if(name == "Ranger"){
+    eInfo.name = "Ascendant";
+} else if (name == "Ranger") {
     eInfo.search = alphabeta;
     eInfo.eval = nh_s;
     eInfo.timeManager = et_p;
-  } else if(name == "Aegis"){
+    eInfo.name = "Ranger";
+} else if (name == "Aegis") {
     eInfo.search = alphabeta;
     eInfo.eval = nh_s;
     eInfo.timeManager = et_f;
-  } else if(name == "Cosmic"){
+    eInfo.name = "Aegis";
+} else if (name == "Cosmic") {
     eInfo.search = mvb15;
     eInfo.eval = nh_s;
     eInfo.timeManager = et_s;
-  } else if(name == "Dream"){
+    eInfo.name = "Cosmic";
+} else if (name == "Dream") {
     eInfo.search = mvb127;
     eInfo.eval = nh_s;
     eInfo.timeManager = et_s;
-  } else if(name == "Eclipse"){
+    eInfo.name = "Dream";
+} else if (name == "Eclipse") {
     eInfo.search = mvb15;
     eInfo.eval = ss_h;
     eInfo.timeManager = et_s;
-  } else if(name == "Pilot"){
+    eInfo.name = "Eclipse";
+} else if (name == "Pilot") {
     eInfo.search = mvb15;
     eInfo.eval = nh_s;
     eInfo.timeManager = eg_c;
-  } else if(name == "Harmony"){
+    eInfo.name = "Pilot";
+} else if (name == "Harmony") {
     eInfo.search = mvb15;
     eInfo.eval = nh_s;
     eInfo.timeManager = withEmerg;
-  } else if(name == "Angel"){
+    eInfo.name = "Harmony";
+} else if (name == "Angel") {
     eInfo.search = mvb15;
     eInfo.eval = nh_s_1;
     eInfo.timeManager = et_s;
-  } else if(name == "Vortex"){
+    eInfo.name = "Angel";
+} else if (name == "Vortex") {
     eInfo.search = mvb15;
     eInfo.eval = db_s;
     eInfo.timeManager = et_s;
-  } else if(name == "Infinity"){
+    eInfo.name = "Vortex";
+} else if (name == "Infinity") {
     eInfo.search = mvb15;
     eInfo.eval = db_s;
-    eInfo.timeManager = et_p; 
-  } else if(name == "Missing"){
+    eInfo.timeManager = et_p;
+    eInfo.name = "Infinity";
+} else if (name == "Missing") {
     eInfo.search = mvb15;
     eInfo.eval = db_s;
     eInfo.timeManager = withEmerg;
-  } else if(name == "Divine"){
+    eInfo.name = "Missing";
+} else if (name == "Divine") {
     eInfo.search = mvb143;
     eInfo.eval = db_s;
     eInfo.timeManager = et_p;
-  } else if(name == "Canyon"){
-      eInfo.search = properMOV2;
-      eInfo.eval = nh_s;
-      eInfo.timeManager = et_s;
-  } else if(name == "Zephyr"){
-      eInfo.search = properMOV3;
-      eInfo.eval = db_s;
-      eInfo.timeManager = et_s;
-  } else if(name == "Creator"){
-      eInfo.search = creator;
-      eInfo.eval = db_s;
-      eInfo.timeManager = et_s;
-  } else if(name == "Radiant"){
-      eInfo.search = creator;
-      eInfo.eval = db_s;
-      eInfo.timeManager = et_p;
-    }
-  else if (name == "Void") {
+    eInfo.name = "Divine";
+} else if (name == "Canyon") {
+    eInfo.search = properMOV2;
+    eInfo.eval = nh_s;
+    eInfo.timeManager = et_s;
+    eInfo.name = "Canyon";
+} else if (name == "Zephyr") {
+    eInfo.search = properMOV3;
+    eInfo.eval = db_s;
+    eInfo.timeManager = et_s;
+    eInfo.name = "Zephyr";
+} else if (name == "Creator") {
+    eInfo.search = creator;
+    eInfo.eval = db_s;
+    eInfo.timeManager = et_s;
+    eInfo.name = "Creator";
+} else if (name == "Radiant") {
+    eInfo.search = creator;
+    eInfo.eval = db_s;
+    eInfo.timeManager = et_p;
+    eInfo.name = "Radiant";
+} else if (name == "Void") {
     eInfo.search = voidS;
     eInfo.eval = db_s;
     eInfo.timeManager = et_s;
-  }
+    eInfo.name = "Void";
+} else if (name == "Cyan") {
+    eInfo.search = voidS;
+    eInfo.eval = cyan;
+    eInfo.timeManager = et_s;
+    eInfo.name = "Cyan";
+} else if (name == "Serenity") {
+    eInfo.search = voidS;
+    eInfo.eval = serenity;
+    eInfo.timeManager = et_s;
+    eInfo.name = "Serenity";
+} else if (name == "Dark") {
+    eInfo.search = dark;
+    eInfo.eval = db_s;
+    eInfo.timeManager = et_p;
+    eInfo.name = "Dark";
+}
   else {
     throw runtime_error("Invalid engine: " + name);
   }
   return eInfo;
 }
 unordered_set<Entry, EntryHash, EntryEqual> findEntriesWithNoPair(int targetTime) {
-  string db_filename = "DB_PATH";  // SQLite database file
+  string db_filename = DB_PATH;  // SQLite database file
   sqlite3* db;
   unordered_set<Entry, EntryHash, EntryEqual> pairs;
 

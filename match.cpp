@@ -1,5 +1,7 @@
 #include "match.h"
 
+#include "defs.h"
+
 using namespace std;
 
 void printClocks(const int clockA, const int clockB){

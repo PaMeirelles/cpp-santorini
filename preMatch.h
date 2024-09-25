@@ -9,15 +9,9 @@
 #include <unordered_set>
 #include <vector>
 #include <set>
-#include <map>
-#include <algorithm>
 #include "board.h"
 #include "hash.h"
-#include "eval.h"
 #include "search.h"
-#include "timeManagement.h"
-#include "hashTable.h"
-
 struct Entry {
     std::string starting_pos;
     std::string player_a;

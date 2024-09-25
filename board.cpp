@@ -3,6 +3,8 @@
 #include "move.h"
 #include <iostream>
 
+#include "defs.h"
+
 using namespace  std;
 
 Board::Board(const int (&w)[4]) {

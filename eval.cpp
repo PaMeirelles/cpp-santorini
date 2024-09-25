@@ -146,9 +146,11 @@ int cyan(const Board &b) {
             nextH = min(nextH, 2);
             support = sameHeightSupport[sameH] + nextHeightSupport[nextH];
         }
-        cout << pScore << " " << hScore << " " << support << endl;
         return pScore + hScore + support;
     };
-    cout <<  scoreWorker(0) << " " << scoreWorker(1) << " " <<  scoreWorker(2) << " " <<  scoreWorker(3) << endl;
     return scoreWorker(0) + scoreWorker(1) - scoreWorker(2) - scoreWorker(3);
+}
+
+int serenity(const Board &b) {
+    return b.turn * 25 + cyan(b);
 }

@@ -8,7 +8,10 @@
 using namespace std;
 
 int main() {
-    // play(1000 * 60 * 30, 1, "Vortex", "Zephyr");
-    play(1000 * 60 * 30, 1, "Infinity", "Divine");
-    play(1000 * 60 * 30, 1, "Canyon", "Radiant");
+    vector<string> pot1 = {"Cyan", "Dark", "Creator", "Radiant", "Zephyr", "Void"};
+    for(int i=0; i < pot1.size(); i++) {
+        for(int j=i+1; j < pot1.size(); j++) {
+            play(1000 * 60, 6, pot1[i], pot1[j]);
+        }
+    }
 }

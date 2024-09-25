@@ -6,7 +6,7 @@
 #define CONST_H
 using namespace std;
 
-#define DB_PATH = "santorini.db";
+inline const char *DB_PATH = "santorini.db";
 
 #define MATE 10000
 
@@ -14,9 +14,9 @@ using namespace std;
 #define maxHash 390625
 
 #define DEBUG false
-#define CLOCK true
-#define BOARD true
-#define VERBOSE true
+#define CLOCK false
+#define BOARD false
+#define VERBOSE false
 
 #define DIVE_CHECK 1000
 

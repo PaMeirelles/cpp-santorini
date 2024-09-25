@@ -5,6 +5,7 @@
 #include <sqlite3.h>
 #include <filesystem>
 #include "board.h"
+#include "defs.h"
 
 using namespace std;
 namespace fs = std::filesystem;
@@ -94,7 +95,7 @@ bool insertMoveData(sqlite3* db, const int match_id, const int move_num, const i
 
 void add_moves() {
     sqlite3* db;
-    if (sqlite3_open("DB_PATH", &db)) {
+    if (sqlite3_open(DB_PATH, &db)) {
         cerr << "Can't open database: " << sqlite3_errmsg(db) << endl;
     }
 

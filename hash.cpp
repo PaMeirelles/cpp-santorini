@@ -2,6 +2,8 @@
 
 #include <unordered_set>
 
+#include "defs.h"
+
 using namespace std;
 
 int hashWorkers(const int (&w)[4]){

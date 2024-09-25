@@ -391,17 +391,16 @@ Move getBestMove(Board b, EngineInfo engineInfo, int time) {
     duration = chrono::system_clock::now() - start;
     // Print the maximum score at each depth
     if (VERBOSE && s.keepResult) {
-      cout << "Depth: " << depth
+      cout << "Engine: " << engineInfo.name
+     <<  " - Depth: " << depth
      << " - Best move: " << bestMove.toString()
      << " - Time: " << duration.count() << "ms"
      << setw(10 - to_string(duration.count()).length() - 2) << " "  // Calculate padding after "ms"
-     << " - Best score: " << editScore(maxScore, depth);
+     << " - Best score: " << editScore(maxScore, depth) << endl;
      if(s.pvLine.size() > 0)
-       cout << endl << "PV Line: " << pvLineToString(s.pvLine) << endl;
+       cout << "PV Line: " << pvLineToString(s.pvLine) << endl;
      }
-    else{
-      cout << endl;
-    }
+
     if(s.outOftime){
       break;
     }
@@ -876,12 +875,12 @@ int voidRecur(AlphaBetaInfo alphaBeta, const int depth, Board b, const TimeInfo 
       return eval(b) * b.turn;
     }
 
-  int maxScore = -MATE * 100;
   auto bestMove = NO_MOVE;
+  int currScore;
 
-  if(probeHashEntry(b, hashTable, &bestMove, &maxScore, alphaBeta.alpha, alphaBeta.beta, depth)){
+  if(probeHashEntry(b, hashTable, &bestMove, &currScore, alphaBeta.alpha, alphaBeta.beta, depth)){
     hashTable->cut++;
-    return maxScore;
+    return currScore;
   }
 
     vector<Move> moves = b.gen_moves(b.turn);
@@ -889,7 +888,8 @@ int voidRecur(AlphaBetaInfo alphaBeta, const int depth, Board b, const TimeInfo 
       return -MATE - depth;
     }
 
-    int currScore;
+    int maxScore = -MATE * 100;
+
     const int oldAlpha = alphaBeta.alpha;
 
     scoreMovesV3(moves, hashTable, &b);
@@ -937,6 +937,93 @@ SearchResult voidS(SearchInfo si){
   bool oot = false;
   const auto ti = TimeInfo(&dc, si.time, si.start, &oot);
   int score = voidRecur(alphaBeta, si.depth, si.b, ti, si.eval, &si.hashTable);
+  Move m = probePvMove(si.b, &(si.hashTable), &score);
+  const bool keep = m.from >= 0;
+  auto sr = SearchResult(m, score, oot, keep);
+  sr.pvLine = getPvLine(si.depth, si.b, &si.hashTable);
+  return sr;
+}
+
+int darkRecur(AlphaBetaInfo alphaBeta, const int depth, Board b, const TimeInfo &timeInfo,
+  const function<int(Board)>& eval, HashTable * hashTable){
+    (*timeInfo.diveCheck)++;
+      if(*timeInfo.diveCheck % 1000 == 0){
+        const auto end = chrono::high_resolution_clock::now();
+        const auto duration =
+            chrono::duration_cast<chrono::milliseconds>(end - timeInfo.start);
+        if (duration.count() > timeInfo.time) {
+          *timeInfo.oot = true;
+          return 0;
+        }
+      }
+
+    if (depth == 0) {
+      return eval(b) * b.turn;
+    }
+
+  auto bestMove = NO_MOVE;
+  int currScore;
+
+  if(probeHashEntry(b, hashTable, &bestMove, &currScore, alphaBeta.alpha, alphaBeta.beta, depth)){
+    hashTable->cut++;
+    return currScore;
+  }
+    vector<Move> moves;
+    if(depth > 1) moves = b.gen_moves(b.turn);
+    else moves = b.gen_half_moves(b.turn);
+    if (moves.empty()) {
+      return -MATE - depth;
+    }
+
+    int maxScore = -MATE * 100;
+
+    const int oldAlpha = alphaBeta.alpha;
+
+    scoreMovesV3(moves, hashTable, &b);
+
+    for (int i=0; i < moves.size(); i++) {
+        pickMove(moves, i);
+        auto move = moves[i];
+        if (move.build == WIN) {
+          currScore = MATE+depth-1;
+        }
+        else{
+          b.makeMove(move);
+          currScore = -darkRecur(AlphaBetaInfo(-alphaBeta.beta, -alphaBeta.alpha), depth-1, b, timeInfo, eval, hashTable);
+          b.unmakeMove(move);
+        }
+        if (currScore > maxScore) {
+          maxScore = currScore;
+          bestMove = move;
+            if(maxScore > alphaBeta.alpha){
+                if(maxScore >= alphaBeta.beta){
+                    storeHashEntry(b, bestMove, alphaBeta.beta, depth, 'B', hashTable);
+                    return alphaBeta.beta;
+                }
+                alphaBeta.alpha = maxScore;
+            }
+        }
+
+        if(*(timeInfo.oot)){
+          return 0;
+        }
+
+    }
+    if(alphaBeta.alpha != oldAlpha){
+      storeHashEntry(b, bestMove, maxScore, depth, 'E', hashTable);
+    }
+    else{
+      storeHashEntry(b, bestMove, alphaBeta.alpha, depth, 'A', hashTable);
+    }
+    return alphaBeta.alpha;
+}
+
+SearchResult dark(SearchInfo si){
+  const auto alphaBeta = AlphaBetaInfo(-MATE, MATE);
+  int dc = 0;
+  bool oot = false;
+  const auto ti = TimeInfo(&dc, si.time, si.start, &oot);
+  int score = darkRecur(alphaBeta, si.depth, si.b, ti, si.eval, &si.hashTable);
   Move m = probePvMove(si.b, &(si.hashTable), &score);
   const bool keep = m.from >= 0;
   auto sr = SearchResult(m, score, oot, keep);

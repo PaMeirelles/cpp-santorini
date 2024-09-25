@@ -53,6 +53,7 @@ struct EngineInfo {
   std::function<int(Board)> eval;
   std::function<int(TMInfo)> timeManager;
   HashTable hashTable;
+    string name;
 };
 
 SearchResult alphabeta(SearchInfo searchInfo);
@@ -65,6 +66,7 @@ SearchResult properMOV2(SearchInfo si);
 SearchResult properMOV3(SearchInfo si);
 SearchResult creator(SearchInfo si);
 SearchResult voidS(SearchInfo si);
+SearchResult dark(SearchInfo si);
 Move getBestMove(Board b, EngineInfo engineInfo, int time);
 std::vector<Move> bucketOrder(const std::vector<Move>& moves, HashTable * hashTable, Board b, int depth);
 #endif

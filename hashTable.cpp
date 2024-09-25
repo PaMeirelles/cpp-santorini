@@ -6,18 +6,24 @@ using namespace std;
 vector<Move> getPvLine(const int depth, Board & b, const HashTable * ht) {
     int score;
     auto move = probePvMove(b, ht, &score);
-    const int count = 0;
+    int count = 0;
     vector<Move> pvLine;
 
     while(move != NO_MOVE && count < depth) {
-
-        b.makeMove(move);
+        try {
+            b.makeMove(move);
+        }
+        catch (const runtime_error& e) {
+            break;
+        }
         pvLine.push_back(move);
 
         move = probePvMove(b, ht, &score);
+        count++;
     }
 
-    for(auto mv: pvLine) {
+    for (int i = pvLine.size() - 1; i >= 0; --i) {
+        auto mv = pvLine[i];
         b.unmakeMove(mv);
     }
 
@@ -27,7 +33,7 @@ vector<Move> getPvLine(const int depth, Board & b, const HashTable * ht) {
 string pvLineToString(const vector<Move> &pvLine) {
     string stringPvLine;
     for(int i=1; i <= pvLine.size(); i++) {
-        stringPvLine += (to_string(i) + ". " + pvLine[i-1].toString());
+        stringPvLine += (to_string(i) + ". " + pvLine[i-1].toString() + " ");
     }
     return stringPvLine;
 }
@@ -124,15 +130,16 @@ bool probeHashEntry(const Board &b, HashTable * hashTable, Move * move, int * sc
     }
     hashTable->hit++;
     *score = he.score;
-    if(const char flag = he.flag; flag == 'A' && *score <= alpha){
+    const char flag = he.flag;
+    if(flag == 'A' && *score <= alpha){
         *score = alpha;
         return true;
     }
-    else if(flag == 'B' && *score >= beta){
+    if(flag == 'B' && *score >= beta){
         *score = beta;
         return true;
     }
-    else if (flag == 'E'){
+    if (flag == 'E'){
         return true;
     }
     return false;

@@ -14,5 +14,5 @@ int db_s(const Board &board);
 int ss_h(const Board &b);
 int nh_s_1(const Board &board);
 int cyan(const Board &b);
-
+int serenity(const Board &b);
 #endif /* EVAL_H */
