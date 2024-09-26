@@ -132,11 +132,11 @@ int reduceHash(const int hash){
     return min;
 }
 
-U64 hashBoard (const Board &b){
+U64 hashBoard (const Board * b){
     U64 key = 0;
     for(int i=0; i < 25; i++){
-        key += static_cast<U64>(pow(5, i)) * b.squares[i];
+        key += static_cast<U64>(pow(5, i)) * b->squares[i];
     }
-    key *= hashWorkers(b.workers);
+    key *= hashWorkers(b->workers);
     return key;
 }

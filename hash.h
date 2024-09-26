@@ -20,5 +20,5 @@ struct Coord{
 Coord cordFromTwoInt(int x, int y);
 Coord makeCoord(int n);
 int breakCoord(Coord coord);
-U64 hashBoard (const Board &b);
+U64 hashBoard (const Board * b);
 #endif // HASHWORKERS_H

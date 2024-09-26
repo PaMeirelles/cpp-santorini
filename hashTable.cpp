@@ -3,7 +3,7 @@
 
 using namespace std;
 
-vector<Move> getPvLine(const int depth, Board & b, const HashTable * ht) {
+vector<Move> getPvLine(const int depth, Board * b, const HashTable * ht) {
     int score;
     auto move = probePvMove(b, ht, &score);
     int count = 0;
@@ -11,7 +11,7 @@ vector<Move> getPvLine(const int depth, Board & b, const HashTable * ht) {
 
     while(move != NO_MOVE && count < depth) {
         try {
-            b.makeMove(move);
+            b->makeMove(move);
         }
         catch (const runtime_error& e) {
             break;
@@ -24,7 +24,7 @@ vector<Move> getPvLine(const int depth, Board & b, const HashTable * ht) {
 
     for (int i = pvLine.size() - 1; i >= 0; --i) {
         auto mv = pvLine[i];
-        b.unmakeMove(mv);
+        b->unmakeMove(mv);
     }
 
     return pvLine;
@@ -73,7 +73,7 @@ void allocateHashTable(HashTable *hashTable, const int MB) {
 }
 
 
-void storeHashEntry(const Board &b, const Move &m, const int score, const int depth, const char flag, HashTable * hashTable){
+void storeHashEntry(const Board * b, const Move &m, const int score, const int depth, const char flag, HashTable * hashTable){
     if(m.from < 0){
         throw runtime_error("Invalid move");
     }
@@ -92,32 +92,7 @@ void storeHashEntry(const Board &b, const Move &m, const int score, const int de
     hashTable->pTable[index].hashKey = key;
 }
 
-bool probeHashEntryOld(const Board &b, HashTable * hashTable, Move * move, int * score, const int alpha, const int beta, const int depth){
-    const U64 key = hashBoard(b);
-    const U64 index = key % hashTable->numEntries;
-    const HashEntry he = hashTable->pTable[index];
-    if(he.hashKey != key){
-        return false;
-    }
-    (hashTable->hit)++;
-    *move = he.move;
-    if(he.depth < depth){
-        return false;
-    }
-    const char flag = he.flag;
-    if(flag == 'A'){
-        *score = alpha;
-    }
-    else if(flag == 'B'){
-        *score = beta;
-    }
-    else{
-        *score = he.score;
-    }
-    return true;
-}
-
-bool probeHashEntry(const Board &b, HashTable * hashTable, Move * move, int * score, const int alpha, const int beta, const int depth){
+bool probeHashEntry(const Board * b, HashTable * hashTable, Move * move, int * score, const int alpha, const int beta, const int depth){
     const U64 key = hashBoard(b);
     const U64 index = key % hashTable->numEntries;
     const HashEntry he = hashTable->pTable[index];
@@ -166,7 +141,7 @@ void printHashEntry(const HashEntry& entry) {
     std::cout << "Flag: " << entry.flag << std::endl;
 }
 
-Move probePvMove(const Board &b, const HashTable * hashTable, int * score){
+Move probePvMove(const Board * b, const HashTable * hashTable, int * score){
     const U64 key = hashBoard(b);
     const U64 index = key % hashTable->numEntries;
     const HashEntry he = hashTable->pTable[index];
@@ -175,25 +150,4 @@ Move probePvMove(const Board &b, const HashTable * hashTable, int * score){
         return he.move;
     }
     return NO_MOVE;
-}
-
-KillerMoveTable::KillerMoveTable(int spl) {
-    size_per_layer = spl;
-    killerMoves.resize(MAX_DEPTH);
-    for (int i = 0; i < MAX_DEPTH; i++) {
-        killerMoves[i] = vector(size_per_layer, NO_MOVE);
-    }
-}
-
-KillerMoveTable::KillerMoveTable() : KillerMoveTable(0) {
-    // No additional initialization needed here
-}
-
-
-void storeKiller(KillerMoveTable *kmt, const int depth, const Move &mv) {
-    auto &mvs = kmt->killerMoves[depth];
-    for (int i = kmt->size_per_layer - 1; i > 0; --i) {
-        mvs[i] = mvs[i - 1];
-    }
-    mvs[0] = mv;
 }

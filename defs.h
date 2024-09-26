@@ -6,23 +6,19 @@
 #define CONST_H
 using namespace std;
 
-inline const char *DB_PATH = "santorini.db";
-
 #define MATE 10000
 
 #define minHash 0
 #define maxHash 390625
 
 #define DEBUG false
-#define CLOCK false
-#define BOARD false
-#define VERBOSE false
+#define VERBOSE true
 
-#define DIVE_CHECK 1000
 
 #define HALF_MOVE (-1)
 #define WIN (-3)
 #define NO_MOVE Move(-2, -2, -2)
 
 #define MAX_DEPTH 50
+#define CHECK_EVERY (U64)1000
 #endif //CONST_H

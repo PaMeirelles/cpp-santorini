@@ -20,8 +20,7 @@ struct Board {
     int getWorkerPos (int workerId) const;
     void makeMove (const Move &move);
     void unmakeMove (const Move &move);
-    std::vector<Move> gen_moves(int player) const;
-    std::vector<Move> gen_half_moves(int player) const;
+    vector<Move> gen_moves() const;
     bool isFree(int square) const;
     int getHeight(int square) const;
 

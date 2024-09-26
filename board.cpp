@@ -119,7 +119,8 @@ void Board::makeMove(const Move &move) {
   ply++;
 }
 
-vector<Move> Board::gen_moves(const int player) const {
+vector<Move> Board::gen_moves() const {
+  auto player = turn;
   int w[2];
   vector<Move> moves;
   if (player == 1) {
@@ -202,33 +203,4 @@ void Board::unmakeMove(const Move &move) {
       squares[move.build]--;
   }
   ply--;
-}
-vector<Move> Board::gen_half_moves(const int player) const {
-  int w[2];
-  vector<int> toBuild;
-  vector<Move> moves;
-  if (player == 1) {
-    w[0] = workers[0];
-    w[1] = workers[1];
-  } else {
-    w[0] = workers[2];
-    w[1] = workers[3];
-  }
-  for (const int currW : w) {
-    vector<int> neighbors = getNeighbors(currW);
-    const int currH = getHeight(currW);
-    for (const int nb : neighbors) {
-      const int neighborH = getHeight(nb);
-      const bool isClimb = neighborH > currH;
-      if (!isFree(nb) || getHeight(nb) - currH > 1) {
-        continue;
-      }
-      if (squares[nb] == 3) {
-        moves.emplace_back(currW, nb, WIN, isClimb, neighborH);
-      } else {
-        moves.emplace_back(currW, nb, currW, isClimb, neighborH);
-      }
-    }
-  }
-  return moves;
 }
