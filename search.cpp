@@ -46,7 +46,7 @@ void pickMove(vector<Move>& moves, const int start) {
   }
 }
 
-int search(SearchInfo * search_info, const int depth, int alpha, int beta){
+int search(SearchInfo * search_info, const int depth, int alpha, const int beta){
       (*search_info->nodes)++;
       if(*search_info->nodes % CHECK_EVERY == 0){
         if (const auto now = chrono::high_resolution_clock::now(); now > search_info->end) {
@@ -117,27 +117,26 @@ int search(SearchInfo * search_info, const int depth, int alpha, int beta){
 
 
 Move getBestMove(Board * b, int remaining_time, HashTable * hashTable) {
-  int thinkingTime = getTime(remaining_time);
+  const int thinkingTime = getTime(remaining_time);
   int depth = 1;
   U64 nodes = 0;
   const chrono::_V2::system_clock::time_point start = chrono::high_resolution_clock::now();
-  auto end = start + chrono::milliseconds(thinkingTime);
-  chrono::_V2::system_clock::time_point now;
-  chrono::duration<double, milli> duration;
-  Move bestMove = NO_MOVE;
+  const auto end = start + chrono::milliseconds(thinkingTime);
+  chrono::duration<double, milli> duration{};
+  auto bestMove = NO_MOVE;
   int maxScore;
   while (true) {
-    SearchInfo search_info = SearchInfo(b, depth, &nodes, false, hashTable, end);
+    auto search_info = SearchInfo(b, depth, &nodes, false, hashTable, end);
     auto result = search(&search_info, depth, -MATE, MATE);
-    now = chrono::high_resolution_clock::now();
+    chrono::_V2::system_clock::time_point now = chrono::high_resolution_clock::now();
     duration = (now - start);
     bestMove = probePvMove(b, hashTable, &maxScore);
     auto pvLine = getPvLine(depth, b, hashTable);
-    if (VERBOSE) {
+    if constexpr (VERBOSE) {
       cout <<  "Depth: " << depth
       << " - Best move: " << bestMove.toString()
       << " - Time: " << duration.count() << "ms"
-      << setw(10 - to_string(duration.count()).length() - 2) << " "  // Calculate padding after "ms"
+      << setw(10 - static_cast<int>(to_string(duration.count()).length()) - 2) << " "  // Calculate padding after "ms"
       << " - Best score: " << editScore(maxScore, depth) << endl;
       cout << "PV Line: " << pvLineToString(pvLine) << endl;
     }

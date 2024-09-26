@@ -13,7 +13,7 @@ vector<Move> getPvLine(const int depth, Board * b, const HashTable * ht) {
         try {
             b->makeMove(move);
         }
-        catch (const runtime_error& e) {
+        catch ([[maybe_unused]] const runtime_error& e) {
             break;
         }
         pvLine.push_back(move);
@@ -22,7 +22,7 @@ vector<Move> getPvLine(const int depth, Board * b, const HashTable * ht) {
         count++;
     }
 
-    for (int i = pvLine.size() - 1; i >= 0; --i) {
+    for (int i = static_cast<int>(pvLine.size() - 1); i >= 0; --i) {
         auto mv = pvLine[i];
         b->unmakeMove(mv);
     }
@@ -60,13 +60,13 @@ void allocateHashTable(HashTable *hashTable, const int MB) {
     hashTable->pTable = static_cast<HashEntry *>(malloc(hashTable->numEntries * sizeof(HashEntry)));
 
     if (!hashTable->pTable) {
-        if(DEBUG){
+        if constexpr (DEBUG){
             cout << "Hash Allocation Failed, trying " << MB / 2 << "MB...\n";
         }
         allocateHashTable(hashTable, MB / 2);
     } else {
         clearHashTable(hashTable);
-        if(DEBUG){
+        if constexpr (DEBUG){
             std::cout << "HashTable init complete with " << hashTable->numEntries << " entries\n";
         }
     }

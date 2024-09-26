@@ -54,9 +54,9 @@ struct Move{
     int build;
     int fromHeight;
     int toHeight;
-    int moveOrderingScore;
-    int fromN;
-    int toN;
+    int moveOrderingScore{};
+    int fromN{};
+    int toN{};
 
     Move();
     Move(int from, int to, int build);

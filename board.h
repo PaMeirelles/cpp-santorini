@@ -16,13 +16,13 @@ struct Board {
     Board();
 
     void print() const;
-    int getWorkerHeight (int workerId) const;
-    int getWorkerPos (int workerId) const;
+    [[nodiscard]] int getWorkerHeight (int workerId) const;
+    [[nodiscard]] int getWorkerPos (int workerId) const;
     void makeMove (const Move &move);
     void unmakeMove (const Move &move);
-    vector<Move> gen_moves() const;
-    bool isFree(int square) const;
-    int getHeight(int square) const;
+    [[nodiscard]] vector<Move> gen_moves() const;
+    [[nodiscard]] bool isFree(int square) const;
+    [[nodiscard]] int getHeight(int square) const;
 
 };
 #endif
