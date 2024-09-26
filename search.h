@@ -34,10 +34,12 @@ struct SearchInfo{
     int depth;
     function<int(Board)> eval;
     int time;
-    HashTable hashTable;
+    HashTable hashTable{};
+    KillerMoveTable kmt;
     std::chrono::_V2::system_clock::time_point start;
 
-    SearchInfo(const Board &b, int depth, std::function<int(Board)> eval, int time, const HashTable &hashTable, std::chrono::_V2::system_clock::time_point start);
+    SearchInfo(const Board &b, int depth, std::function<int(Board)> eval, int time, const HashTable &hashTable, const KillerMoveTable &kmt, std::chrono::_V2::system_clock::time_point start);
+
 };
 
 struct TimeInfo{
@@ -54,6 +56,8 @@ struct EngineInfo {
   std::function<int(TMInfo)> timeManager;
   HashTable hashTable;
     string name;
+    KillerMoveTable kmt;
+
 };
 
 SearchResult alphabeta(SearchInfo searchInfo);
@@ -67,6 +71,7 @@ SearchResult properMOV3(SearchInfo si);
 SearchResult creator(SearchInfo si);
 SearchResult voidS(SearchInfo si);
 SearchResult dark(SearchInfo si);
+SearchResult probe(SearchInfo si);
 Move getBestMove(Board b, EngineInfo engineInfo, int time);
 std::vector<Move> bucketOrder(const std::vector<Move>& moves, HashTable * hashTable, Board b, int depth);
 #endif

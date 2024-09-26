@@ -23,4 +23,6 @@ inline const char *DB_PATH = "santorini.db";
 #define HALF_MOVE (-1)
 #define WIN (-3)
 #define NO_MOVE Move(-2, -2, -2)
+
+#define MAX_DEPTH 50
 #endif //CONST_H

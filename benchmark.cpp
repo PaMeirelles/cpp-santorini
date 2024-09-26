@@ -17,7 +17,8 @@ map<string, function<SearchResult(SearchInfo)>> getEngineMap(){
         {"properMOV2", properMOV2},
 {"properMOV3", properMOV3},
         {"mvb-143", mvb143},
-    {"creator", creator}
+    {"creator", creator},
+        {"probe", probe}
      };
 }
 
@@ -25,7 +26,7 @@ map<string, function<int(Board)>> getEvalMap(){
     return map<string, function<int(Board)>>
     {{"nhs-0", nh_s},
      {"nhc-0", nh_c},
-        {"dbs-0", db_s}
+        {"dbs-0", db_s},
     };
 
 }
@@ -37,6 +38,7 @@ void runBenchmark(const Board &board, int matchId, const string &search_engine, 
     const auto eval = getEvalMap()[eval_function];
 
     HashTable hash_table{};
+    KillerMoveTable kmt{};
     allocateHashTable(&(hash_table), 1000);
 
     const auto start = high_resolution_clock::now();
@@ -45,7 +47,7 @@ void runBenchmark(const Board &board, int matchId, const string &search_engine, 
     sqlite3 * db;
     sqlite3_open(DB_PATH, &db);
     for(int i=1; i <= depth; i++) {
-        const auto search_info = SearchInfo(board, i, eval, INT_MAX, hash_table, start);
+        const auto search_info = SearchInfo(board, i, eval, INT_MAX, hash_table, kmt, start);
         result = engine(search_info);
         end = high_resolution_clock::now();
         const auto duration = duration_cast<microseconds>(end - start);

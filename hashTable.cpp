@@ -176,3 +176,24 @@ Move probePvMove(const Board &b, const HashTable * hashTable, int * score){
     }
     return NO_MOVE;
 }
+
+KillerMoveTable::KillerMoveTable(int spl) {
+    size_per_layer = spl;
+    killerMoves.resize(MAX_DEPTH);
+    for (int i = 0; i < MAX_DEPTH; i++) {
+        killerMoves[i] = vector(size_per_layer, NO_MOVE);
+    }
+}
+
+KillerMoveTable::KillerMoveTable() : KillerMoveTable(0) {
+    // No additional initialization needed here
+}
+
+
+void storeKiller(KillerMoveTable *kmt, const int depth, const Move &mv) {
+    auto &mvs = kmt->killerMoves[depth];
+    for (int i = kmt->size_per_layer - 1; i > 0; --i) {
+        mvs[i] = mvs[i - 1];
+    }
+    mvs[0] = mv;
+}

@@ -23,6 +23,14 @@ struct HashTable {
     unsigned long long cut;
 };
 
+struct KillerMoveTable {
+    int size_per_layer;
+    vector<vector<Move>> killerMoves;
+    explicit KillerMoveTable(int spl);
+
+    KillerMoveTable();
+};
+
 void clearHashTable(HashTable *table);
 void allocateHashTable(HashTable *hashTable, int MB);
 void storeHashEntry(const Board &b, const Move &m, int score, int depth, char flag, HashTable *hashTable);
@@ -33,5 +41,6 @@ void printHashTable(const HashTable& table);
 void printHashEntry(const HashEntry& entry);
 Move probePvMove(const Board &b, const HashTable * hashTable, int * score);
 string pvLineToString(const vector<Move> &pvLine);
-vector<Move> getPvLine(const int depth, Board & b, const HashTable * ht);
+vector<Move> getPvLine(int depth, Board & b, const HashTable * ht);
+void storeKiller(KillerMoveTable *kmt, int depth, const Move &mv);
 #endif // HASHTABLE_H

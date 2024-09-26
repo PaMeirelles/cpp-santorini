@@ -8,10 +8,6 @@
 using namespace std;
 
 int main() {
-    vector<string> pot1 = {"Cyan", "Dark", "Creator", "Radiant", "Zephyr", "Void"};
-    for(int i=0; i < pot1.size(); i++) {
-        for(int j=i+1; j < pot1.size(); j++) {
-            play(1000 * 60, 6, pot1[i], pot1[j]);
-        }
-    }
+    play(1000 * 60 * 1, 500, "Zephyr", "Dark");
+    // for(int i=0; i < 99; i++) compare_engines({"probe"}, {"dbs-0"}, 7);
 }

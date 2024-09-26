@@ -140,8 +140,7 @@ vector<Move> Board::gen_moves(const int player) const {
       if (squares[nb] == 3) {
         moves.emplace_back(currW, nb, WIN, currH, neighborH);
       } else {
-        vector<int> toBuild = getNeighbors(nb);
-        for (const int b : toBuild) {
+        for (vector<int> toBuild = getNeighbors(nb); const int b : toBuild) {
           if (!isFree(b) && b != currW) {
             continue;
           }
