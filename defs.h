@@ -12,7 +12,7 @@ using namespace std;
 #define maxHash 390625
 
 #define DEBUG false
-#define VERBOSE true
+#define VERBOSE false
 
 
 #define HALF_MOVE (-1)
