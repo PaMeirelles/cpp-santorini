@@ -11,6 +11,7 @@ struct Board {
     int ply;
 
     explicit Board(int);
+    Board(const int (&w)[4], const int (&s)[25], int);
     Board(const int (&w)[4], const int (&s)[25]);
     explicit Board(const int (&w)[4]);
     Board();

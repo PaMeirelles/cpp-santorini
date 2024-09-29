@@ -31,7 +31,11 @@ Board::Board(const int startingPos) {
   ply = 0;
 }
 
-Board::Board(const int (&w)[4], const int (&s)[25]) {
+Board::Board(const int (&w)[4], const int (&s)[25])
+    : Board(w, s, 1) {
+}
+
+Board::Board(const int (&w)[4], const int (&s)[25], const int turn) {
   for (int i = 0; i < 25; i++) {
     squares[i] = s[i];
   }
@@ -39,7 +43,7 @@ Board::Board(const int (&w)[4], const int (&s)[25]) {
   for (int i = 0; i < 4; i++) {
     workers[i] = w[i];
   }
-  turn = 1;
+  this->turn = turn;
   ply = 0;
 }
 

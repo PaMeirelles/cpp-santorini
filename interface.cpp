@@ -62,7 +62,7 @@ Board parse_position(const string &position) {
     else if (position[50] == '1') turn = -1;
     else throw runtime_error("Invalid turn: '" + string(1, position[50]) + "' expected '0' or '1'");
 
-    return {workers, blocks};
+    return {workers, blocks, turn};
 }
 
 string buildMove(const Move &move) {
