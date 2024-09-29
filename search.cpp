@@ -149,5 +149,6 @@ Move getBestMove(Board * b, int remaining_time, HashTable * hashTable) {
     }
     depth++;
   }
+  if (bestMove.build == WIN) bestMove.build = bestMove.from;
   return bestMove;
 }
