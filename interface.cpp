@@ -102,7 +102,7 @@ void mainLoop(Board * b, HashTable * ht) {
                 int time;
                 if(b->turn == 1) time = gtime;
                 else time = btime;
-                Move bestMove = getBestMove(b, gtime, ht);
+                Move bestMove = getBestMove(b, time, ht);
                 cout << "bestmove " << buildMove(bestMove) << endl;
             } catch (const exception &e) {
                 cerr << "Error during move calculation: " << e.what() << endl;
