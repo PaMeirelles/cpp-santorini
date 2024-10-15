@@ -6,6 +6,7 @@
 
 struct Board {
     int squares[25]{};
+    bool is_free[25]{};
     int workers[4]{};
     int turn;
     int ply;

@@ -1,0 +1,10 @@
+﻿  board.cpp
+  eval.cpp
+  hash.cpp
+  hashTable.cpp
+  interface.cpp
+  main.cpp
+  profiling.cpp
+  search.cpp
+  Generating Code...
+  Santorini.vcxproj -> D:\santorini_cpp\cpp-santorini\x64\Debug\Santorini.exe

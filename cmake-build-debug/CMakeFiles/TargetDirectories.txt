@@ -1,0 +1,3 @@
+D:/santorini_cpp/cpp-santorini/cmake-build-debug/CMakeFiles/cpp_santorini.dir
+D:/santorini_cpp/cpp-santorini/cmake-build-debug/CMakeFiles/edit_cache.dir
+D:/santorini_cpp/cpp-santorini/cmake-build-debug/CMakeFiles/rebuild_cache.dir

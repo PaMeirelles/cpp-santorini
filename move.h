@@ -67,6 +67,10 @@ struct Move{
     return from == other.from && to == other.to && build == other.build &&
             fromHeight == other.fromHeight && toHeight == other.toHeight;
     }
+    bool operator!=(const Move& other) const {
+        return !(*this == other);
+    }
+
     static const Move NO_MOVE;
 };
 

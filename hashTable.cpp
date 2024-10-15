@@ -1,5 +1,6 @@
 #include "hashTable.h"
 #include "defs.h"
+#include <string>
 
 using namespace std;
 

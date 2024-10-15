@@ -1,0 +1,2 @@
+﻿LINK : warning LNK4075: ignoring '/INCREMENTAL' due to '/OPT:ICF' specification
+  Santorini.vcxproj -> D:\santorini_cpp\cpp-santorini\x64\Release\Santorini.exe

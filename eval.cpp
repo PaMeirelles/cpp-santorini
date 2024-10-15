@@ -14,9 +14,7 @@ constexpr int heightScore[] = {0, 100, 400};
 
 constexpr int sameHeightSupport[] = {-30, 0, 55};
 constexpr int nextHeightSupport[] = {0, 35, 120};
-
-int eval(const Board * b) {
-
+int eval(const Board* b) {
     auto scoreWorker = [&](const int worker_pos) {
         const int square = b->workers[worker_pos];
         const int height = b->squares[square];
@@ -29,17 +27,29 @@ int eval(const Board * b) {
         if (height > 0) {
             int sameH = 0;
             int nextH = 0;
-            for(const auto n: neighbors[square]) {
-                if(b->isFree(n)) {
-                    if(b->squares[n] == height) sameH++;
-                    else if (b->squares[n] == height + 1) nextH++;
+
+            const auto& square_neighbors = neighbors[square];
+            for (const auto n : square_neighbors) {
+                if (b->isFree(n)) {
+                    const int neighbor_height = b->squares[n]; // Cache neighbor height
+                    if (neighbor_height == height) {
+                        sameH++;
+                    }
+                    else if (neighbor_height == height + 1) {
+                        nextH++;
+                    }
                 }
             }
-            sameH = min(sameH, 2);
-            nextH = min(nextH, 2);
+
+            // Use bitwise AND to cap values at 2
+            sameH &= 0b11; // Cap sameH to 2
+            nextH &= 0b11; // Cap nextH to 2
+
+            // Directly access support arrays
             support = sameHeightSupport[sameH] + nextHeightSupport[nextH];
         }
         return pScore + hScore + support;
-    };
+        };
+
     return scoreWorker(0) + scoreWorker(1) - scoreWorker(2) - scoreWorker(3);
 }

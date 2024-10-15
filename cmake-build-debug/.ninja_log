@@ -1,0 +1,22 @@
+# ninja log v6
+46	8086	7492904279086611	CMakeFiles/cpp_santorini.dir/main.cpp.obj	1d2ceae5aeb46efc
+35	5768	7492904278982988	CMakeFiles/cpp_santorini.dir/hashTable.cpp.obj	e8dd1f28a5e010d8
+21	6853	7492904278838545	CMakeFiles/cpp_santorini.dir/eval.cpp.obj	cc8a3583e1ce93d2
+28	6070	7492904278911557	CMakeFiles/cpp_santorini.dir/hash.cpp.obj	f6d52d116ad07b8d
+13	5660	7492904278757329	CMakeFiles/cpp_santorini.dir/board.cpp.obj	7cf13e559509838b
+54	8034	7492904279170109	CMakeFiles/cpp_santorini.dir/search.cpp.obj	2d4e565225bb6e44
+2765	2905	7492742112906595	CMakeFiles/cpp_santorini.dir/timeManagement.cpp.obj	a7bf76d9a50031b3
+68	2315	7492742085935344	CMakeFiles/cpp_santorini.dir/move.cpp.obj	eb51fb172b11d0c5
+27	2064	7493671697946267	cpp_santorini.exe	96a5e979c4abd80a
+6	620	7506567022663196	build.ninja	82fa9af7dfa79884
+17	5536	7493670226374414	CMakeFiles/cpp_santorini.dir/interface.cpp.obj	3b6b3f8640c14702
+20	6331	7506567250981134	CMakeFiles/cpp_santorini.dir/hashTable.cpp.obj	e8dd1f28a5e010d8
+68	9067	7506567251461233	CMakeFiles/cpp_santorini.dir/profiling.cpp.obj	a59b9f3fd3b2aada
+33	9097	7506567251111165	CMakeFiles/cpp_santorini.dir/main.cpp.obj	1d2ceae5aeb46efc
+52	9349	7506567251301239	CMakeFiles/cpp_santorini.dir/interface.cpp.obj	3b6b3f8640c14702
+43	9793	7506567251211199	CMakeFiles/cpp_santorini.dir/search.cpp.obj	2d4e565225bb6e44
+9793	12011	7506567348714591	cpp_santorini.exe	32f4966b3ce29568
+12	3472	7506567713960955	CMakeFiles/cpp_santorini.dir/profiling.cpp.obj	a59b9f3fd3b2aada
+3473	4481	7506567748572179	cpp_santorini.exe	32f4966b3ce29568
+10	3042	7506625258526886	CMakeFiles/cpp_santorini.dir/profiling.cpp.obj	a59b9f3fd3b2aada
+3043	4025	7506625288851461	cpp_santorini.exe	32f4966b3ce29568

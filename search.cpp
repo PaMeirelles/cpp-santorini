@@ -8,7 +8,7 @@
 
 using namespace std;
 
-SearchInfo::SearchInfo(Board *b, const int depth, unsigned long long *nodes, const bool quit, HashTable *hashTable, const chrono::_V2::system_clock::time_point end) {
+SearchInfo::SearchInfo(Board *b, const int depth, unsigned long long *nodes, const bool quit, HashTable *hashTable, const chrono::high_resolution_clock::time_point end) {
   this->b=b, this->depth=depth, this->nodes=nodes, this->quit=quit, this->hashTable=hashTable, this->end = end;
 }
 
@@ -120,7 +120,7 @@ Move getBestMove(Board * b, int remaining_time, HashTable * hashTable) {
   const int thinkingTime = getTime(remaining_time);
   int depth = 1;
   U64 nodes = 0;
-  const chrono::_V2::system_clock::time_point start = chrono::high_resolution_clock::now();
+  const auto start = std::chrono::high_resolution_clock::now();
   const auto end = start + chrono::milliseconds(thinkingTime);
   chrono::duration<double, milli> duration{};
   auto bestMove = NO_MOVE;
@@ -128,7 +128,7 @@ Move getBestMove(Board * b, int remaining_time, HashTable * hashTable) {
   while (true) {
     auto search_info = SearchInfo(b, depth, &nodes, false, hashTable, end);
     auto result = search(&search_info, depth, -MATE, MATE);
-    chrono::_V2::system_clock::time_point now = chrono::high_resolution_clock::now();
+    chrono::high_resolution_clock::time_point now = chrono::high_resolution_clock::now();
     duration = (now - start);
     bestMove = probePvMove(b, hashTable, &maxScore);
     auto pvLine = getPvLine(depth, b, hashTable);
