@@ -67,7 +67,7 @@ void allocateHashTable(HashTable *hashTable, const int MB) {
     } else {
         clearHashTable(hashTable);
         if constexpr (DEBUG){
-            std::cout << "HashTable init complete with " << hashTable->numEntries << " entries\n";
+            cout << "HashTable init complete with " << hashTable->numEntries << " entries\n";
         }
     }
 }
@@ -124,21 +124,21 @@ void freeHashTable(const HashTable * hashTable){
     free(hashTable->pTable);
 }
 void printHashTable(const HashTable& table) {
-    std::cout << "Number of entries: " << table.numEntries << std::endl;
-    std::cout << "New writes: " << table.newWrite << std::endl;
-    std::cout << "Overwrites: " << table.overWrite << std::endl;
-    std::cout << "Hits: " << table.hit << std::endl;
-    std::cout << "Cuts: " << table.cut << std::endl;
+    cout << "Number of entries: " << table.numEntries << endl;
+    cout << "New writes: " << table.newWrite << endl;
+    cout << "Overwrites: " << table.overWrite << endl;
+    cout << "Hits: " << table.hit << endl;
+    cout << "Cuts: " << table.cut << endl;
 }
 
 void printHashEntry(const HashEntry& entry) {
     auto m = entry.move;
     const auto s = m.toString();
-    std::cout << "Hash Key: " << entry.hashKey << std::endl;
-    std::cout << "Move: " << s << std::endl;
-    std::cout << "Depth: " << entry.depth << std::endl;
-    std::cout << "Score: " << entry.score << std::endl;
-    std::cout << "Flag: " << entry.flag << std::endl;
+    cout << "Hash Key: " << entry.hashKey << endl;
+    cout << "Move: " << s << endl;
+    cout << "Depth: " << entry.depth << endl;
+    cout << "Score: " << entry.score << endl;
+    cout << "Flag: " << entry.flag << endl;
 }
 
 Move probePvMove(const Board * b, const HashTable * hashTable, int * score){

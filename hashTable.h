@@ -16,11 +16,11 @@ struct HashEntry {
 
 struct HashTable {
     HashEntry *pTable;
-    unsigned long long numEntries;
-    unsigned long long newWrite;
-    unsigned long long overWrite;
-    unsigned long long hit;
-    unsigned long long cut;
+    U64 numEntries;
+    U64 newWrite;
+    U64 overWrite;
+    U64 hit;
+    U64 cut;
 };
 
 void clearHashTable(HashTable *table);
