@@ -116,7 +116,7 @@ int search(SearchInfo * search_info, const int depth, int alpha, const int beta)
 }
 
 
-Move getBestMove(Board * b, int remaining_time, HashTable * hashTable) {
+Move getBestMove(Board * b, int remaining_time, HashTable * hashTable, int maxDepth) {
   const int thinkingTime = getTime(remaining_time);
   int depth = 1;
   U64 nodes = 0;
@@ -125,7 +125,7 @@ Move getBestMove(Board * b, int remaining_time, HashTable * hashTable) {
   chrono::duration<double, milli> duration{};
   auto bestMove = NO_MOVE;
   int maxScore;
-  while (true) {
+  while (maxDepth == 0 || depth <= maxDepth) {
     auto search_info = SearchInfo(b, depth, &nodes, false, hashTable, end);
     auto result = search(&search_info, depth, -MATE, MATE);
     chrono::high_resolution_clock::time_point now = chrono::high_resolution_clock::now();
@@ -151,4 +151,8 @@ Move getBestMove(Board * b, int remaining_time, HashTable * hashTable) {
   }
   if (bestMove.build == WIN) bestMove.build = bestMove.from;
   return bestMove;
+}
+
+Move getBestMove(Board* b, int remaining_time, HashTable* hashTable) {
+    return getBestMove(b, remaining_time, hashTable, 0);
 }

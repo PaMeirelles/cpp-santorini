@@ -26,4 +26,5 @@ struct SearchInfo{
 };
 
 Move getBestMove(Board * b, int remaining_time, HashTable * hashTable);
+Move getBestMove(Board * b, int remaining_time, HashTable * hashTable, int maxDepth);
 #endif
